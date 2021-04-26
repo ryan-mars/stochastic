@@ -1,0 +1,15 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "postinstall": "lerna bootstrap",
+    "clean": "lerna run clean --parallel && lerna clean -y",
+    "build": "lerna run build",
+    "watch": "lerna run watch --parallel"
+  },
+  "devDependencies": {
+    "lerna": "^3.22.1",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
+  }
+}

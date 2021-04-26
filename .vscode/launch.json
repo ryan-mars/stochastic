@@ -1,0 +1,16 @@
+{
+  "configurations": [
+    {
+      "type": "node-terminal",
+      "name": "Dubug Synth",
+      "request": "launch",
+      "command": "node_modules/.bin/cdk synth -a lib/flight-stack.js",
+      "cwd": "${workspaceFolder}",
+      "skipFiles": ["<node_internals>/**"],
+      "preLaunchTask": {
+        "type": "npm",
+        "script": "build"
+      }
+    }
+  ]
+}
