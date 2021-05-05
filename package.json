@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "postinstall": "lerna bootstrap",
+    "postinstall": "lerna bootstrap --hoist",
     "clean": "lerna run clean --parallel && lerna clean -y",
     "build": "lerna run build",
     "watch": "lerna run watch --parallel"
