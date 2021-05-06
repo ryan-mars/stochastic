@@ -1,5 +1,7 @@
 # 💥 Stochastic
 
+⚠️ Developing in public. Not ready for use.
+
 Easily go from [Event Storming](https://github.com/mariuszgil/awesome-eventstorming) to [serverless](https://aws.amazon.com/serverless).
 
 # Run the examples
