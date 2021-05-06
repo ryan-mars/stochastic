@@ -16,7 +16,7 @@
   "keywords": [],
   "author": "Ryan Marsh",
   "dependencies": {
-    "aws-cdk": "1.94.1",
+    "aws-cdk": "^1.94.1",
     "ksuid": "^2.0.0",
     "stochastic": "^0.1.0",
     "superstruct": "0.14.2"
