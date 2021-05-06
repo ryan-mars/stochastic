@@ -7,6 +7,8 @@ export interface AggregateProps<
 > extends BaseComponentProps {
   readonly shape: Struct<T>;
   readonly key: Key;
+  readonly reducer: (state: T, event: any) => T;
+  readonly initalState: T;
 }
 
 export class Aggregate<

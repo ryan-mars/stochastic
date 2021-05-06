@@ -17,6 +17,28 @@ export const FlightScheduleAggregate = new Aggregate({
   __filename,
   key: "flightNo",
   shape: FlightSchedule,
+  reducer: (state, event) => {
+    switch (event.__type) {
+      case "ScheduledFlightAdded":
+        const {
+          payload: { day, scheduledDeparture, scheduledArrival },
+        } = event;
+        return {
+          ...state,
+          days: state.days.set(day, { scheduledArrival, scheduledDeparture }),
+        };
+
+      default:
+        return state;
+    }
+  },
+  initalState: {
+    flightNo: "",
+    aircraftType: "",
+    origin: "",
+    destination: "",
+    days: new Map(),
+  },
 });
 
 const ScheduledFlightAdded = event(
