@@ -80,7 +80,16 @@ export const CreateFlightCommandHandler = new Command(
       throw "Can only create new flights that don't already exist";
     }
 
-    return [];
+    return [
+      {
+        id: KSUID.randomSync().string,
+        time: new Date().toISOString(),
+        type: "FlightCreated" as const,
+        payload: {
+          ...command,
+        },
+      },
+    ];
   }
 );
 
@@ -109,20 +118,20 @@ export const AddScheduledFlightCommandHandler = new Command(
     } = command;
 
     return [
-      // {
-      //   id: KSUID.randomSync().string,
-      //   time: new Date().toISOString(),
-      //   type: "ScheduledFlightAdded",
-      //   payload: {
-      //     flightNo,
-      //     add: {
-      //       day,
-      //       scheduledArrival,
-      //       scheduledDeparture,
-      //     },
-      //     fullSchedule: schedule,
-      //   },
-      // },
+      {
+        id: KSUID.randomSync().string,
+        time: new Date().toISOString(),
+        type: "ScheduledFlightAdded" as const,
+        payload: {
+          flightNo,
+          add: {
+            day,
+            scheduledArrival,
+            scheduledDeparture,
+          },
+          fullSchedule: schedule,
+        },
+      },
     ];
   }
 );
