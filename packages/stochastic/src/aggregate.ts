@@ -1,24 +1,28 @@
 import { Struct } from "superstruct";
 import { BaseComponent, BaseComponentProps } from "./component";
+import { Event } from "./event";
 
 export interface AggregateProps<
   T extends object = any,
-  Key extends keyof T = any
+  Key extends keyof T = any,
+  Events extends readonly Event[] = readonly Event[]
 > extends BaseComponentProps {
   readonly shape: Struct<T>;
   readonly key: Key;
-  readonly reducer: (state: T, event: any) => T;
+  readonly events: Events;
+  readonly reducer: (state: T, event: Events[number]["shape"]["TYPE"]) => T;
   readonly initalState: T;
 }
 
 export class Aggregate<
   T extends object = any,
-  Key extends keyof T = any
+  Key extends keyof T = any,
+  Events extends readonly Event[] = readonly Event[]
 > extends BaseComponent {
   readonly kind: "Aggregate" = "Aggregate";
   readonly shape: Struct<T>;
   readonly key: Key;
-  constructor(props: AggregateProps<T, Key>) {
+  constructor(props: AggregateProps<T, Key, Events>) {
     super(props);
   }
 }

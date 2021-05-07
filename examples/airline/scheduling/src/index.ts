@@ -1,5 +1,5 @@
 import { Aggregate, Command, event, Event, EventStorm } from "stochastic";
-import { date, map, object, omit, string } from "superstruct";
+import { date, map, object, omit, string, create } from "superstruct";
 import KSUID from "ksuid";
 
 const FlightSchedule = object({
@@ -11,34 +11,6 @@ const FlightSchedule = object({
     string(),
     object({ scheduledDeparture: date(), scheduledArrival: date() })
   ),
-});
-
-export const FlightScheduleAggregate = new Aggregate({
-  __filename,
-  key: "flightNo",
-  shape: FlightSchedule,
-  reducer: (state, event) => {
-    switch (event.__type) {
-      case "ScheduledFlightAdded":
-        const {
-          payload: { day, scheduledDeparture, scheduledArrival },
-        } = event;
-        return {
-          ...state,
-          days: state.days.set(day, { scheduledArrival, scheduledDeparture }),
-        };
-
-      default:
-        return state;
-    }
-  },
-  initalState: {
-    flightNo: "",
-    aircraftType: "",
-    origin: "",
-    destination: "",
-    days: new Map(),
-  },
 });
 
 const ScheduledFlightAdded = event(
@@ -60,10 +32,40 @@ export const ScheduledFlightAddedEvent = new Event(
 );
 
 const CreateFlightCommand = omit(FlightSchedule, ["days"]);
-
 // TODO: These two lines have too much boiler plate
 const FlightCreated = event("FlightCreated", CreateFlightCommand);
 const FlightCreatedEvent = new Event("FlightCreated", FlightCreated);
+
+export const FlightScheduleAggregate = new Aggregate({
+  __filename,
+  key: "flightNo",
+  shape: FlightSchedule,
+  events: [ScheduledFlightAddedEvent, FlightCreatedEvent],
+  reducer: (state, event) => {
+    switch (event.type) {
+      case "ScheduledFlightAdded":
+        const {
+          add: { day, scheduledDeparture, scheduledArrival },
+        } = event.payload;
+        return {
+          ...state,
+          days: state.days.set(day, { scheduledArrival, scheduledDeparture }),
+        };
+      case "FlightCreated":
+        const { payload } = event;
+        return { ...state, ...payload };
+      default:
+        return state;
+    }
+  },
+  initalState: {
+    flightNo: "",
+    aircraftType: "",
+    origin: "",
+    destination: "",
+    days: new Map(),
+  },
+});
 
 export const CreateFlightCommandHandler = new Command(
   {
@@ -78,16 +80,7 @@ export const CreateFlightCommandHandler = new Command(
       throw "Can only create new flights that don't already exist";
     }
 
-    return [
-      {
-        id: KSUID.randomSync().string,
-        time: new Date().toISOString(),
-        type: "FlightScheduleUpdated",
-        payload: {
-          ...command,
-        },
-      },
-    ];
+    return [];
   }
 );
 
@@ -115,22 +108,21 @@ export const AddScheduledFlightCommandHandler = new Command(
       add: { scheduledArrival, scheduledDeparture, day },
     } = command;
 
-    // TODO: Helper function for creating events with metadata
     return [
-      {
-        id: KSUID.randomSync().string,
-        time: new Date().toISOString(),
-        type: "FlightScheduleUpdated",
-        payload: {
-          flightNo,
-          add: {
-            day,
-            scheduledArrival,
-            scheduledDeparture,
-          },
-          fullSchedule: schedule,
-        },
-      },
+      // {
+      //   id: KSUID.randomSync().string,
+      //   time: new Date().toISOString(),
+      //   type: "ScheduledFlightAdded",
+      //   payload: {
+      //     flightNo,
+      //     add: {
+      //       day,
+      //       scheduledArrival,
+      //       scheduledDeparture,
+      //     },
+      //     fullSchedule: schedule,
+      //   },
+      // },
     ];
   }
 );

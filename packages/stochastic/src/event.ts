@@ -22,7 +22,10 @@ export const ksuid = define<string>("KSUID", (value: string) =>
 // export const isoDate = define<string>("isoDate", (value: string) =>
 //   validate(value));
 
-export function event<T>(name: string, payload: Struct<T>) {
+export function event<T, Name extends string = string>(
+  name: Name,
+  payload: Struct<T>
+) {
   return assign(
     object({ type: literal(name), payload }),
     object({
