@@ -16,15 +16,18 @@
   "keywords": [],
   "author": "Ryan Marsh",
   "dependencies": {
+    "@types/jest": "^26.0.23",
+    "jest": "^26.6.3",
+    "stochastic": "^0.1.0",
     "superstruct": "0.14.2",
-    "stochastic": "^0.1.0"
+    "ts-jest": "^26.5.6"
   },
   "devDependencies": {
     "@aws-cdk/aws-dynamodb": "^1.94.1",
     "@aws-cdk/aws-iam": "^1.94.1",
+    "@aws-cdk/aws-lambda": "^1.94.1",
     "@aws-cdk/aws-lambda-event-sources": "^1.94.1",
     "@aws-cdk/aws-lambda-nodejs": "^1.94.1",
-    "@aws-cdk/aws-lambda": "^1.94.1",
     "@aws-cdk/aws-sns-subscriptions": "^1.94.1",
     "@aws-cdk/cloudformation-diff": "^1.94.1",
     "@aws-cdk/core": "^1.94.1",

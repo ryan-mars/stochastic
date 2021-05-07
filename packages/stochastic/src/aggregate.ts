@@ -22,8 +22,12 @@ export class Aggregate<
   readonly kind: "Aggregate" = "Aggregate";
   readonly shape: Struct<T>;
   readonly key: Key;
+  readonly reducer: (state: T, event: Events[number]["shape"]["TYPE"]) => T;
+  readonly initialState: T;
   constructor(props: AggregateProps<T, Key, Events>) {
     super(props);
+    this.reducer = props.reducer;
+    this.initialState = props.initalState;
   }
 }
 
@@ -41,7 +45,9 @@ export namespace Aggregate {
    */
   export type Client<A> = A extends Aggregate
     ? {
-        get: (key: A["shape"]["TYPE"][A["key"]]) => Promise<A["shape"]["TYPE"]>;
+        get: (
+          key: A["shape"]["TYPE"][A["key"]]
+        ) => Promise<A["shape"]["TYPE"] | undefined>;
       }
     : never;
 

@@ -22,7 +22,6 @@ const ScheduledFlightAdded = event(
       scheduledDeparture: date(),
       scheduledArrival: date(),
     }),
-    fullSchedule: FlightSchedule,
   })
 );
 
@@ -111,6 +110,9 @@ export const AddScheduledFlightCommandHandler = new Command(
   },
   async (command, aggregate) => {
     const schedule = await aggregate.get(command.flightNo);
+    if (!schedule) {
+      throw new Error("Can't find flight");
+    }
 
     const {
       flightNo,
@@ -129,7 +131,6 @@ export const AddScheduledFlightCommandHandler = new Command(
             scheduledArrival,
             scheduledDeparture,
           },
-          fullSchedule: schedule,
         },
       },
     ];
