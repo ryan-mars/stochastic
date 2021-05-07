@@ -4,6 +4,8 @@
 
 Easily go from [Event Storming](https://github.com/mariuszgil/awesome-eventstorming) to [serverless](https://aws.amazon.com/serverless).
 
+[➡️ Track progress here (demo features tracking issue)](https://github.com/stochastic/stochastic/issues/1)
+
 # Run the examples
 
 Prerequisites:
