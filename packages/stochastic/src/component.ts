@@ -1,11 +1,11 @@
-import { Aggregate } from "./aggregate";
-import { Command } from "./command";
-import { Event } from "./event";
-import { Policy } from "./policy";
-import { Query } from "./query";
-import { ReadModel } from "./read-model";
+import {Aggregate} from "./aggregate";
+import {Command} from "./command";
+import {DomainEvent} from "./event";
+import {Policy} from "./policy";
+import {Query} from "./query";
+import {ReadModel} from "./read-model";
 
-export type Component = Command | Aggregate | Event | Policy | ReadModel | Query;
+export type Component = Command | Aggregate | DomainEvent | Policy | ReadModel | Query;
 
 export interface BaseComponentProps {
   /**
@@ -22,11 +22,12 @@ export abstract class BaseComponent {
    */
   readonly filename: string;
 
-  constructor(props: BaseComponentProps,
+  constructor(
+    props: BaseComponentProps,
     /**
      * Name of the entrypoint in the file.
      */
-    readonly handler?: string
+    readonly handler?: string,
   ) {
     this.filename = props.__filename;
   }

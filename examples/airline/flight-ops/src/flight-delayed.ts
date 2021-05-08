@@ -1,18 +1,27 @@
-import { Event } from "stochastic";
-import { literal, number, object, string } from "superstruct";
+import {DomainEvent} from "stochastic";
+import {number, string} from "superstruct";
 
 // {
 //   version: number,
-//   id: string, 
-//   source: string, 
+//   id: string,
+//   source: string,
 //   time: string,
-//   type: string, 
+//   type: string,
 //   payload: object
 // }
 
-export const FlightDelayedEvent = new Event("FlightDelayed", object({
-  type: literal("FlightDelayed"),
-  flightNo: string(),
-  delayedBy: number()
-}));
+export class FlightDelayed extends DomainEvent("FlightDelayed", {
+  payload: {
+    flightNo: string(),
+    delayedBy: number(),
+  },
+}) {}
 
+// export const FlightDelayedEvent = new Event(
+//   "FlightDelayed",
+//   object({
+//     type: literal("FlightDelayed"),
+//     flightNo: string(),
+//     delayedBy: number(),
+//   }),
+// );

@@ -1,58 +1,54 @@
-import { Aggregate, Command, event, Event, EventStorm } from "stochastic";
-import { date, map, object, omit, string } from "superstruct";
-import KSUID from "ksuid";
+import {Aggregate, Command, DomainEvent, EventStorm, Type} from "stochastic";
+import {date, map, object, string} from "superstruct";
 
-const FlightSchedule = object({
+export class FlightSchedule extends Type({
   flightNo: string(),
   aircraftType: string(),
   origin: string(),
   destination: string(),
-  days: map(
-    string(),
-    object({ scheduledDeparture: date(), scheduledArrival: date() })
-  ),
-});
+  days: map(string(), object({scheduledDeparture: date(), scheduledArrival: date()})),
+}) {}
 
-const ScheduledFlightAdded = event(
-  "ScheduledFlightAdded",
-  object({
+export class ScheduledFlightAdded extends DomainEvent("ScheduledFlightAdded", {
+  payload: {
     flightNo: string(),
     add: object({
       day: string(),
       scheduledDeparture: date(),
       scheduledArrival: date(),
     }),
-  })
-);
+  },
+}) {}
 
-export const ScheduledFlightAddedEvent = new Event(
-  "ScheduledFlightAdded",
-  ScheduledFlightAdded
-);
+export class FlightCreatedEvent extends DomainEvent("FlightCreated", {
+  payload: {
+    flightNo: string(),
+    origin: string(),
+    destination: string(),
+    aircraftType: string(),
+  },
+}) {}
 
-const CreateFlightCommand = omit(FlightSchedule, ["days"]);
 // TODO: These two lines have too much boiler plate
-const FlightCreated = event("FlightCreated", CreateFlightCommand);
-const FlightCreatedEvent = new Event("FlightCreated", FlightCreated);
 
 export const FlightScheduleAggregate = new Aggregate({
   __filename,
   key: "flightNo",
   shape: FlightSchedule,
-  events: [ScheduledFlightAddedEvent, FlightCreatedEvent],
+  events: [ScheduledFlightAdded, FlightCreatedEvent],
   reducer: (state, event) => {
-    switch (event.type) {
+    switch (event.__typename) {
       case "ScheduledFlightAdded":
         const {
-          add: { day, scheduledDeparture, scheduledArrival },
+          add: {day, scheduledDeparture, scheduledArrival},
         } = event.payload;
         return {
           ...state,
-          days: state.days.set(day, { scheduledArrival, scheduledDeparture }),
+          days: state.days.set(day, {scheduledArrival, scheduledDeparture}),
         };
       case "FlightCreated":
-        const { payload } = event;
-        return { ...state, ...payload };
+        const {payload} = event;
+        return {...state, ...payload};
       default:
         return state;
     }
@@ -66,11 +62,18 @@ export const FlightScheduleAggregate = new Aggregate({
   },
 });
 
+export class CreateFlightIntent extends Type({
+  flightNo: string(),
+  origin: string(),
+  destination: string(),
+  aircraftType: string(),
+}) {}
+
 export const CreateFlightCommandHandler = new Command(
   {
     __filename,
     aggregate: FlightScheduleAggregate,
-    request: CreateFlightCommand,
+    intent: CreateFlightIntent,
     events: [FlightCreatedEvent],
   },
   async (command, aggregate) => {
@@ -80,33 +83,28 @@ export const CreateFlightCommandHandler = new Command(
     }
 
     return [
-      {
-        id: KSUID.randomSync().string,
-        time: new Date().toISOString(),
-        type: "FlightCreated" as const,
-        payload: {
-          ...command,
-        },
-      },
+      new FlightCreatedEvent({
+        payload: command,
+      }),
     ];
-  }
+  },
 );
 
-const AddScheduledFlightCommand = object({
+class AddScheduledFlightIntent extends Type({
   flightNo: string(),
   add: object({
     day: string(),
     scheduledDeparture: date(),
     scheduledArrival: date(),
   }),
-});
+}) {}
 
 export const AddScheduledFlightCommandHandler = new Command(
   {
     __filename,
     aggregate: FlightScheduleAggregate,
-    request: AddScheduledFlightCommand,
-    events: [ScheduledFlightAddedEvent],
+    intent: AddScheduledFlightIntent,
+    events: [ScheduledFlightAdded],
   },
   async (command, aggregate) => {
     const schedule = await aggregate.get(command.flightNo);
@@ -116,14 +114,11 @@ export const AddScheduledFlightCommandHandler = new Command(
 
     const {
       flightNo,
-      add: { scheduledArrival, scheduledDeparture, day },
+      add: {scheduledArrival, scheduledDeparture, day},
     } = command;
 
     return [
-      {
-        id: KSUID.randomSync().string,
-        time: new Date().toISOString(),
-        type: "ScheduledFlightAdded" as const,
+      new ScheduledFlightAdded({
         payload: {
           flightNo,
           add: {
@@ -132,9 +127,9 @@ export const AddScheduledFlightCommandHandler = new Command(
             scheduledDeparture,
           },
         },
-      },
+      }),
     ];
-  }
+  },
 );
 
 // TODO: This EventStorm should instead be a BoundedContext. Bounded Context should be able to stand alone. EventStorm is a semantic collection of BoundedContexts only necessary if trying to fit multiple BoundedContexts in the same app
@@ -143,7 +138,7 @@ export const scheduling = new EventStorm({
   name: "Scheduling",
   components: {
     FlightScheduleAggregate,
-    ScheduledFlightAddedEvent,
+    ScheduledFlightAdded,
     FlightCreatedEvent,
     CreateFlightCommandHandler,
     AddScheduledFlightCommandHandler,
