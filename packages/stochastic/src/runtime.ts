@@ -1,5 +1,4 @@
 import * as lambda from "aws-lambda";
-import { EventStorm } from "./event-storm";
 
 import * as AWS from "aws-sdk";
 import { Command } from "./command";

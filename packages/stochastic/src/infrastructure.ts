@@ -271,7 +271,9 @@ export class CommandConstruct<
         COMPONENT_NAME: this.name,
         // EVENT_STORE_TABLE: scope.eventStore.table.tableName, // TODO: use SSM instead of environment variables
       },
-      // TODO: bundling props?
+      bundling: {
+        sourceMap: true,
+      },
     });
   }
 }
