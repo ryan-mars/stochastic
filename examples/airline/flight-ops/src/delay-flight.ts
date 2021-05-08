@@ -1,4 +1,4 @@
-import {Command, CommandResponse} from "stochastic";
+import {Command, CommandResponse, Type} from "stochastic";
 import {number, object, string} from "superstruct";
 import {FlightDelayed} from "./flight-delayed";
 import {FlightsAggregate} from "./flights";
@@ -7,10 +7,10 @@ import {FlightsAggregate} from "./flights";
 //   flightNo: string;
 //   delayBy: number;
 // }
-export const DelayFlight = object({
+export class DelayFlight extends Type({
   flightNo: string(),
   delayBy: number(),
-});
+}) {}
 
 // TODO: change this to `new Command` instead of `flights.command`??
 export const delayFlight = new Command(
