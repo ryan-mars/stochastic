@@ -20,7 +20,7 @@ export const delayFlight = new Command({
   events: [FlightDelayedEvent],
 }, async (request, flights) => {
   const flight = await flights.get(request.flightNo);
-  if (flight.flightNo === "fucked") {
+  if (flight?.flightNo === "fucked") {
     throw new Error("fucked");
   }
   return [

@@ -24,5 +24,5 @@ export const Flight = object({
 export const FlightsAggregate = new Aggregate({
   __filename,
   key: "flightNo",
-  shape: Flight
-});
+  shape: Flight,
+} as any);

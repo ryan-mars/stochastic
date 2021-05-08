@@ -1,5 +1,4 @@
 import { EventStorm, Policy } from "stochastic";
-import { scheduling } from "scheduling/lib/index";
 
 // const SchedulingBoundedContext = new ExternalBoundedContext({
 //   boundedContext: scheduling,

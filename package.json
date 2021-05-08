@@ -5,6 +5,7 @@
     "postinstall": "lerna bootstrap --hoist",
     "clean": "lerna run clean --parallel && lerna clean -y",
     "build": "lerna run build",
+    "test": "echo no-op",
     "watch": "lerna run watch --parallel"
   },
   "devDependencies": {
