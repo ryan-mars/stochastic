@@ -3,6 +3,7 @@
 exports[`Scheduling service adds a scheduled flight 1`] = `
 Array [
   Object {
+    "__typename": "ScheduledFlightAdded",
     "id": Any<String>,
     "payload": Object {
       "add": Object {
@@ -12,8 +13,7 @@ Array [
       },
       "flightNo": "PA576",
     },
-    "time": Any<String>,
-    "type": "ScheduledFlightAdded",
+    "time": Any<Date>,
   },
 ]
 `;
@@ -21,6 +21,7 @@ Array [
 exports[`Scheduling service creates a flight 1`] = `
 Array [
   Object {
+    "__typename": "FlightCreated",
     "id": Any<String>,
     "payload": Object {
       "aircraftType": "B787-9",
@@ -28,8 +29,7 @@ Array [
       "flightNo": "PA576",
       "origin": "SFO",
     },
-    "time": Any<String>,
-    "type": "FlightCreated",
+    "time": Any<Date>,
   },
 ]
 `;

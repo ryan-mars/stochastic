@@ -1,18 +1,16 @@
-import { Command } from "./command";
-import { BaseComponent, BaseComponentProps } from "./component";
-import { Event } from "./event";
+import {Command} from "./command";
+import {BaseComponent, BaseComponentProps} from "./component";
+import {DomainEvent} from "./event";
 
-export interface PolicyProps<
-  E extends readonly Event[] = readonly Event[],
-  C extends readonly Command[] = readonly Command[]
-> extends BaseComponentProps {
+export interface PolicyProps<E extends readonly DomainEvent[] = readonly DomainEvent[], C extends readonly Command[] = readonly Command[]>
+  extends BaseComponentProps {
   readonly events: E;
   readonly commands: C;
 }
 
 export class Policy<
   Name extends string = string,
-  Events extends readonly Event[] = readonly Event[],
+  Events extends readonly DomainEvent[] = readonly DomainEvent[],
   Commands extends readonly Command[] = readonly Command[]
 > extends BaseComponent {
   readonly kind: "Policy" = "Policy";
@@ -27,8 +25,8 @@ export class Policy<
 }
 
 export namespace Policy {
-  export type Handler<E extends readonly Event[], C extends readonly Command[]> = (
-    event: E[number]['shape']['TYPE'],
+  export type Handler<E extends readonly DomainEvent[], C extends readonly Command[]> = (
+    event: InstanceType<E[number]>,
     ...commands: Command.Runtime<C>
-  ) => Promise<void>
+  ) => Promise<void>;
 }

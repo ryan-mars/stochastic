@@ -1,9 +1,9 @@
 import * as lambda from "aws-lambda";
 
 import * as AWS from "aws-sdk";
-import { Command } from "./command";
-import { SQSEvent } from "aws-lambda";
-import { Component } from "./component";
+import {Command} from "./command";
+import {SQSEvent} from "aws-lambda";
+import {Component} from "./component";
 
 export interface RuntimeOptions {
   credentials?: AWS.Credentials;
@@ -21,7 +21,7 @@ export class LambdaRuntime implements Runtime {
     readonly component: Component,
     readonly componentName: string,
     readonly names: Map<Component, string>,
-    options?: RuntimeOptions
+    options?: RuntimeOptions,
   ) {
     this.lambda = new AWS.Lambda(options?.credentials);
 
@@ -51,9 +51,7 @@ export class LambdaRuntime implements Runtime {
         const commandName = names.get(command)!;
         const lambdaArn = process.env[`${commandName}_LAMBDA_ARN`];
         if (lambdaArn === undefined) {
-          throw new Error(
-            `missing environment variable: '${commandName}_LAMBDA_ARN'`
-          );
+          throw new Error(`missing environment variable: '${commandName}_LAMBDA_ARN'`);
         }
         return (input: any) =>
           this.lambda
@@ -64,11 +62,7 @@ export class LambdaRuntime implements Runtime {
             .promise();
       }) as Command.Runtime<typeof component["commands"]>;
       this.handler = (event: SQSEvent, context) =>
-        Promise.all(
-          event.Records.map((record) =>
-            component.apply(JSON.parse(record.body), ...commands)
-          )
-        );
+        Promise.all(event.Records.map((record) => component.apply(JSON.parse(record.body), ...commands)));
     }
   }
 }

@@ -1,25 +1,30 @@
 import {
   AddScheduledFlightCommandHandler,
   CreateFlightCommandHandler,
+  CreateFlightIntent,
+  FlightCreatedEvent,
   FlightScheduleAggregate,
+  ScheduledFlightAdded,
 } from "./service";
 
 describe("Scheduling service", () => {
-  const flightCreated = {
-    id: "1sC26Tx3VUi42mghcNopBYsRxD9",
-    time: "2021-05-07T04:34:35.302Z",
-    type: "FlightCreated" as const,
+  const flightCreated = new FlightCreatedEvent({
     payload: {
       flightNo: "PA576",
       aircraftType: "B787-9",
       origin: "SFO",
       destination: "MIA",
     },
-  };
-  const scheduledFlightAdded = {
-    id: "1sC539ZsfhN9bHV4K8jZqtSz9bN",
-    time: "2021-05-07T04:58:48.459Z",
-    type: "ScheduledFlightAdded" as const,
+    metadata: {
+      id: "1sC26Tx3VUi42mghcNopBYsRxD9",
+      time: new Date("2021-05-07T04:34:35.302Z"),
+    },
+  });
+  const scheduledFlightAdded = new ScheduledFlightAdded({
+    metadata: {
+      id: "1sC539ZsfhN9bHV4K8jZqtSz9bN",
+      time: new Date("2021-05-07T04:58:48.459Z"),
+    },
     payload: {
       flightNo: "PA576",
       add: {
@@ -28,12 +33,9 @@ describe("Scheduling service", () => {
         scheduledDeparture: new Date("2021-06-11T20:30:00.000Z"),
       },
     },
-  };
+  });
   it("should reduce aggregate state from events", () => {
-    let state = FlightScheduleAggregate.reducer(
-      FlightScheduleAggregate.initialState,
-      flightCreated
-    );
+    let state = FlightScheduleAggregate.reducer(FlightScheduleAggregate.initialState, flightCreated);
     state = FlightScheduleAggregate.reducer(state, scheduledFlightAdded);
     expect(state).toMatchSnapshot();
   });
@@ -44,18 +46,18 @@ describe("Scheduling service", () => {
 
   it("creates a flight", async () => {
     const event = await CreateFlightCommandHandler.execute(
-      {
+      new CreateFlightIntent({
         flightNo: "PA576",
         aircraftType: "B787-9",
         origin: "SFO",
         destination: "MIA",
-      },
-      undefinedAggregate
+      }),
+      undefinedAggregate,
     );
     expect(event).toMatchSnapshot([
       {
         id: expect.any(String),
-        time: expect.any(String),
+        time: expect.any(Date),
       },
     ]);
   });
@@ -78,12 +80,12 @@ describe("Scheduling service", () => {
           destination: "MIA",
           days: new Map(),
         }),
-      }
+      },
     );
     expect(event).toMatchSnapshot([
       {
         id: expect.any(String),
-        time: expect.any(String),
+        time: expect.any(Date),
       },
     ]);
   });

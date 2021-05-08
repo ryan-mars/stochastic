@@ -9,7 +9,7 @@
     "clean": "rm -rf lib",
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "keywords": [],
   "author": "Ryan Marsh",

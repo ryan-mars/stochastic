@@ -1,33 +1,35 @@
-import { Query } from "stochastic";
-import { object, string } from "superstruct";
-import { FlightStatusModel } from "./flight-status";
+import {Query, Type} from "stochastic";
+import {object, string} from "superstruct";
+import {FlightStatusModel} from "./flight-status";
 
 // export interface StatusBoardRequest {
 //   flightNo: string;
 // }
-export const StatusBoardRequest = object({
-  flightNo: string()
-});
+export class StatusBoardRequest extends Type({
+  flightNo: string(),
+}) {}
 
 // export interface StatusBoardResult {
 //   flightNo: string;
 //   status: string;
 // }
-export const StatusBoardResult = object({
+export class StatusBoardResult extends Type({
   flightNo: string(),
   status: string(),
-});
+}) {}
 
-export const StatusBoard = new Query({
-  __filename,
-  request: StatusBoardRequest,
-  results: StatusBoardResult,
-  models: [FlightStatusModel],
-  
-}, async (request, flightStatusModel) => {
-  // do stuff
-  // TODO: Finish off read model so it has a query strategy signature
-  const status = await flightStatusModel();
+export const StatusBoard = new Query(
+  {
+    __filename,
+    request: StatusBoardRequest,
+    results: StatusBoardResult,
+    models: [FlightStatusModel],
+  },
+  async (request, flightStatusModel) => {
+    // do stuff
+    // TODO: Finish off read model so it has a query strategy signature
+    const status = await flightStatusModel();
 
-  return status;
-});
+    return status;
+  },
+);
