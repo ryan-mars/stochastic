@@ -45,8 +45,10 @@ export namespace Command {
   ) => Promise<Events[number]["shape"]["TYPE"][]>;
 
   export type Runtime<C extends readonly Command[]> = {
-    [i in keyof C]: C[i] extends Command ? (
-      input: C[i]["request"]["TYPE"]
-    ) => Promise<C[i]["events"][number]["shape"]["TYPE"]> : C[i];
+    [i in keyof C]: C[i] extends Command
+      ? (
+          input: C[i]["request"]["TYPE"]
+        ) => Promise<C[i]["events"][number]["shape"]["TYPE"]>
+      : C[i];
   };
 }

@@ -1,6 +1,18 @@
 {
   "configurations": [
     {
+      "name": "Attach to SAM CLI",
+      "type": "node",
+      "request": "attach",
+      "address": "localhost",
+      "port": 5858,
+      "localRoot": "${workspaceRoot}/${input:packagePath}",
+      "remoteRoot": "/var/task",
+      "protocol": "inspector",
+      "stopOnEntry": false
+    },
+
+    {
       "type": "node-terminal",
       "name": "Dubug Synth",
       "request": "launch",
@@ -11,6 +23,14 @@
         "type": "npm",
         "script": "build"
       }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "packagePath",
+      "type": "pickString",
+      "options": ["examples/airline/booking", "examples/airline/scheduling"],
+      "description": "Path to package to debug"
     }
   ]
 }

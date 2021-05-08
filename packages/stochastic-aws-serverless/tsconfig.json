@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "lib/cjs",
+    "rootDir": "src",
+    "typeRoots": ["../../../node_modules/@types", "node_modules/@types"]
+  },
+  "include": ["src"],
+  "extends": "./tsconfig.base.json",
+  
+}

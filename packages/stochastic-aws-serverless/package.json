@@ -1,5 +1,5 @@
 {
-  "name": "stochastic",
+  "name": "stochastic-aws-serverless",
   "private": true,
   "version": "0.1.0",
   "main": "lib/cjs/index.js",
@@ -9,7 +9,6 @@
     "clean": "rm -rf lib",
     "build": "tsc",
     "watch": "tsc -w",
-    "cdk": "cdk",
     "test": "jest"
   },
   "keywords": [],
@@ -106,12 +105,12 @@
     "@aws-cdk/cx-api": "^1.94.1",
     "@aws-cdk/region-info": "^1.94.1",
     "@aws-cdk/yaml-cfn": "^1.94.1",
-    "@aws-sdk/client-dynamodb": "^3.9.0",
+    "@aws-sdk/client-dynamodb": "^3.14.0",
     "superstruct": "0.14.2"
   },
   "dependencies": {
     "@aws-sdk/client-sns": "^3.9.0",
-    "@aws-sdk/util-dynamodb": "^3.9.0",
+    "@aws-sdk/util-dynamodb": "^3.14.0",
     "@types/jest": "^26.0.23",
     "aws-lambda": "^1.0.6",
     "aws-sdk": "^2.868.0",

@@ -1,23 +1,33 @@
 import { Struct } from "superstruct";
 import { BaseComponent, BaseComponentProps } from "./component";
+import { Event } from "./event";
 
 export interface AggregateProps<
   T extends object = any,
-  Key extends keyof T = any
+  Key extends keyof T = any,
+  Events extends readonly Event[] = readonly Event[]
 > extends BaseComponentProps {
   readonly shape: Struct<T>;
   readonly key: Key;
+  readonly events: Events;
+  readonly reducer: (state: T, event: Events[number]["shape"]["TYPE"]) => T;
+  readonly initalState: T;
 }
 
 export class Aggregate<
   T extends object = any,
-  Key extends keyof T = any
+  Key extends keyof T = any,
+  Events extends readonly Event[] = readonly Event[]
 > extends BaseComponent {
   readonly kind: "Aggregate" = "Aggregate";
   readonly shape: Struct<T>;
   readonly key: Key;
-  constructor(props: AggregateProps<T, Key>) {
+  readonly reducer: (state: T, event: Events[number]["shape"]["TYPE"]) => T;
+  readonly initialState: T;
+  constructor(props: AggregateProps<T, Key, Events>) {
     super(props);
+    this.reducer = props.reducer;
+    this.initialState = props.initalState;
   }
 }
 
@@ -35,7 +45,9 @@ export namespace Aggregate {
    */
   export type Client<A> = A extends Aggregate
     ? {
-        get: (key: A["shape"]["TYPE"][A["key"]]) => Promise<A["shape"]["TYPE"]>;
+        get: (
+          key: A["shape"]["TYPE"][A["key"]]
+        ) => Promise<A["shape"]["TYPE"] | undefined>;
       }
     : never;
 

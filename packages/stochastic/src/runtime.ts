@@ -1,5 +1,4 @@
 import * as lambda from "aws-lambda";
-import { EventStorm } from "./event-storm";
 
 import * as AWS from "aws-sdk";
 import { Command } from "./command";
@@ -18,7 +17,12 @@ export interface Runtime {
 export class LambdaRuntime implements Runtime {
   readonly lambda: AWS.Lambda;
   readonly handler: lambda.Handler;
-  constructor(readonly component: Component, readonly componentName: string, readonly names: Map<Component, string>, options?: RuntimeOptions) {
+  constructor(
+    readonly component: Component,
+    readonly componentName: string,
+    readonly names: Map<Component, string>,
+    options?: RuntimeOptions
+  ) {
     this.lambda = new AWS.Lambda(options?.credentials);
 
     const handlerName = process.env.COMPONENT_NAME;
@@ -31,11 +35,20 @@ export class LambdaRuntime implements Runtime {
     }
 
     if (component.kind === "Command") {
+      this.handler = async (event) => {
+        console.log(event);
+        const result = await component.execute(event, {
+          get: async (key: string) => undefined,
+        });
+
+        console.log(JSON.stringify(result, null, 2));
+        return result;
+      };
     } else if (component.kind === "ReadModel") {
     } else if (component.kind === "Policy") {
       // where
       const commands = component.commands.map((command) => {
-        const commandName = names.get(command)!
+        const commandName = names.get(command)!;
         const lambdaArn = process.env[`${commandName}_LAMBDA_ARN`];
         if (lambdaArn === undefined) {
           throw new Error(

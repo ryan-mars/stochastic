@@ -24,7 +24,7 @@ import { Query } from "./query";
 export interface EventStormConstructProps<S extends EventStorm> {
   storm: S;
   components?: {
-    [name in keyof S["components"]]?: ComponentProps<S['components'][name]>;
+    [name in keyof S["components"]]?: ComponentProps<S["components"][name]>;
   };
 }
 
@@ -58,51 +58,44 @@ export class EventStormConstruct<
 
     const commandConstructs: Map<string, CommandConstruct> = new Map();
 
-
-
-    for (const [componentName, component] of Object.entries(storm.components).sort(([nameA, componentA], [nameB, componentB]) => componentA.kind === "Command" ? -1 : 1)) {
-
+    for (const [componentName, component] of Object.entries(
+      storm.components
+    ).sort(([nameA, componentA], [nameB, componentB]) =>
+      componentA.kind === "Command" ? -1 : 1
+    )) {
       const componentProps = (props.components as any)?.[
         componentName
       ] as ComponentProps<Component>;
-      let con: AggregateConstruct | CommandConstruct | PolicyConstruct | undefined;
+      let con:
+        | AggregateConstruct
+        | CommandConstruct
+        | PolicyConstruct
+        | undefined;
       if (component.kind === "Aggregate") {
-        con = new AggregateConstruct(
-          this,
-          componentName,
-          {
-            ...(componentProps as ComponentProps<Aggregate>),
-            component,
-            storm,
-            name: componentName
-          }
-        );
+        con = new AggregateConstruct(this, componentName, {
+          ...(componentProps as ComponentProps<Aggregate>),
+          component,
+          storm,
+          name: componentName,
+        });
       } else if (component.kind === "Command") {
-        con = new CommandConstruct(
-          this,
-          componentName,
-          {
-            ...(componentProps as ComponentProps<Command>),
-            component,
-            storm,
-            name: componentName
-          },
-        );
+        con = new CommandConstruct(this, componentName, {
+          ...(componentProps as ComponentProps<Command>),
+          component,
+          storm,
+          name: componentName,
+        });
         commandConstructs.set(componentName, con);
       } else if (component.kind === "Event") {
         // TODO
       } else if (component.kind === "Policy") {
-        con = new PolicyConstruct(
-          this,
-          componentName,
-          {
-            ...(componentProps as ComponentProps<Policy>),
-            component,
-            storm,
-            name: componentName,
-            commands: commandConstructs
-          },
-        );
+        con = new PolicyConstruct(this, componentName, {
+          ...(componentProps as ComponentProps<Policy>),
+          component,
+          storm,
+          name: componentName,
+          commands: commandConstructs,
+        });
       }
       if (con) {
         (this.components as any)[componentName] = con;
@@ -239,7 +232,7 @@ export class AggregateConstruct<
   constructor(
     scope: EventStormConstruct,
     id: string,
-    props: ComponentProps<A> & ComponentConstructProps<S, A>,
+    props: ComponentProps<A> & ComponentConstructProps<S, A>
   ) {
     super(scope, id, props);
   }
@@ -262,15 +255,25 @@ export class CommandConstruct<
   constructor(
     scope: cdk.Construct,
     id: string,
-    props: ComponentProps<C> & ComponentConstructProps<S, C>,
+    props: ComponentProps<C> & ComponentConstructProps<S, C>
   ) {
     super(scope, id, props);
 
     this.handler = new nodeLambda.NodejsFunction(this, "Function", {
-      ...generateHandler(this.name, props.component, props.storm.componentNames),
+      ...generateHandler(
+        this.name,
+        props.component,
+        props.storm.componentNames
+      ),
       runtime: lambda.Runtime.NODEJS_14_X,
       ...props,
-      // TODO: bundling props?
+      environment: {
+        COMPONENT_NAME: this.name,
+        // EVENT_STORE_TABLE: scope.eventStore.table.tableName, // TODO: use SSM instead of environment variables
+      },
+      bundling: {
+        sourceMap: true,
+      },
     });
   }
 }
@@ -282,33 +285,65 @@ export class CommandConstruct<
 export interface PolicyConstructProps<P extends Policy = Policy>
   extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {}
 
-
-export function generateHandler(componentName: string, component: Policy | Command | ReadModel | Query, componentNames: Map<Component, string>): {
+export function generateHandler(
+  componentName: string,
+  component: Policy | Command | ReadModel | Query,
+  componentNames: Map<Component, string>
+): {
   entry: string;
   handler: string;
 } {
-  fs.mkdirSync("stochastic.out", {recursive: true});
+  fs.mkdirSync("stochastic.out", { recursive: true });
   const entry = path.resolve("stochastic.out", componentName + ".ts");
-  fs.writeFileSync(entry, `import {LambdaRuntime} from "stochastic";    
+  fs.writeFileSync(
+    entry,
+    `import {LambdaRuntime} from "stochastic";    
 import {${componentName}} from "${requirePath(component)}";
 
-${component.kind === "Policy" ? component.commands.map(command => `import {${componentNames.get(command)!}} from "${requirePath(command)}"`).join('\n') : ''}
+${
+  component.kind === "Policy"
+    ? component.commands
+        .map(
+          (command) =>
+            `import {${componentNames.get(command)!}} from "${requirePath(
+              command
+            )}"`
+        )
+        .join("\n")
+    : ""
+}
 const names = new Map<any, any>();
-${component.kind === "Policy" ? component.commands.map(command => `names.set(${componentNames.get(command)!}, "${componentNames.get(command)!}");`).join('\n') : ''}
-
-export const handler = new LambdaRuntime(${componentName}, "${componentName}", names);`);
+${
+  component.kind === "Policy"
+    ? component.commands
+        .map(
+          (command) =>
+            `names.set(${componentNames.get(command)!}, "${componentNames.get(
+              command
+            )!}");`
+        )
+        .join("\n")
+    : ""
+}
+const runtime = new LambdaRuntime(${componentName}, "${componentName}", names);
+export const handler = runtime.handler`
+  );
   return {
     entry,
-    handler: "handler"
+    handler: "handler",
   };
 
-  function requirePath(component: Policy | Command | ReadModel | Query): string {
-    return path.relative(path.dirname(entry), component.filename).replace(".ts", "")
+  function requirePath(
+    component: Policy | Command | ReadModel | Query
+  ): string {
+    return path
+      .relative(path.dirname(entry), component.filename)
+      .replace(".ts", "");
   }
 }
 
 export interface PolicyConstructProps {
-  commands: Map<string, CommandConstruct>
+  commands: Map<string, CommandConstruct>;
 }
 
 export class PolicyConstruct<
@@ -319,17 +354,24 @@ export class PolicyConstruct<
   constructor(
     scope: EventStormConstruct,
     id: string,
-    props: ComponentProps<C> & ComponentConstructProps<S, C>,
+    props: ComponentProps<C> & ComponentConstructProps<S, C>
   ) {
     super(scope, id, props);
 
     this.handler = new nodeLambda.NodejsFunction(this, "Function", {
-      ...generateHandler(this.name, props.component, props.storm.componentNames),
+      ...generateHandler(
+        this.name,
+        props.component,
+        props.storm.componentNames
+      ),
       ...props,
       runtime: lambda.Runtime.NODEJS_14_X,
       environment: {
         COMPONENT_NAME: this.name,
         EVENT_STORE_TABLE: scope.eventStore.table.tableName, // TODO: use SSM instead of environment variables
+      },
+      bundling: {
+        sourceMap: true,
       },
     });
 
@@ -337,7 +379,10 @@ export class PolicyConstruct<
       const commandName = props.storm.componentNames.get(command)!;
       const commandConstruct = props.commands.get(commandName)!;
 
-      this.handler.addEnvironment(`${props.storm.componentNames.get(command)!}_LAMBDA_ARN`, commandConstruct?.handler.functionArn!);
+      this.handler.addEnvironment(
+        `${props.storm.componentNames.get(command)!}_LAMBDA_ARN`,
+        commandConstruct?.handler.functionArn!
+      );
       commandConstruct.handler.grantInvoke(this.handler);
     }
 

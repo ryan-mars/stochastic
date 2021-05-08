@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "rootDir": "src",
+    "outDir": "lib",
     "alwaysStrict": true,
     "declaration": true,
     "declarationMap": true,
@@ -29,5 +29,5 @@
     "target": "ES2018",
     "useDefineForClassFields": true
   },
-  "exclude": ["node_modules", "lib"]
+  "exclude": ["**/node_modules", "node_modules", "lib"]
 }
