@@ -31,7 +31,6 @@ export class Command<
     this.request = props.request;
     this.aggregate = props.aggregate;
     this.events = props.events;
-    this.execute = execute;
   }
 }
 
