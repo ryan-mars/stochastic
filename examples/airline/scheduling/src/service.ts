@@ -1,5 +1,5 @@
 import { Aggregate, Command, event, Event, EventStorm } from "stochastic";
-import { date, map, object, omit, string, create } from "superstruct";
+import { date, map, object, omit, string } from "superstruct";
 import KSUID from "ksuid";
 
 const FlightSchedule = object({
@@ -144,6 +144,7 @@ export const scheduling = new EventStorm({
   components: {
     FlightScheduleAggregate,
     ScheduledFlightAddedEvent,
+    FlightCreatedEvent,
     CreateFlightCommandHandler,
     AddScheduledFlightCommandHandler,
   },
