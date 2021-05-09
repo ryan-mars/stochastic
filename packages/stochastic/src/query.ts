@@ -1,6 +1,6 @@
-import {BaseComponent, BaseComponentProps} from "./component";
-import {TypeConstructor} from "./type";
-import {ReadModel} from "./read-model";
+import { BaseComponent, BaseComponentProps } from "./component";
+import { TypeConstructor } from "./type";
+import { ReadModel } from "./read-model";
 
 export interface QueryProps<Request = any, Results = any, Models extends ReadModel[] = ReadModel[]> extends BaseComponentProps {
   readonly request: TypeConstructor<Request>;

@@ -1,7 +1,7 @@
-import {Struct} from "superstruct";
-import {BaseComponent, BaseComponentProps} from "./component";
-import {DomainEvent} from "./event";
-import {TypeConstructor} from "./type";
+import { Struct } from "superstruct";
+import { BaseComponent, BaseComponentProps } from "./component";
+import { DomainEvent } from "./event";
+import { TypeConstructor } from "./type";
 
 export interface AggregateProps<
   T extends object = any,

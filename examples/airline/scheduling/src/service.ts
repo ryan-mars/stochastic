@@ -1,12 +1,12 @@
-import {Aggregate, Command, DomainEvent, EventStorm, Type} from "stochastic";
-import {date, map, object, string} from "superstruct";
+import { Aggregate, Command, DomainEvent, EventStorm, Type } from "stochastic";
+import { date, map, object, string } from "superstruct";
 
 export class FlightSchedule extends Type({
   flightNo: string(),
   aircraftType: string(),
   origin: string(),
   destination: string(),
-  days: map(string(), object({scheduledDeparture: date(), scheduledArrival: date()})),
+  days: map(string(), object({ scheduledDeparture: date(), scheduledArrival: date() })),
 }) {}
 
 export class ScheduledFlightAdded extends DomainEvent("ScheduledFlightAdded", {
@@ -40,15 +40,15 @@ export const FlightScheduleAggregate = new Aggregate({
     switch (event.__typename) {
       case "ScheduledFlightAdded":
         const {
-          add: {day, scheduledDeparture, scheduledArrival},
+          add: { day, scheduledDeparture, scheduledArrival },
         } = event.payload;
         return {
           ...state,
-          days: state.days.set(day, {scheduledArrival, scheduledDeparture}),
+          days: state.days.set(day, { scheduledArrival, scheduledDeparture }),
         };
       case "FlightCreated":
-        const {payload} = event;
-        return {...state, ...payload};
+        const { payload } = event;
+        return { ...state, ...payload };
       default:
         return state;
     }
@@ -114,7 +114,7 @@ export const AddScheduledFlightCommandHandler = new Command(
 
     const {
       flightNo,
-      add: {scheduledArrival, scheduledDeparture, day},
+      add: { scheduledArrival, scheduledDeparture, day },
     } = command;
 
     return [

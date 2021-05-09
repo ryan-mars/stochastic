@@ -1,6 +1,6 @@
-import {Command} from "./command";
-import {BaseComponent, BaseComponentProps} from "./component";
-import {DomainEvent} from "./event";
+import { Command } from "./command";
+import { BaseComponent, BaseComponentProps } from "./component";
+import { DomainEvent } from "./event";
 
 export interface PolicyProps<E extends readonly DomainEvent[] = readonly DomainEvent[], C extends readonly Command[] = readonly Command[]>
   extends BaseComponentProps {

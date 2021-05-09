@@ -1,7 +1,7 @@
-import {Aggregate} from "./aggregate";
-import {BaseComponent, BaseComponentProps} from "./component";
-import {DomainEvent} from "./event";
-import {TypeConstructor} from "./type";
+import { Aggregate } from "./aggregate";
+import { BaseComponent, BaseComponentProps } from "./component";
+import { DomainEvent } from "./event";
+import { TypeConstructor } from "./type";
 
 export interface CommandProps<
   Agg extends Aggregate = Aggregate,

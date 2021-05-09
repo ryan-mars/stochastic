@@ -1,6 +1,6 @@
 {
   "arrowParens": "always",
-  "bracketSpacing": false,
+  "bracketSpacing": true,
   "embeddedLanguageFormatting": "auto",
   "printWidth": 140,
   "proseWrap": "never",

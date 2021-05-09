@@ -1,7 +1,7 @@
-import {BaseComponent, BaseComponentProps} from "./component";
-import {DomainEvent} from "./event";
+import { BaseComponent, BaseComponentProps } from "./component";
+import { DomainEvent } from "./event";
 
-import {Struct} from "superstruct";
+import { Struct } from "superstruct";
 
 export interface ReadModelProps<Model = any, E extends DomainEvent[] = DomainEvent[]> extends BaseComponentProps {
   shape: Struct<Model>;

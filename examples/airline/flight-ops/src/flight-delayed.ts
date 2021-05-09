@@ -1,5 +1,5 @@
-import {DomainEvent} from "stochastic";
-import {number, string} from "superstruct";
+import { DomainEvent } from "stochastic";
+import { number, string } from "superstruct";
 
 // {
 //   version: number,

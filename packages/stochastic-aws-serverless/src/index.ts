@@ -1,11 +1,5 @@
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
-import {
-  DynamoDBClient,
-  PutItemCommand,
-  QueryCommand,
-  QueryCommandInput,
-  AttributeValue,
-} from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, PutItemCommand, QueryCommand, QueryCommandInput, AttributeValue } from "@aws-sdk/client-dynamodb";
 const client = new DynamoDBClient({});
 
 export {};
@@ -20,10 +14,7 @@ interface SerializableDomainEvent {
   payload: any;
 }
 
-export const storeEvent = async (
-  dynamoDBTableName: string,
-  event: SerializableDomainEvent
-) => {
+export const storeEvent = async (dynamoDBTableName: string, event: SerializableDomainEvent) => {
   // TODO: Validate input event
   /**
    * validate:
@@ -45,7 +36,7 @@ export const storeEvent = async (
           sk,
           ...event,
         }),
-      })
+      }),
     );
     console.log(JSON.stringify(data, null, 2));
   } catch (error) {
@@ -54,11 +45,7 @@ export const storeEvent = async (
   }
 };
 
-export async function* fetchEvents(
-  dynamoDBTableName: string,
-  source: string,
-  source_id: string
-) {
+export async function* fetchEvents(dynamoDBTableName: string, source: string, source_id: string) {
   const pk = `${source}#${source_id}`;
   const params = {
     TableName: dynamoDBTableName,
@@ -76,14 +63,8 @@ export async function* fetchEvents(
     }
 
     while (output.LastEvaluatedKey) {
-      console.log(
-        `Continuing query`,
-        JSON.stringify(output.LastEvaluatedKey, null, 2)
-      );
-      output = await dynamodDBQueryWithContinuation(
-        params,
-        output.LastEvaluatedKey
-      );
+      console.log(`Continuing query`, JSON.stringify(output.LastEvaluatedKey, null, 2));
+      output = await dynamodDBQueryWithContinuation(params, output.LastEvaluatedKey);
 
       if (output.Items) {
         for (let item of output.Items) {
@@ -97,15 +78,12 @@ export async function* fetchEvents(
   }
 }
 
-async function dynamodDBQueryWithContinuation(
-  params: QueryCommandInput,
-  ExclusiveStartKey?: { [key: string]: AttributeValue }
-) {
+async function dynamodDBQueryWithContinuation(params: QueryCommandInput, ExclusiveStartKey?: { [key: string]: AttributeValue }) {
   return client.send(
     new QueryCommand({
       ...params,
       ExclusiveStartKey,
-    })
+    }),
   );
 }
 

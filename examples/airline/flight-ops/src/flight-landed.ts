@@ -1,5 +1,5 @@
-import {DomainEvent} from "stochastic";
-import {date, literal, object, string} from "superstruct";
+import { DomainEvent } from "stochastic";
+import { date, literal, object, string } from "superstruct";
 
 // export interface FlightLanded {
 //   flightNo: string;

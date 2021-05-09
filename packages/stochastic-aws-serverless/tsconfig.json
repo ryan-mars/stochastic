@@ -5,6 +5,5 @@
     "typeRoots": ["../../../node_modules/@types", "node_modules/@types"]
   },
   "include": ["src"],
-  "extends": "./tsconfig.base.json",
-  
+  "extends": "./tsconfig.base.json"
 }

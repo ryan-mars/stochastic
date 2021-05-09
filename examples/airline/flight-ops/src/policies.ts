@@ -1,7 +1,7 @@
-import {Policy} from "stochastic";
-import {delayFlight} from "./delay-flight";
-import {FlightDelayed} from "./flight-delayed";
-import {FlightLanded} from "./flight-landed";
+import { Policy } from "stochastic";
+import { delayFlight } from "./delay-flight";
+import { FlightDelayed } from "./flight-delayed";
+import { FlightLanded } from "./flight-landed";
 
 export const FlightStatusChanged = new Policy(
   {
