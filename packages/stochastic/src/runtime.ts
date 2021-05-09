@@ -35,6 +35,10 @@ export class LambdaRuntime implements Runtime {
     }
 
     if (component.kind === "Command") {
+      // what the is the ARN
+      // is it dynamodb
+      // provide a function to query DDB, reduce the results
+      const agg = component.aggregate;
       this.handler = async (event) => {
         console.log(event);
         const result = await component.execute(event, {
