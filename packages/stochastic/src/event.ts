@@ -1,4 +1,4 @@
-import {assign, literal, object, string, Struct, create, optional, boolean, defaulted} from "superstruct";
+import { assign, literal, object, string, Struct, create, optional, boolean, defaulted } from "superstruct";
 
 import KSUID from "ksuid";
 

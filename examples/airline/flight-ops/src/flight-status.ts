@@ -1,6 +1,6 @@
-import {ByKeyReadModel} from "stochastic";
-import {literal, object, string, union} from "superstruct";
-import {FlightDelayed} from "./flight-delayed";
+import { ByKeyReadModel } from "stochastic";
+import { literal, object, string, union } from "superstruct";
+import { FlightDelayed } from "./flight-delayed";
 
 // export interface FlightStatus {
 //   flightNo: string;

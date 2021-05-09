@@ -1,5 +1,5 @@
-import {create, object} from "superstruct";
-import {ObjectSchema} from "superstruct/lib/utils";
+import { create, object } from "superstruct";
+import { ObjectSchema } from "superstruct/lib/utils";
 
 export function Type<S extends ObjectSchema>(
   schema: S,

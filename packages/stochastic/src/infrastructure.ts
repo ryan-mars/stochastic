@@ -28,9 +28,7 @@ export interface EventStormConstructProps<S extends EventStorm> {
   };
 }
 
-export class EventStormConstruct<
-  S extends EventStorm = EventStorm
-> extends cdk.Construct {
+export class EventStormConstruct<S extends EventStorm = EventStorm> extends cdk.Construct {
   readonly storm: S;
   /**
    * The Constructs for each of the Event Storm Components.
@@ -46,11 +44,7 @@ export class EventStormConstruct<
    */
   public readonly eventStore: EventStore;
 
-  constructor(
-    scope: cdk.Construct,
-    id: string,
-    props: EventStormConstructProps<S>
-  ) {
+  constructor(scope: cdk.Construct, id: string, props: EventStormConstructProps<S>) {
     super(scope, id);
     const storm = (this.storm = props.storm);
 
@@ -58,19 +52,11 @@ export class EventStormConstruct<
 
     const commandConstructs: Map<string, CommandConstruct> = new Map();
 
-    for (const [componentName, component] of Object.entries(
-      storm.components
-    ).sort(([nameA, componentA], [nameB, componentB]) =>
-      componentA.kind === "Command" ? -1 : 1
+    for (const [componentName, component] of Object.entries(storm.components).sort(([nameA, componentA], [nameB, componentB]) =>
+      componentA.kind === "Command" ? -1 : 1,
     )) {
-      const componentProps = (props.components as any)?.[
-        componentName
-      ] as ComponentProps<Component>;
-      let con:
-        | AggregateConstruct
-        | CommandConstruct
-        | PolicyConstruct
-        | undefined;
+      const componentProps = (props.components as any)?.[componentName] as ComponentProps<Component>;
+      let con: AggregateConstruct | CommandConstruct | PolicyConstruct | undefined;
       if (component.kind === "Aggregate") {
         con = new AggregateConstruct(this, componentName, {
           ...(componentProps as ComponentProps<Aggregate>),
@@ -126,36 +112,23 @@ export type CDKComponents<S extends EventStorm> = {
 /**
  * May a Component, `C`, to its corresponding CDK Construct representation.
  */
-export type CDKComponent<
-  S extends EventStorm,
-  C extends Component
-> = C extends Aggregate
+export type CDKComponent<S extends EventStorm, C extends Component> = C extends Aggregate
   ? AggregateConstruct<S, C>
   : C extends Command
   ? CommandConstruct<S, C>
   : cdk.Construct;
 
-export interface ComponentConstructProps<
-  S extends EventStorm = EventStorm,
-  C extends Component = Component
-> {
+export interface ComponentConstructProps<S extends EventStorm = EventStorm, C extends Component = Component> {
   storm: S;
   component: C;
   name: string;
 }
 
-export class ComponentConstruct<
-  S extends EventStorm = EventStorm,
-  C extends Component = Component
-> extends cdk.Construct {
+export class ComponentConstruct<S extends EventStorm = EventStorm, C extends Component = Component> extends cdk.Construct {
   readonly storm: S;
   readonly component: C;
   readonly name: string;
-  constructor(
-    scope: cdk.Construct,
-    id: string,
-    props: ComponentConstructProps<S, C>
-  ) {
+  constructor(scope: cdk.Construct, id: string, props: ComponentConstructProps<S, C>) {
     super(scope, id);
     this.storm = props.storm;
     this.component = props.component;
@@ -208,7 +181,7 @@ export class EventStore extends cdk.Construct {
         bisectBatchOnError: true,
         onFailure: new lambdaEventSources.SqsDlq(dlq),
         retryAttempts: 10,
-      })
+      }),
     );
   }
 }
@@ -225,15 +198,8 @@ export interface AggregateConstructProps<A extends Aggregate = Aggregate> {
 /**
  * Construct for an Aggregate - it creates a DynamoDB Table for storing backing data.
  */
-export class AggregateConstruct<
-  S extends EventStorm = EventStorm,
-  A extends Aggregate = Aggregate
-> extends ComponentConstruct<S, A> {
-  constructor(
-    scope: EventStormConstruct,
-    id: string,
-    props: ComponentProps<A> & ComponentConstructProps<S, A>
-  ) {
+export class AggregateConstruct<S extends EventStorm = EventStorm, A extends Aggregate = Aggregate> extends ComponentConstruct<S, A> {
+  constructor(scope: EventStormConstruct, id: string, props: ComponentProps<A> & ComponentConstructProps<S, A>) {
     super(scope, id, props);
   }
 }
@@ -242,29 +208,17 @@ export class AggregateConstruct<
  * Command Construct Props is just the Lambda Props with code omitted - we'll bundle the code from the EventStorm
  * object which contains a reference to its path.
  */
-export interface CommandConstructProps<C extends Command = Command>
-  extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {
+export interface CommandConstructProps<C extends Command = Command> extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {
   runtime?: lambda.Runtime;
 }
 
-export class CommandConstruct<
-  S extends EventStorm = EventStorm,
-  C extends Command = Command
-> extends ComponentConstruct<S, C> {
+export class CommandConstruct<S extends EventStorm = EventStorm, C extends Command = Command> extends ComponentConstruct<S, C> {
   readonly handler: lambda.Function;
-  constructor(
-    scope: cdk.Construct,
-    id: string,
-    props: ComponentProps<C> & ComponentConstructProps<S, C>
-  ) {
+  constructor(scope: cdk.Construct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
     super(scope, id, props);
 
     this.handler = new nodeLambda.NodejsFunction(this, "Function", {
-      ...generateHandler(
-        this.name,
-        props.component,
-        props.storm.componentNames
-      ),
+      ...generateHandler(this.name, props.component, props.storm.componentNames),
       runtime: lambda.Runtime.NODEJS_14_X,
       ...props,
       environment: {
@@ -282,13 +236,12 @@ export class CommandConstruct<
  * Command Construct Props is just the Lambda Props with code omitted - we'll bundle the code from the EventStorm
  * object which contains a reference to its path.
  */
-export interface PolicyConstructProps<P extends Policy = Policy>
-  extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {}
+export interface PolicyConstructProps<P extends Policy = Policy> extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {}
 
 export function generateHandler(
   componentName: string,
   component: Policy | Command | ReadModel | Query,
-  componentNames: Map<Component, string>
+  componentNames: Map<Component, string>,
 ): {
   entry: string;
   handler: string;
@@ -302,43 +255,25 @@ import {${componentName}} from "${requirePath(component)}";
 
 ${
   component.kind === "Policy"
-    ? component.commands
-        .map(
-          (command) =>
-            `import {${componentNames.get(command)!}} from "${requirePath(
-              command
-            )}"`
-        )
-        .join("\n")
+    ? component.commands.map((command) => `import {${componentNames.get(command)!}} from "${requirePath(command)}"`).join("\n")
     : ""
 }
 const names = new Map<any, any>();
 ${
   component.kind === "Policy"
-    ? component.commands
-        .map(
-          (command) =>
-            `names.set(${componentNames.get(command)!}, "${componentNames.get(
-              command
-            )!}");`
-        )
-        .join("\n")
+    ? component.commands.map((command) => `names.set(${componentNames.get(command)!}, "${componentNames.get(command)!}");`).join("\n")
     : ""
 }
 const runtime = new LambdaRuntime(${componentName}, "${componentName}", names);
-export const handler = runtime.handler`
+export const handler = runtime.handler`,
   );
   return {
     entry,
     handler: "handler",
   };
 
-  function requirePath(
-    component: Policy | Command | ReadModel | Query
-  ): string {
-    return path
-      .relative(path.dirname(entry), component.filename)
-      .replace(".ts", "");
+  function requirePath(component: Policy | Command | ReadModel | Query): string {
+    return path.relative(path.dirname(entry), component.filename).replace(".ts", "");
   }
 }
 
@@ -346,24 +281,13 @@ export interface PolicyConstructProps {
   commands: Map<string, CommandConstruct>;
 }
 
-export class PolicyConstruct<
-  S extends EventStorm = EventStorm,
-  C extends Policy = Policy
-> extends ComponentConstruct<S, C> {
+export class PolicyConstruct<S extends EventStorm = EventStorm, C extends Policy = Policy> extends ComponentConstruct<S, C> {
   readonly handler: lambda.Function;
-  constructor(
-    scope: EventStormConstruct,
-    id: string,
-    props: ComponentProps<C> & ComponentConstructProps<S, C>
-  ) {
+  constructor(scope: EventStormConstruct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
     super(scope, id, props);
 
     this.handler = new nodeLambda.NodejsFunction(this, "Function", {
-      ...generateHandler(
-        this.name,
-        props.component,
-        props.storm.componentNames
-      ),
+      ...generateHandler(this.name, props.component, props.storm.componentNames),
       ...props,
       runtime: lambda.Runtime.NODEJS_14_X,
       environment: {
@@ -379,10 +303,7 @@ export class PolicyConstruct<
       const commandName = props.storm.componentNames.get(command)!;
       const commandConstruct = props.commands.get(commandName)!;
 
-      this.handler.addEnvironment(
-        `${props.storm.componentNames.get(command)!}_LAMBDA_ARN`,
-        commandConstruct?.handler.functionArn!
-      );
+      this.handler.addEnvironment(`${props.storm.componentNames.get(command)!}_LAMBDA_ARN`, commandConstruct?.handler.functionArn!);
       commandConstruct.handler.grantInvoke(this.handler);
     }
 
@@ -396,7 +317,7 @@ export class PolicyConstruct<
             whitelist: this.component.events.map((e) => e.name),
           }),
         },
-      })
+      }),
     );
 
     scope.eventStore.table.grantWriteData(this.handler);
@@ -404,9 +325,7 @@ export class PolicyConstruct<
      * Allow policy to invoke commands
      */
     for (const command of this.component.commands) {
-      (scope.componentMap.get(command) as CommandConstruct).handler.grantInvoke(
-        this.handler
-      );
+      (scope.componentMap.get(command) as CommandConstruct).handler.grantInvoke(this.handler);
     }
   }
 }

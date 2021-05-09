@@ -1,7 +1,4 @@
 {
-  "packages": [
-    "packages/*",
-    "examples/airline/*"
-  ],
+  "packages": ["packages/*", "examples/airline/*"],
   "version": "0.0.0"
 }

@@ -6,10 +6,7 @@ import * as env from "env-var";
 const sns = new SNSClient({});
 
 export const handler: DynamoDBStreamHandler = async (event) => {
-  const EVENT_STREAM_TOPIC_ARN: string = env
-    .get("EVENT_STREAM_TOPIC_ARN")
-    .required()
-    .asString();
+  const EVENT_STREAM_TOPIC_ARN: string = env.get("EVENT_STREAM_TOPIC_ARN").required().asString();
   for (const record of event.Records) {
     try {
       // TODO: add shape name (event type)
@@ -21,9 +18,7 @@ export const handler: DynamoDBStreamHandler = async (event) => {
       }
 
       if (!record.dynamodb?.NewImage) {
-        throw new Error(
-          `Missing NewImage item in: ${JSON.stringify(record, null, 2)}`
-        );
+        throw new Error(`Missing NewImage item in: ${JSON.stringify(record, null, 2)}`);
       }
       const item = unmarshall(record.dynamodb.NewImage as any);
       const { SequenceNumber } = record.dynamodb;
@@ -43,7 +38,7 @@ export const handler: DynamoDBStreamHandler = async (event) => {
               StringValue: item.version,
             },
           },
-        })
+        }),
       );
       console.log({
         DynamoDBSequenceNumber: SequenceNumber,

@@ -16,7 +16,7 @@ Example service responsible for flight operations at a hypothetical airline.
 - [ ] POC of working policy
 - [ ] Store a domain event in DynamoDB
 - [ ] Forward domain events to an SNS topic
-- [ ] Subscribe event-handlers (policy, read-model updater) to filtered topic queue 
+- [ ] Subscribe event-handlers (policy, read-model updater) to filtered topic queue
 - [ ] Metabolism name?
 - [ ] Identify certain events as public / can be subscribed to by outside services
 - [ ] Publish public events to EventBridge

@@ -1,9 +1,9 @@
 import * as lambda from "aws-lambda";
 
 import * as AWS from "aws-sdk";
-import {Command} from "./command";
-import {SQSEvent} from "aws-lambda";
-import {Component} from "./component";
+import { Command } from "./command";
+import { SQSEvent } from "aws-lambda";
+import { Component } from "./component";
 
 export interface RuntimeOptions {
   credentials?: AWS.Credentials;

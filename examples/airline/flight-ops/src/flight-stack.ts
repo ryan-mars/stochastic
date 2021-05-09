@@ -19,8 +19,8 @@ export class FlightOpsStack extends cdk.Stack {
           runtime: lambda.Runtime.NODEJS_12_X, // e.g. use an older version of Node JS,
           timeout: cdk.Duration.minutes(1), // configure the runtime for thie Delay Flight Command's handler
           environment: {
-            STRIPE_API: "stripe"
-          }
+            STRIPE_API: "stripe",
+          },
         },
         flights: {
           // .. or maybe something like overriding the underlying CDK Constructs.

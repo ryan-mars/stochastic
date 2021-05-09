@@ -1,9 +1,9 @@
-import {EventStorm} from "stochastic";
-import {delayFlight} from "./delay-flight";
-import {FlightDelayed} from "./flight-delayed";
-import {FlightLanded} from "./flight-landed";
-import {FlightStatusChanged} from "./policies";
-import {FlightsAggregate} from "./flights";
+import { EventStorm } from "stochastic";
+import { delayFlight } from "./delay-flight";
+import { FlightDelayed } from "./flight-delayed";
+import { FlightLanded } from "./flight-landed";
+import { FlightStatusChanged } from "./policies";
+import { FlightsAggregate } from "./flights";
 
 // TODO: I think this can be moved to the Construct code since we de-coupled runtime from it.
 export const flightEventStorm = new EventStorm({

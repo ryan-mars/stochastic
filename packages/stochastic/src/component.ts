@@ -1,9 +1,9 @@
-import {Aggregate} from "./aggregate";
-import {Command} from "./command";
-import {DomainEvent} from "./event";
-import {Policy} from "./policy";
-import {Query} from "./query";
-import {ReadModel} from "./read-model";
+import { Aggregate } from "./aggregate";
+import { Command } from "./command";
+import { DomainEvent } from "./event";
+import { Policy } from "./policy";
+import { Query } from "./query";
+import { ReadModel } from "./read-model";
 
 export type Component = Command | Aggregate | DomainEvent | Policy | ReadModel | Query;
 

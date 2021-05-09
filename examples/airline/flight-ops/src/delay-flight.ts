@@ -1,7 +1,7 @@
-import {Command, CommandResponse, Type} from "stochastic";
-import {number, object, string} from "superstruct";
-import {FlightDelayed} from "./flight-delayed";
-import {FlightsAggregate} from "./flights";
+import { Command, CommandResponse, Type } from "stochastic";
+import { number, object, string } from "superstruct";
+import { FlightDelayed } from "./flight-delayed";
+import { FlightsAggregate } from "./flights";
 
 // export interface DelayFlight {
 //   flightNo: string;

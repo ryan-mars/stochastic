@@ -1,6 +1,6 @@
-import {Query, Type} from "stochastic";
-import {object, string} from "superstruct";
-import {FlightStatusModel} from "./flight-status";
+import { Query, Type } from "stochastic";
+import { object, string } from "superstruct";
+import { FlightStatusModel } from "./flight-status";
 
 // export interface StatusBoardRequest {
 //   flightNo: string;
