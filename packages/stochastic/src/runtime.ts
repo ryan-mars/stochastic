@@ -1,7 +1,7 @@
 import * as lambda from "aws-lambda";
 
 import * as AWS from "aws-sdk";
-import { Command } from "./command";
+import { Command, CommandInterface } from "./command";
 import { SQSEvent } from "aws-lambda";
 import { Component } from "./component";
 
@@ -35,6 +35,10 @@ export class LambdaRuntime implements Runtime {
     }
 
     if (component.kind === "Command") {
+      // what the is the ARN
+      // is it dynamodb
+      // provide a function to query DDB, reduce the results
+      const agg = component.aggregate;
       this.handler = async (event) => {
         console.log(event);
         const result = await component.execute(event, {
@@ -60,7 +64,7 @@ export class LambdaRuntime implements Runtime {
               Payload: JSON.stringify(input),
             })
             .promise();
-      }) as Command.Runtime<typeof component["commands"]>;
+      }) as CommandInterface<typeof component["commands"]>;
       this.handler = (event: SQSEvent, context) =>
         Promise.all(event.Records.map((record) => component.apply(JSON.parse(record.body), ...commands)));
     }

@@ -1,95 +1,42 @@
-import { assign, literal, object, string, Struct, create, optional, boolean, defaulted } from "superstruct";
-
 import KSUID from "ksuid";
+import { ObjectSchema } from "superstruct/lib/utils";
+import { NewShape, Shape } from "./shape";
 
-export interface DefaultMetadata {
+export interface DomainEventEnvelopeProps<Payload> {
+  source: string;
+  source_id: string;
   id?: string;
   time?: Date;
+  payload: Payload;
 }
 
-export type DomainEvent<
-  __typename extends string = string,
-  Fields extends {
-    [fieldName in string]: Struct;
-  } = any,
-  Metadata extends {
-    [fieldName in string]: Struct;
-  } = {}
-> = {
-  // static space
-  kind: "Event";
-  name: __typename;
-  payload: Fields;
-} & (new (config: {
-  payload: {
-    [fieldName in keyof Fields]: Fields[fieldName]["TYPE"];
-  };
-  metadata?: DefaultMetadata &
-    {
-      [fieldName in keyof Metadata]: Exclude<Metadata, undefined>[fieldName]["TYPE"];
-    };
-}) => {
-  // instance space
-  __typename: __typename;
-  id: string;
-  time: Date;
-  payload: {
-    [fieldName in keyof Fields]: Fields[fieldName]["TYPE"];
-  };
-} & {
-  [fieldName in keyof Metadata]: Metadata[fieldName]["TYPE"];
-});
+export class DomainEventEnvelope<Payload extends { __typename: string }> {
+  readonly type: Payload["__typename"];
+  readonly id: string;
+  readonly time: Date;
+  readonly source: string;
+  readonly source_id: string;
+  readonly payload: Payload;
 
-export function DomainEvent<
-  __typename extends string,
-  Fields extends {
-    [fieldName in string]: Struct;
-  },
-  Metadata extends {
-    [fieldName in string]: Struct;
-  } = {}
->(
+  constructor(props: DomainEventEnvelopeProps<Payload>) {
+    this.type = props.payload.__typename;
+    this.id = props.id ?? KSUID.randomSync().string;
+    this.time = props.time ?? new Date();
+    this.payload = props.payload;
+    this.source = props.source;
+    this.source_id = props.source_id;
+  }
+}
+
+export function DomainEvent<__typename extends string, S extends ObjectSchema>(
   __typename: __typename,
-  config: {
-    payload: Fields;
-    metadata?: Metadata;
-  },
-): DomainEvent<__typename, Fields, Metadata> {
-  const shape = object(config.payload);
-  return class {
-    static readonly shape = shape;
-
-    readonly __typename = __typename;
-    readonly id: string;
-    readonly time: Date;
-
-    payload: {
-      [fieldName in keyof Fields]: Fields[fieldName]["TYPE"];
-    };
-
-    constructor(value: {
-      payload: {
-        [fieldName in keyof Fields]: Fields[fieldName]["TYPE"];
-      };
-      metadata?: DefaultMetadata &
-        {
-          [fieldName in keyof Metadata]: Exclude<Metadata, undefined>[fieldName]["TYPE"];
-        };
-    }) {
-      this.id = value.metadata?.id ?? KSUID.randomSync().string;
-      this.time = value.metadata?.time ?? new Date();
-
-      this.payload = create(value.payload, shape) as any;
-    }
-  } as any;
+  schema: S,
+): DomainEvent<__typename, S> {
+  const shape = Shape(__typename, schema);
+  (shape as any).kind === "DomainEvent";
+  return shape as any;
 }
 
-export class FlightLanded extends DomainEvent("FlightLanded", {
-  payload: {
-    flightNo: string(),
-    crashed: defaulted(boolean(), false),
-  },
-  metadata: {
-    balls: optional(string()),
-  },
-}) {}
+export type DomainEvent<__typename extends string = string, S extends ObjectSchema = ObjectSchema> = NewShape<__typename, S> & {
+  kind: "DomainEvent";
+};

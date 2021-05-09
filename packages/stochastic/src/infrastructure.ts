@@ -72,7 +72,7 @@ export class EventStormConstruct<S extends EventStorm = EventStorm> extends cdk.
           name: componentName,
         });
         commandConstructs.set(componentName, con);
-      } else if (component.kind === "Event") {
+        // } else if (component.kind === "Event") {
         // TODO
       } else if (component.kind === "Policy") {
         con = new PolicyConstruct(this, componentName, {

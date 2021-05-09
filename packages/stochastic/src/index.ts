@@ -8,4 +8,4 @@ export * from "./policy";
 export * from "./query";
 export * from "./read-model";
 export * from "./runtime";
-export * from "./type";
+export * from "./shape";

@@ -1,13 +1,9 @@
-import { Command, CommandResponse, Type } from "stochastic";
-import { number, object, string } from "superstruct";
+import { Command, Shape } from "stochastic";
+import { number, string } from "superstruct";
 import { FlightDelayed } from "./flight-delayed";
 import { FlightsAggregate } from "./flights";
 
-// export interface DelayFlight {
-//   flightNo: string;
-//   delayBy: number;
-// }
-export class DelayFlight extends Type({
+export class DelayFlight extends Shape("DelayFlight", {
   flightNo: string(),
   delayBy: number(),
 }) {}
@@ -28,10 +24,8 @@ export const delayFlight = new Command(
 
     return [
       new FlightDelayed({
-        payload: {
-          flightNo: request.flightNo,
-          delayedBy: request.delayBy,
-        },
+        flightNo: request.flightNo,
+        delayedBy: request.delayBy,
       }),
     ];
   },

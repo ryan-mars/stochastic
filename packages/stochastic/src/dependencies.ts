@@ -1,4 +1,4 @@
-import { Aggregate } from "./aggregate";
+import { Aggregate, AggregateInterface } from "./aggregate";
 
 export class Dependencies<A extends readonly Aggregate[] = readonly Aggregate[]> {
   readonly kind: "Dependencies" = "Dependencies";
@@ -7,10 +7,6 @@ export class Dependencies<A extends readonly Aggregate[] = readonly Aggregate[]>
     this.deps = deps;
   }
 }
-export namespace Dependencies {
-  export type Clients<D extends readonly Aggregate[] | undefined> = D extends readonly Aggregate[]
-    ? {
-        [i in keyof D]: Aggregate.Client<D[i]>;
-      }
-    : [];
-}
+// export type DependenciesInterface<D extends readonly Aggregate[] | undefined> = {
+//   [i in keyof D]: D[i] extends Aggregate ? AggregateInterface<D[i]> : never;
+// };
