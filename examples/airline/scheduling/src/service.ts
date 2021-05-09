@@ -1,7 +1,8 @@
-import { Aggregate, Command, DomainEvent, EventStorm, Type } from "stochastic";
+import { Aggregate, Command, EventStorm, Shape } from "stochastic";
+import { DomainEvent } from "stochastic/src/event";
 import { date, map, object, string } from "superstruct";
 
-export class FlightSchedule extends Type({
+export class FlightSchedule extends Shape("ScheduledFlightAdded", {
   flightNo: string(),
   aircraftType: string(),
   origin: string(),
@@ -10,59 +11,55 @@ export class FlightSchedule extends Type({
 }) {}
 
 export class ScheduledFlightAdded extends DomainEvent("ScheduledFlightAdded", {
-  payload: {
-    flightNo: string(),
-    add: object({
-      day: string(),
-      scheduledDeparture: date(),
-      scheduledArrival: date(),
-    }),
-  },
+  flightNo: string(),
+  add: object({
+    day: string(),
+    scheduledDeparture: date(),
+    scheduledArrival: date(),
+  }),
 }) {}
 
 export class FlightCreatedEvent extends DomainEvent("FlightCreated", {
-  payload: {
-    flightNo: string(),
-    origin: string(),
-    destination: string(),
-    aircraftType: string(),
-  },
+  flightNo: string(),
+  origin: string(),
+  destination: string(),
+  aircraftType: string(),
 }) {}
 
 // TODO: These two lines have too much boiler plate
 
 export const FlightScheduleAggregate = new Aggregate({
   __filename,
-  key: "flightNo",
-  shape: FlightSchedule,
-  events: [ScheduledFlightAdded, FlightCreatedEvent],
+  stateKey: "flightNo",
+  stateShape: FlightSchedule,
+  events: [ScheduledFlightAdded, FlightCreatedEvent], // HERE
   reducer: (state, event) => {
     switch (event.__typename) {
       case "ScheduledFlightAdded":
         const {
           add: { day, scheduledDeparture, scheduledArrival },
-        } = event.payload;
-        return {
+        } = event;
+        return new FlightSchedule({
           ...state,
           days: state.days.set(day, { scheduledArrival, scheduledDeparture }),
-        };
+        });
       case "FlightCreated":
-        const { payload } = event;
-        return { ...state, ...payload };
+        return new FlightSchedule({ ...state, ...event });
       default:
         return state;
     }
   },
-  initalState: {
-    flightNo: "",
-    aircraftType: "",
-    origin: "",
-    destination: "",
-    days: new Map(),
-  },
+  initalState: () =>
+    new FlightSchedule({
+      flightNo: "",
+      aircraftType: "",
+      origin: "",
+      destination: "",
+      days: new Map(),
+    }),
 });
 
-export class CreateFlightIntent extends Type({
+export class CreateFlightIntent extends Shape("CreateFlightIntent", {
   flightNo: string(),
   origin: string(),
   destination: string(),
@@ -82,15 +79,11 @@ export const CreateFlightCommandHandler = new Command(
       throw "Can only create new flights that don't already exist";
     }
 
-    return [
-      new FlightCreatedEvent({
-        payload: command,
-      }),
-    ];
+    return [new FlightCreatedEvent(command)];
   },
 );
 
-class AddScheduledFlightIntent extends Type({
+export class AddScheduledFlightIntent extends Shape("AddScheduledFlightIntent", {
   flightNo: string(),
   add: object({
     day: string(),
@@ -119,13 +112,11 @@ export const AddScheduledFlightCommandHandler = new Command(
 
     return [
       new ScheduledFlightAdded({
-        payload: {
-          flightNo,
-          add: {
-            day,
-            scheduledArrival,
-            scheduledDeparture,
-          },
+        flightNo,
+        add: {
+          day,
+          scheduledArrival,
+          scheduledDeparture,
         },
       }),
     ];

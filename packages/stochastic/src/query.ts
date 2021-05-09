@@ -1,17 +1,22 @@
 import { BaseComponent, BaseComponentProps } from "./component";
-import { TypeConstructor } from "./type";
+import { Shape } from "./shape";
 import { ReadModel } from "./read-model";
 
-export interface QueryProps<Request = any, Results = any, Models extends ReadModel[] = ReadModel[]> extends BaseComponentProps {
-  readonly request: TypeConstructor<Request>;
-  readonly results: TypeConstructor<Results>;
+export interface QueryProps<Request extends Shape = Shape, Results extends Shape = Shape, Models extends ReadModel[] = ReadModel[]>
+  extends BaseComponentProps {
+  readonly request: Request;
+  readonly results: Results;
   readonly models: Models;
 }
 
-export class Query<Request = any, Results = any, Models extends ReadModel[] = ReadModel[]> extends BaseComponent {
+export class Query<
+  Request extends Shape = Shape,
+  Results extends Shape = Shape,
+  Models extends ReadModel[] = ReadModel[]
+> extends BaseComponent {
   readonly kind: "Query" = "Query";
-  readonly request: TypeConstructor<Request>;
-  readonly results: TypeConstructor<Results>;
+  readonly request: Request;
+  readonly results: Results;
   readonly models: Models;
   constructor(props: QueryProps<Request, Results, Models>, readonly query: Query.Handler<Request, Results, Models>) {
     super(props);
@@ -22,8 +27,8 @@ export class Query<Request = any, Results = any, Models extends ReadModel[] = Re
 }
 
 export namespace Query {
-  export type Handler<Request, Results, Models extends ReadModel[]> = (
-    request: Request,
+  export type Handler<Request extends Shape, Results extends Shape, Models extends ReadModel[]> = (
+    request: Shape.Value<Request>,
     ...models: ReadModel.Runtime<Models>
-  ) => Promise<Results>;
+  ) => Promise<Shape.Value<Results>>;
 }

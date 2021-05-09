@@ -2,40 +2,33 @@
 
 exports[`Scheduling service adds a scheduled flight 1`] = `
 Array [
-  Object {
+  ScheduledFlightAdded {
     "__typename": "ScheduledFlightAdded",
-    "id": Any<String>,
-    "payload": Object {
-      "add": Object {
-        "day": "2021-06-11",
-        "scheduledArrival": 2021-06-12T02:30:00.000Z,
-        "scheduledDeparture": 2021-06-11T20:30:00.000Z,
-      },
-      "flightNo": "PA576",
+    "add": Object {
+      "day": "2021-06-11",
+      "scheduledArrival": 2021-06-12T02:30:00.000Z,
+      "scheduledDeparture": 2021-06-11T20:30:00.000Z,
     },
-    "time": Any<Date>,
+    "flightNo": "PA576",
   },
 ]
 `;
 
 exports[`Scheduling service creates a flight 1`] = `
 Array [
-  Object {
+  FlightCreatedEvent {
     "__typename": "FlightCreated",
-    "id": Any<String>,
-    "payload": Object {
-      "aircraftType": "B787-9",
-      "destination": "MIA",
-      "flightNo": "PA576",
-      "origin": "SFO",
-    },
-    "time": Any<Date>,
+    "aircraftType": "B787-9",
+    "destination": "MIA",
+    "flightNo": "PA576",
+    "origin": "SFO",
   },
 ]
 `;
 
 exports[`Scheduling service should reduce aggregate state from events 1`] = `
-Object {
+FlightSchedule {
+  "__typename": "ScheduledFlightAdded",
   "aircraftType": "B787-9",
   "days": Map {
     "2021-06-11" => Object {

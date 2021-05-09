@@ -11,10 +11,8 @@ import { number, string } from "superstruct";
 // }
 
 export class FlightDelayed extends DomainEvent("FlightDelayed", {
-  payload: {
-    flightNo: string(),
-    delayedBy: number(),
-  },
+  flightNo: string(),
+  delayedBy: number(),
 }) {}
 
 // export const FlightDelayedEvent = new Event(

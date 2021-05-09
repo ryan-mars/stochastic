@@ -1,29 +1,28 @@
-import { Aggregate } from "./aggregate";
+import { Aggregate, AggregateInterface } from "./aggregate";
 import { BaseComponent, BaseComponentProps } from "./component";
 import { DomainEvent } from "./event";
-import { TypeConstructor } from "./type";
+import { Shape } from "./shape";
 
 export interface CommandProps<
   Agg extends Aggregate = Aggregate,
-  Request = any,
+  Intent extends Shape = Shape,
   Events extends readonly DomainEvent[] = readonly DomainEvent[]
 > extends BaseComponentProps {
-  readonly intent: TypeConstructor<Request>;
+  readonly intent: Intent;
   readonly aggregate: Agg;
   readonly events: Events;
 }
 
 export class Command<
-  Name extends string = string,
   Agg extends Aggregate = Aggregate,
-  Request = any,
+  Intent extends Shape = Shape,
   Events extends readonly DomainEvent[] = readonly DomainEvent[]
 > extends BaseComponent {
   readonly kind: "Command" = "Command";
-  readonly intent: TypeConstructor<Request>;
+  readonly intent: Intent;
   readonly aggregate: Agg;
   readonly events: Events;
-  constructor(props: CommandProps<Agg, Request, Events>, readonly execute: Command.Handler<Request, Agg, Events>) {
+  constructor(props: CommandProps<Agg, Intent, Events>, readonly execute: CommandHandler<Shape.Value<Intent>, Agg, Events>) {
     super(props);
     this.intent = props.intent;
     this.aggregate = props.aggregate;
@@ -38,16 +37,14 @@ export type CommandResponse<T, Events> =
     }
   | Events;
 
-export namespace Command {
-  export type Handler<Request, Agg extends Aggregate, Events extends readonly DomainEvent[]> = (
-    request: Request,
-    aggregate: Aggregate.Client<Agg>,
-  ) => Promise<CommandResponse<any, InstanceType<Events[number]>[]>>;
+export type CommandHandler<Intent, Agg extends Aggregate, Events extends readonly DomainEvent[]> = (
+  intent: Intent,
+  aggregate: AggregateInterface<Agg>,
+) => Promise<CommandResponse<any, Shape.Value<Events[number]>[]>>;
 
-  /**
-   * The interface to a Command from a Policy
-   */
-  export type Runtime<C extends readonly Command[]> = {
-    [i in keyof C]: C[i] extends Command ? (input: InstanceType<C[i]["intent"]>) => any : C[i];
-  };
-}
+/**
+ * The interface to a Command from a Policy
+ */
+export type CommandInterface<C extends readonly Command[]> = {
+  [i in keyof C]: C[i] extends Command ? (intent: Shape.Value<C[i]["intent"]>) => any : C[i];
+};
