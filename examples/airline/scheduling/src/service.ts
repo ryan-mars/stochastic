@@ -74,8 +74,8 @@ export const CreateFlightCommandHandler = new Command(
     events: [FlightCreatedEvent],
   },
   async (command, aggregate) => {
-    const flight = await aggregate.get(command.flightNo);
-    if (flight) {
+    const { events } = await aggregate.get(command.flightNo);
+    if (events.length > 0) {
       throw "Can only create new flights that don't already exist";
     }
 
