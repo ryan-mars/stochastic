@@ -4,6 +4,7 @@ import * as AWS from "aws-sdk";
 import { CommandInterface } from "stochastic";
 import { SQSEvent } from "aws-lambda";
 import { Component } from "stochastic";
+import { connectAggregateInterface } from "./event-store";
 
 export interface RuntimeOptions {
   credentials?: AWS.Credentials;
@@ -35,9 +36,8 @@ export class LambdaRuntime implements Runtime {
     }
 
     if (component.kind === "Command") {
-      // what the is the ARN
-      // is it dynamodb
-      // provide a function to query DDB, reduce the results
+      // what the is the ARN of dynamodb
+
       const agg = component.aggregate;
       this.handler = async (event) => {
         console.log(event);
@@ -45,9 +45,15 @@ export class LambdaRuntime implements Runtime {
         console.log(component.aggregate.stateKey);
 
         // TODO: command response type is too vague to work with
-        const commandResponse = await component.execute(event, {
-          get: async (key: string) => ({ state: component.aggregate.initialState, events: [] }),
-        });
+        const commandResponse = await component.execute(
+          event,
+          connectAggregateInterface(
+            "",
+            component.aggregate.stateType.__typename,
+            component.aggregate.initialState,
+            component.aggregate.reducer,
+          ),
+        );
       };
     } else if (component.kind === "ReadModel") {
     } else if (component.kind === "Policy") {

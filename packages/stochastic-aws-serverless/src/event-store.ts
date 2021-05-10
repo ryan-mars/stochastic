@@ -1,7 +1,7 @@
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { DynamoDBClient, PutItemCommand, QueryCommand, QueryCommandInput, AttributeValue } from "@aws-sdk/client-dynamodb";
 
-import { Shape, DomainEvent } from "stochastic";
+import { Shape, DomainEvent, DomainEventEnvelope } from "stochastic";
 
 const client = new DynamoDBClient({});
 
@@ -19,9 +19,15 @@ export function connectAggregateInterface<
   return {
     get: async (key: string) => {
       let accumulator = initialState();
+      let events = [];
       for await (const event of fetchEvents(eventStore, source, key)) {
-        accumulator = reducer(accumulator, event.payload);
+        events.push(event as DomainEventEnvelope<Shape.Value<DomainEvent>>);
+        accumulator = reducer(accumulator, event.payload as Shape.Value<Events[number]>);
       }
+      return {
+        state: accumulator,
+        events,
+      };
     },
   };
 }
