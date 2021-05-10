@@ -7,16 +7,16 @@ import * as snsSubscriptions from "@aws-cdk/aws-sns-subscriptions";
 import * as sqs from "@aws-cdk/aws-sqs";
 import * as cdk from "@aws-cdk/core";
 
-import { Aggregate } from "./aggregate";
-import { Command } from "./command";
-import { Component } from "./component";
-import { EventStorm } from "./event-storm";
-import { Policy } from "./policy";
+import { Aggregate } from "stochastic";
+import { Command } from "stochastic";
+import { Component } from "stochastic";
+import { EventStorm } from "stochastic";
+import { Policy } from "stochastic";
 
 import * as path from "path";
 import * as fs from "fs";
-import { ReadModel } from "./read-model";
-import { Query } from "./query";
+import { ReadModel } from "stochastic";
+import { Query } from "stochastic";
 
 /**
  * Construct Properties for creating an EventStorm CDK Construct.
@@ -250,7 +250,7 @@ export function generateHandler(
   const entry = path.resolve("stochastic.out", componentName + ".ts");
   fs.writeFileSync(
     entry,
-    `import {LambdaRuntime} from "stochastic";    
+    `import {LambdaRuntime} from "stochastic-aws-serverless";    
 import {${componentName}} from "${requirePath(component)}";
 
 ${

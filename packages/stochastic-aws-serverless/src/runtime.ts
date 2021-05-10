@@ -1,9 +1,9 @@
 import * as lambda from "aws-lambda";
 
 import * as AWS from "aws-sdk";
-import { Command, CommandInterface } from "./command";
+import { CommandInterface } from "stochastic";
 import { SQSEvent } from "aws-lambda";
-import { Component } from "./component";
+import { Component } from "stochastic";
 
 export interface RuntimeOptions {
   credentials?: AWS.Credentials;
@@ -41,12 +41,13 @@ export class LambdaRuntime implements Runtime {
       const agg = component.aggregate;
       this.handler = async (event) => {
         console.log(event);
-        const result = await component.execute(event, {
+        console.log(component.aggregate.stateType.__typename);
+        console.log(component.aggregate.stateKey);
+
+        // TODO: command response type is too vague to work with
+        const commandResponse = await component.execute(event, {
           get: async (key: string) => ({ state: component.aggregate.initialState, events: [] }),
         });
-
-        console.log(JSON.stringify(result, null, 2));
-        return result;
       };
     } else if (component.kind === "ReadModel") {
     } else if (component.kind === "Policy") {
