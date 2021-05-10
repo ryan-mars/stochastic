@@ -43,10 +43,6 @@ describe("Scheduling service", () => {
     expect(state).toMatchSnapshot();
   });
 
-  const undefinedAggregate = {
-    get: async (key: string) => ({ state: FlightScheduleAggregate.initialState(), events: [] }),
-  };
-
   it("creates a flight", async () => {
     const event = await CreateFlightCommandHandler.execute(
       new CreateFlightIntent({
@@ -55,7 +51,9 @@ describe("Scheduling service", () => {
         origin: "SFO",
         destination: "MIA",
       }),
-      undefinedAggregate,
+      {
+        get: async (key: string) => ({ state: FlightScheduleAggregate.initialState(), events: [] }),
+      },
     );
     expect(event).toMatchSnapshot();
   });

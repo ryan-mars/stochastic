@@ -34,5 +34,7 @@ export class Aggregate<
 }
 
 export type AggregateInterface<A extends Aggregate> = {
-  get: (key: Shape.Value<A["stateType"]>[A["stateKey"]]) => Promise<{ state: Shape.Value<A["stateType"]>; events: A["events"] }>;
+  get: (
+    key: Shape.Value<A["stateType"]>[A["stateKey"]],
+  ) => Promise<{ state: Shape.Value<A["stateType"]>; events: Shape.Value<A["events"][number]>[] }>;
 };
