@@ -2,7 +2,7 @@ import { Aggregate, Command, EventStorm, Shape } from "stochastic";
 import { DomainEvent } from "stochastic/src/event";
 import { date, map, object, string } from "superstruct";
 
-export class FlightSchedule extends Shape("ScheduledFlightAdded", {
+export class FlightSchedule extends Shape("FlightSchedule", {
   flightNo: string(),
   aircraftType: string(),
   origin: string(),

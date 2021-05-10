@@ -19,6 +19,7 @@ export class Aggregate<
   Key extends keyof Shape.Value<T> = any,
   Events extends readonly DomainEvent[] = readonly DomainEvent[]
 > extends BaseComponent {
+  readonly events: Events;
   readonly kind: "Aggregate" = "Aggregate";
   readonly stateType: T;
   readonly stateKey: Key;
@@ -26,11 +27,12 @@ export class Aggregate<
   readonly initialState: () => Shape.Value<T>;
   constructor(props: AggregateProps<T, Key, Events>) {
     super(props);
+    this.events = props.events;
     this.reducer = props.reducer;
     this.initialState = props.initalState;
   }
 }
 
 export type AggregateInterface<A extends Aggregate> = {
-  get: (key: Shape.Value<A["stateType"]>[A["stateKey"]]) => Promise<Shape.Value<A["stateType"]> | undefined>;
+  get: (key: Shape.Value<A["stateType"]>[A["stateKey"]]) => Promise<{ state: Shape.Value<A["stateType"]>; events: A["events"] }>;
 };

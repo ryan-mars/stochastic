@@ -42,7 +42,7 @@ export class LambdaRuntime implements Runtime {
       this.handler = async (event) => {
         console.log(event);
         const result = await component.execute(event, {
-          get: async (key: string) => undefined,
+          get: async (key: string) => ({ state: component.aggregate.initialState, events: [] }),
         });
 
         console.log(JSON.stringify(result, null, 2));

@@ -44,7 +44,7 @@ describe("Scheduling service", () => {
   });
 
   const undefinedAggregate = {
-    get: async (key: string) => undefined,
+    get: async (key: string) => ({ state: FlightScheduleAggregate.initialState(), events: [] }),
   };
 
   it("creates a flight", async () => {
@@ -71,14 +71,16 @@ describe("Scheduling service", () => {
         },
       }),
       {
-        get: async (key) =>
-          new FlightSchedule({
+        get: async (key) => ({
+          state: new FlightSchedule({
             flightNo: "PA576",
             aircraftType: "B787-9",
             origin: "SFO",
             destination: "MIA",
             days: new Map(),
           }),
+          events: [],
+        }),
       },
     );
     expect(event).toMatchSnapshot();
