@@ -7,16 +7,16 @@ import * as snsSubscriptions from "@aws-cdk/aws-sns-subscriptions";
 import * as sqs from "@aws-cdk/aws-sqs";
 import * as cdk from "@aws-cdk/core";
 
-import { Aggregate } from "./aggregate";
-import { Command } from "./command";
-import { Component } from "./component";
-import { EventStorm } from "./event-storm";
-import { Policy } from "./policy";
+import { Aggregate } from "stochastic";
+import { Command } from "stochastic";
+import { Component } from "stochastic";
+import { EventStorm } from "stochastic";
+import { Policy } from "stochastic";
 
 import * as path from "path";
 import * as fs from "fs";
-import { ReadModel } from "./read-model";
-import { Query } from "./query";
+import { ReadModel } from "stochastic";
+import { Query } from "stochastic";
 
 /**
  * Construct Properties for creating an EventStorm CDK Construct.
@@ -214,7 +214,7 @@ export interface CommandConstructProps<C extends Command = Command> extends Omit
 
 export class CommandConstruct<S extends EventStorm = EventStorm, C extends Command = Command> extends ComponentConstruct<S, C> {
   readonly handler: lambda.Function;
-  constructor(scope: cdk.Construct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
+  constructor(scope: EventStormConstruct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
     super(scope, id, props);
 
     this.handler = new nodeLambda.NodejsFunction(this, "Function", {
@@ -223,7 +223,8 @@ export class CommandConstruct<S extends EventStorm = EventStorm, C extends Comma
       ...props,
       environment: {
         COMPONENT_NAME: this.name,
-        // EVENT_STORE_TABLE: scope.eventStore.table.tableName, // TODO: use SSM instead of environment variables
+        // TODO: use SSM instead of environment variables
+        EVENT_STORE_TABLE: scope.eventStore.table.tableName,
       },
       bundling: {
         sourceMap: true,
@@ -250,7 +251,7 @@ export function generateHandler(
   const entry = path.resolve("stochastic.out", componentName + ".ts");
   fs.writeFileSync(
     entry,
-    `import {LambdaRuntime} from "stochastic";    
+    `import {LambdaRuntime} from "stochastic-aws-serverless";    
 import {${componentName}} from "${requirePath(component)}";
 
 ${
@@ -292,7 +293,6 @@ export class PolicyConstruct<S extends EventStorm = EventStorm, C extends Policy
       runtime: lambda.Runtime.NODEJS_14_X,
       environment: {
         COMPONENT_NAME: this.name,
-        EVENT_STORE_TABLE: scope.eventStore.table.tableName, // TODO: use SSM instead of environment variables
       },
       bundling: {
         sourceMap: true,
@@ -329,5 +329,3 @@ export class PolicyConstruct<S extends EventStorm = EventStorm, C extends Policy
     }
   }
 }
-
-// TODO:

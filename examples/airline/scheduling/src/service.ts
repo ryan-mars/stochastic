@@ -1,32 +1,31 @@
 import { Aggregate, Command, EventStorm, Shape } from "stochastic";
 import { DomainEvent } from "stochastic/src/event";
-import { date, map, object, string } from "superstruct";
+import { object, record, string } from "superstruct";
 
-export class FlightSchedule extends Shape("ScheduledFlightAdded", {
+export class FlightSchedule extends Shape("FlightSchedule", {
   flightNo: string(),
   aircraftType: string(),
   origin: string(),
   destination: string(),
-  days: map(string(), object({ scheduledDeparture: date(), scheduledArrival: date() })),
+  days: record(string(), object({ scheduledArrival: string(), scheduledDeparture: string() })),
 }) {}
 
-export class ScheduledFlightAdded extends DomainEvent("ScheduledFlightAdded", {
+export class ScheduledFlightAdded extends DomainEvent("ScheduledFlightAdded", "flightNo", {
   flightNo: string(),
   add: object({
     day: string(),
-    scheduledDeparture: date(),
-    scheduledArrival: date(),
+    scheduledDeparture: string(),
+    scheduledArrival: string(),
   }),
 }) {}
 
-export class FlightCreatedEvent extends DomainEvent("FlightCreated", {
+export class FlightCreatedEvent extends DomainEvent("FlightCreated", "flightNo", {
   flightNo: string(),
   origin: string(),
   destination: string(),
   aircraftType: string(),
+  days: record(string(), object({ scheduledArrival: string(), scheduledDeparture: string() })),
 }) {}
-
-// TODO: These two lines have too much boiler plate
 
 export const FlightScheduleAggregate = new Aggregate({
   __filename,
@@ -41,7 +40,7 @@ export const FlightScheduleAggregate = new Aggregate({
         } = event;
         return new FlightSchedule({
           ...state,
-          days: state.days.set(day, { scheduledArrival, scheduledDeparture }),
+          days: { ...state.days, [day]: { scheduledArrival, scheduledDeparture } },
         });
       case "FlightCreated":
         return new FlightSchedule({ ...state, ...event });
@@ -55,7 +54,7 @@ export const FlightScheduleAggregate = new Aggregate({
       aircraftType: "",
       origin: "",
       destination: "",
-      days: new Map(),
+      days: {},
     }),
 });
 
@@ -74,12 +73,13 @@ export const CreateFlightCommandHandler = new Command(
     events: [FlightCreatedEvent],
   },
   async (command, aggregate) => {
-    const flight = await aggregate.get(command.flightNo);
-    if (flight) {
-      throw "Can only create new flights that don't already exist";
+    const latest = await aggregate.get(command.flightNo);
+    console.log(JSON.stringify({ latest }, null, 2));
+    if (latest.events.length > 0) {
+      throw new Error("Can only create new flights that don't already exist");
     }
 
-    return [new FlightCreatedEvent(command)];
+    return [new FlightCreatedEvent({ ...command, days: {} })];
   },
 );
 
@@ -87,8 +87,8 @@ export class AddScheduledFlightIntent extends Shape("AddScheduledFlightIntent", 
   flightNo: string(),
   add: object({
     day: string(),
-    scheduledDeparture: date(),
-    scheduledArrival: date(),
+    scheduledDeparture: string(),
+    scheduledArrival: string(),
   }),
 }) {}
 
@@ -100,8 +100,8 @@ export const AddScheduledFlightCommandHandler = new Command(
     events: [ScheduledFlightAdded],
   },
   async (command, aggregate) => {
-    const schedule = await aggregate.get(command.flightNo);
-    if (!schedule) {
+    const { state: schedule, events } = await aggregate.get(command.flightNo);
+    if (events.length === 0) {
       throw new Error("Can't find flight");
     }
 

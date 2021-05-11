@@ -3,7 +3,7 @@ import * as lambda from "@aws-cdk/aws-lambda";
 import * as dynamodb from "@aws-cdk/aws-dynamodb";
 
 import { flightEventStorm } from "./flight-event-storm";
-import { EventStormConstruct } from "stochastic/lib/cjs/infrastructure";
+import { EventStormConstruct } from "stochastic-aws-serverless/lib/cjs/infrastructure";
 
 export class FlightOpsStack extends cdk.Stack {
   readonly eventStorm: EventStormConstruct<typeof flightEventStorm>;

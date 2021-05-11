@@ -5,25 +5,12 @@
       "type": "node",
       "request": "attach",
       "address": "localhost",
-      "port": 5858,
+      "port": 9229,
       "localRoot": "${workspaceRoot}/${input:packagePath}",
       "remoteRoot": "/var/task",
       "protocol": "inspector",
       "stopOnEntry": false
     },
-
-    {
-      "type": "node-terminal",
-      "name": "Dubug Synth",
-      "request": "launch",
-      "command": "node_modules/.bin/cdk synth -a lib/flight-stack.js",
-      "cwd": "${workspaceFolder}",
-      "skipFiles": ["<node_internals>/**"],
-      "preLaunchTask": {
-        "type": "npm",
-        "script": "build"
-      }
-    }
   ],
   "inputs": [
     {
