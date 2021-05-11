@@ -10,7 +10,7 @@ import { number, string } from "superstruct";
 //   payload: object
 // }
 
-export class FlightDelayed extends DomainEvent("FlightDelayed", {
+export class FlightDelayed extends DomainEvent("FlightDelayed", "flightNo", {
   flightNo: string(),
   delayedBy: number(),
 }) {}

@@ -6,8 +6,8 @@ Array [
     "__typename": "ScheduledFlightAdded",
     "add": Object {
       "day": "2021-06-11",
-      "scheduledArrival": 2021-06-12T02:30:00.000Z,
-      "scheduledDeparture": 2021-06-11T20:30:00.000Z,
+      "scheduledArrival": "2021-06-12T02:30:00.000Z",
+      "scheduledDeparture": "2021-06-11T20:30:00.000Z",
     },
     "flightNo": "PA576",
   },
@@ -19,6 +19,7 @@ Array [
   FlightCreatedEvent {
     "__typename": "FlightCreated",
     "aircraftType": "B787-9",
+    "days": Object {},
     "destination": "MIA",
     "flightNo": "PA576",
     "origin": "SFO",
@@ -30,10 +31,10 @@ exports[`Scheduling service should reduce aggregate state from events 1`] = `
 FlightSchedule {
   "__typename": "FlightSchedule",
   "aircraftType": "B787-9",
-  "days": Map {
-    "2021-06-11" => Object {
-      "scheduledArrival": 2021-06-12T02:30:00.000Z,
-      "scheduledDeparture": 2021-06-11T20:30:00.000Z,
+  "days": Object {
+    "2021-06-11": Object {
+      "scheduledArrival": "2021-06-12T02:30:00.000Z",
+      "scheduledDeparture": "2021-06-11T20:30:00.000Z",
     },
   },
   "destination": "MIA",

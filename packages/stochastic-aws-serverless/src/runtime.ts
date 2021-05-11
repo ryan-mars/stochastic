@@ -4,7 +4,8 @@ import * as AWS from "aws-sdk";
 import { CommandInterface, DomainEventEnvelope } from "stochastic";
 import { SQSEvent } from "aws-lambda";
 import { Component } from "stochastic";
-import { connectAggregateInterface } from "./event-store";
+import { connectAggregateInterface, storeEvent } from "./event-store";
+import { table } from "console";
 
 export interface RuntimeOptions {
   credentials?: AWS.Credentials;
@@ -36,18 +37,24 @@ export class LambdaRuntime implements Runtime {
     }
 
     if (component.kind === "Command") {
+      //lookup table to map `__typename` to the static `DomainEvent` class.
+      const domainEventLookupTable = component.events
+        .map((eventType) => ({
+          [eventType.__typename]: eventType, // sorry I meant __key doesn't exist. Yes it does?
+        }))
+        .reduce((a, b) => ({ ...a, ...b }), {});
+
+      const tableName = process.env["EVENT_STORE_TABLE"];
+      if (tableName === undefined) {
+        throw new Error("missing environment variable: EVENT_STORE_TABLE");
+      }
+      const { initialState, reducer } = component.aggregate;
+      const source = component.aggregate.stateShape.name;
+
       this.handler = async (event) => {
         console.log({ event });
         console.log(JSON.stringify({ component }, null, 2));
         console.log({ aggregate: component.aggregate });
-
-        const tableName = process.env["EVENT_STORE_TABLE"];
-        if (tableName === undefined) {
-          throw new Error("missing environment variable: EVENT_STORE_TABLE");
-        }
-
-        const { initialState, reducer } = component.aggregate;
-        const source = component.aggregate.stateShape.name;
 
         // TODO: command response type is too vague to work with
         const commandResponse = await component.execute(
@@ -61,16 +68,20 @@ export class LambdaRuntime implements Runtime {
         );
         console.log(JSON.stringify({ commandResponse }, null, 2));
 
-        let events;
-        let confirmation;
+        const events = (Array.isArray(commandResponse) ? commandResponse : commandResponse.events).map((eventInstance) => {
+          const event = domainEventLookupTable[eventInstance.__typename];
+          if (event === undefined) {
+            throw new Error("FUCK");
+          }
+          return new DomainEventEnvelope({ source, source_id: eventInstance[event.__key], payload: eventInstance });
+        });
+        const confirmation = Array.isArray(commandResponse) ? undefined : commandResponse.confirmation ?? events;
 
-        if (Array.isArray(commandResponse)) {
-          confirmation = events = commandResponse.map((o) => new DomainEventEnvelope({ source, source_id: "???", payload: o }));
-        } else {
-          events = commandResponse.events.map((o) => new DomainEventEnvelope({ source, source_id: "???", payload: o }));
-          confirmation = commandResponse.confirmation ?? events;
-        }
-
+        await Promise.all(
+          events.map(async (evt) => {
+            await storeEvent(tableName, evt);
+          }),
+        );
         console.log(JSON.stringify({ events }, null, 2));
         console.log(JSON.stringify({ confirmation }, null, 2));
         return confirmation;

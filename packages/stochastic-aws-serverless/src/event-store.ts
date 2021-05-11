@@ -24,6 +24,7 @@ export function connectAggregateInterface<T extends Shape = Shape, Events extend
         events.push(event as DomainEventEnvelope<Shape.Value<Events[number]>>);
         state = props.reducer(state, event.payload as Shape.Value<Events[number]>);
       }
+      console.log(JSON.stringify({ state, events }, null, 2));
       return {
         state,
         events,
@@ -32,17 +33,7 @@ export function connectAggregateInterface<T extends Shape = Shape, Events extend
   };
 }
 
-interface SerializableDomainEvent {
-  id: string;
-  time: string;
-  source: string;
-  source_id: string;
-  bounded_context: string;
-  event_type: string;
-  payload: any;
-}
-
-export const storeEvent = async (dynamoDBTableName: string, event: SerializableDomainEvent) => {
+export const storeEvent = async (dynamoDBTableName: string, event: DomainEventEnvelope<Shape.Value<DomainEvent>>) => {
   // TODO: Validate input event
   /**
    * validate:
@@ -54,16 +45,22 @@ export const storeEvent = async (dynamoDBTableName: string, event: SerializableD
    */
   const pk = `${event.source}#${event.source_id}`;
   const sk = `EVENT#${event.id}`;
+  (event as any).time = event.time.toISOString(); // this is fucking terrible, use shapes. https://github.com/punchcard/punchcard/blob/master/packages/%40punchcard/shape-dynamodb/src/mapper.ts
 
   try {
     const data = await client.send(
       new PutItemCommand({
         TableName: dynamoDBTableName,
-        Item: marshall({
-          pk,
-          sk,
-          ...event,
-        }),
+        Item: marshall(
+          {
+            pk,
+            sk,
+            ...event,
+          },
+          {
+            convertClassInstanceToMap: true,
+          },
+        ),
       }),
     );
     console.log(JSON.stringify(data, null, 2));

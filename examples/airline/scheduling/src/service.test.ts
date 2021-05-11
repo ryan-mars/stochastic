@@ -21,6 +21,7 @@ describe("Scheduling service", () => {
       aircraftType: "B787-9",
       origin: "SFO",
       destination: "MIA",
+      days: {},
     }),
   });
   const scheduledFlightAdded = new DomainEventEnvelope({
@@ -32,8 +33,8 @@ describe("Scheduling service", () => {
       flightNo: "PA576",
       add: {
         day: "2021-06-11",
-        scheduledArrival: new Date("2021-06-12T02:30:00.000Z"),
-        scheduledDeparture: new Date("2021-06-11T20:30:00.000Z"),
+        scheduledArrival: new Date("2021-06-12T02:30:00.000Z").toISOString(),
+        scheduledDeparture: new Date("2021-06-11T20:30:00.000Z").toISOString(),
       },
     }),
   });
@@ -63,8 +64,8 @@ describe("Scheduling service", () => {
       new AddScheduledFlightIntent({
         flightNo: "PA576",
         add: {
-          scheduledDeparture: new Date("2021-06-11T12:30:00-08:00"),
-          scheduledArrival: new Date("2021-06-11T21:30:00-05:00"),
+          scheduledDeparture: new Date("2021-06-11T12:30:00-08:00").toISOString(),
+          scheduledArrival: new Date("2021-06-11T21:30:00-05:00").toISOString(),
           day: "2021-06-11",
         },
       }),
@@ -75,9 +76,9 @@ describe("Scheduling service", () => {
             aircraftType: "B787-9",
             origin: "SFO",
             destination: "MIA",
-            days: new Map(),
+            days: {},
           }),
-          events: [],
+          events: [flightCreated],
         }),
       },
     );

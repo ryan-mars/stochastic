@@ -3,6 +3,7 @@ import { ObjectSchema } from "superstruct/lib/utils";
 
 export type NewShape<__typename extends string, S extends ObjectSchema> = {
   __typename: __typename;
+  fields: S;
 } & (new (
   fields: {
     [field in keyof S]: S[field]["TYPE"];
@@ -34,6 +35,7 @@ export function Shape<__typename extends string, S extends ObjectSchema>(__typen
 
 export type Shape<__typename extends string = string, T = any> = {
   __typename: __typename;
+  fields: ObjectSchema;
 } & (new (...args: any[]) => T);
 
 export namespace Shape {
