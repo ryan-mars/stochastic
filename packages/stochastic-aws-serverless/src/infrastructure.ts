@@ -214,7 +214,7 @@ export interface CommandConstructProps<C extends Command = Command> extends Omit
 
 export class CommandConstruct<S extends EventStorm = EventStorm, C extends Command = Command> extends ComponentConstruct<S, C> {
   readonly handler: lambda.Function;
-  constructor(scope: cdk.Construct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
+  constructor(scope: EventStormConstruct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
     super(scope, id, props);
 
     this.handler = new nodeLambda.NodejsFunction(this, "Function", {
@@ -223,7 +223,8 @@ export class CommandConstruct<S extends EventStorm = EventStorm, C extends Comma
       ...props,
       environment: {
         COMPONENT_NAME: this.name,
-        // EVENT_STORE_TABLE: scope.eventStore.table.tableName, // TODO: use SSM instead of environment variables
+        // TODO: use SSM instead of environment variables
+        EVENT_STORE_TABLE: scope.eventStore.table.tableName,
       },
       bundling: {
         sourceMap: true,
@@ -292,7 +293,6 @@ export class PolicyConstruct<S extends EventStorm = EventStorm, C extends Policy
       runtime: lambda.Runtime.NODEJS_14_X,
       environment: {
         COMPONENT_NAME: this.name,
-        EVENT_STORE_TABLE: scope.eventStore.table.tableName, // TODO: use SSM instead of environment variables
       },
       bundling: {
         sourceMap: true,
@@ -329,5 +329,3 @@ export class PolicyConstruct<S extends EventStorm = EventStorm, C extends Policy
     }
   }
 }
-
-// TODO:

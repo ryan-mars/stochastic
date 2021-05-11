@@ -1,7 +1,7 @@
 import * as lambda from "aws-lambda";
 
 import * as AWS from "aws-sdk";
-import { CommandInterface } from "stochastic";
+import { CommandInterface, DomainEventEnvelope } from "stochastic";
 import { SQSEvent } from "aws-lambda";
 import { Component } from "stochastic";
 import { connectAggregateInterface } from "./event-store";
@@ -36,24 +36,44 @@ export class LambdaRuntime implements Runtime {
     }
 
     if (component.kind === "Command") {
-      // what the is the ARN of dynamodb
-
-      const agg = component.aggregate;
       this.handler = async (event) => {
-        console.log(event);
-        console.log(component.aggregate.stateType.__typename);
-        console.log(component.aggregate.stateKey);
+        console.log({ event });
+        console.log(JSON.stringify({ component }, null, 2));
+        console.log({ aggregate: component.aggregate });
+
+        const tableName = process.env["EVENT_STORE_TABLE"];
+        if (tableName === undefined) {
+          throw new Error("missing environment variable: EVENT_STORE_TABLE");
+        }
+
+        const { initialState, reducer } = component.aggregate;
+        const source = component.aggregate.stateShape.name;
 
         // TODO: command response type is too vague to work with
         const commandResponse = await component.execute(
           event,
-          connectAggregateInterface(
-            "",
-            component.aggregate.stateType.__typename,
-            component.aggregate.initialState,
-            component.aggregate.reducer,
-          ),
+          connectAggregateInterface({
+            eventStore: tableName,
+            source,
+            initialState,
+            reducer,
+          }),
         );
+        console.log(JSON.stringify({ commandResponse }, null, 2));
+
+        let events;
+        let confirmation;
+
+        if (Array.isArray(commandResponse)) {
+          confirmation = events = commandResponse.map((o) => new DomainEventEnvelope({ source, source_id: "???", payload: o }));
+        } else {
+          events = commandResponse.events.map((o) => new DomainEventEnvelope({ source, source_id: "???", payload: o }));
+          confirmation = commandResponse.confirmation ?? events;
+        }
+
+        console.log(JSON.stringify({ events }, null, 2));
+        console.log(JSON.stringify({ confirmation }, null, 2));
+        return confirmation;
       };
     } else if (component.kind === "ReadModel") {
     } else if (component.kind === "Policy") {

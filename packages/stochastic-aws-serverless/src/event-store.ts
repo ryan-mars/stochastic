@@ -5,27 +5,27 @@ import { Shape, DomainEvent, DomainEventEnvelope } from "stochastic";
 
 const client = new DynamoDBClient({});
 
+export interface ConnectAggregateInterfaceProps<T extends Shape = Shape, Events extends readonly DomainEvent[] = readonly DomainEvent[]> {
+  eventStore: string;
+  source: string;
+  initialState: () => Shape.Value<T>;
+  reducer: (state: Shape.Value<T>, event: Shape.Value<Events[number]>) => Shape.Value<T>;
+}
+
 // TODO: tighten up types
-export function connectAggregateInterface<
-  T extends Shape = Shape,
-  //Key extends keyof Shape.Value<T> = any,
-  Events extends readonly DomainEvent[] = readonly DomainEvent[]
->(
-  eventStore: string,
-  source: string,
-  initialState: () => Shape.Value<T>,
-  reducer: (state: Shape.Value<T>, event: Shape.Value<Events[number]>) => Shape.Value<T>,
+export function connectAggregateInterface<T extends Shape = Shape, Events extends readonly DomainEvent[] = readonly DomainEvent[]>(
+  props: ConnectAggregateInterfaceProps<T, Events>,
 ) {
   return {
     get: async (key: string) => {
-      let accumulator = initialState();
+      let state = props.initialState();
       let events = [];
-      for await (const event of fetchEvents(eventStore, source, key)) {
-        events.push(event as DomainEventEnvelope<Shape.Value<DomainEvent>>);
-        accumulator = reducer(accumulator, event.payload as Shape.Value<Events[number]>);
+      for await (const event of fetchEvents(props.eventStore, props.source, key)) {
+        events.push(event as DomainEventEnvelope<Shape.Value<Events[number]>>);
+        state = props.reducer(state, event.payload as Shape.Value<Events[number]>);
       }
       return {
-        state: accumulator,
+        state,
         events,
       };
     },

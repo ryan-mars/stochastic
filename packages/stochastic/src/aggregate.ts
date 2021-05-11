@@ -1,11 +1,11 @@
 import { BaseComponent, BaseComponentProps } from "./component";
-import { DomainEvent } from "./event";
+import { DomainEvent, DomainEventEnvelope } from "./event";
 import { Shape } from "./shape";
 
 export interface AggregateProps<
   T extends Shape = Shape,
   Key extends keyof Shape.Value<T> = any,
-  Events extends readonly DomainEvent[] = readonly DomainEvent[]
+  Events extends readonly DomainEvent[] = readonly DomainEvent[],
 > extends BaseComponentProps {
   readonly stateShape: T;
   readonly stateKey: Key;
@@ -17,11 +17,11 @@ export interface AggregateProps<
 export class Aggregate<
   T extends Shape = Shape,
   Key extends keyof Shape.Value<T> = any,
-  Events extends readonly DomainEvent[] = readonly DomainEvent[]
+  Events extends readonly DomainEvent[] = readonly DomainEvent[],
 > extends BaseComponent {
   readonly events: Events;
   readonly kind: "Aggregate" = "Aggregate";
-  readonly stateType: T;
+  readonly stateShape: T;
   readonly stateKey: Key;
   readonly reducer: (state: Shape.Value<T>, event: Shape.Value<Events[number]>) => Shape.Value<T>;
   readonly initialState: () => Shape.Value<T>;
@@ -30,11 +30,13 @@ export class Aggregate<
     this.events = props.events;
     this.reducer = props.reducer;
     this.initialState = props.initalState;
+    this.stateKey = props.stateKey;
+    this.stateShape = props.stateShape;
   }
 }
 
 export type AggregateInterface<A extends Aggregate> = {
   get: (
-    key: Shape.Value<A["stateType"]>[A["stateKey"]],
-  ) => Promise<{ state: Shape.Value<A["stateType"]>; events: Shape.Value<A["events"][number]>[] }>;
+    key: Shape.Value<A["stateShape"]>[A["stateKey"]],
+  ) => Promise<{ state: Shape.Value<A["stateShape"]>; events: DomainEventEnvelope<Shape.Value<A["events"][number]>>[] }>;
 };

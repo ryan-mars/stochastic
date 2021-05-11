@@ -6,7 +6,7 @@
   "types": "lib/cjs/index.ts",
   "module": "lib/esm/index.ts",
   "scripts": {
-    "clean": "rm -rf lib cdk.out",
+    "clean": "rm -rf lib cdk.out stochastic.out",
     "build": "tsc",
     "watch": "tsc -w",
     "cdk": "cdk",

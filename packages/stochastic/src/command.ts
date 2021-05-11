@@ -6,7 +6,7 @@ import { Shape } from "./shape";
 export interface CommandProps<
   Agg extends Aggregate = Aggregate,
   Intent extends Shape = Shape,
-  Events extends readonly DomainEvent[] = readonly DomainEvent[]
+  Events extends readonly DomainEvent[] = readonly DomainEvent[],
 > extends BaseComponentProps {
   readonly intent: Intent;
   readonly aggregate: Agg;
@@ -16,7 +16,7 @@ export interface CommandProps<
 export class Command<
   Agg extends Aggregate = Aggregate,
   Intent extends Shape = Shape,
-  Events extends readonly DomainEvent[] = readonly DomainEvent[]
+  Events extends readonly DomainEvent[] = readonly DomainEvent[],
 > extends BaseComponent {
   readonly kind: "Command" = "Command";
   readonly intent: Intent;
@@ -33,7 +33,7 @@ export class Command<
 export type CommandResponse<T, Events> =
   | {
       events: Events;
-      response?: T;
+      confirmation?: T;
     }
   | Events;
 

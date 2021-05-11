@@ -26,8 +26,6 @@ export class FlightCreatedEvent extends DomainEvent("FlightCreated", {
   aircraftType: string(),
 }) {}
 
-// TODO: These two lines have too much boiler plate
-
 export const FlightScheduleAggregate = new Aggregate({
   __filename,
   stateKey: "flightNo",
