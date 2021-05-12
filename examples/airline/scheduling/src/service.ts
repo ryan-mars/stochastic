@@ -123,7 +123,6 @@ export const AddScheduledFlightCommandHandler = new Command(
   },
 );
 
-// TODO: This BoundedContext should instead be a BoundedContext. Bounded Context should be able to stand alone. BoundedContext is a semantic collection of BoundedContexts only necessary if trying to fit multiple BoundedContexts in the same app
 export const scheduling = new BoundedContext({
   handler: "scheduling",
   name: "Scheduling",
