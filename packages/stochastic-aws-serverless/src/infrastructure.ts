@@ -22,16 +22,16 @@ import { Query } from "stochastic";
  * Construct Properties for creating an BoundedContext CDK Construct.
  */
 export interface BoundedContextConstructProps<S extends BoundedContext> {
-  storm: S;
+  boundedContext: S;
   components?: {
     [name in keyof S["components"]]?: ComponentProps<S["components"][name]>;
   };
 }
 
 export class BoundedContextConstruct<S extends BoundedContext = BoundedContext> extends cdk.Construct {
-  readonly storm: S;
+  readonly boundedContext: S;
   /**
-   * The Constructs for each of the Event Storm Components.
+   * The Constructs for each of the Bounded Context Components.
    */
   public readonly components: CDKComponents<S> = {} as CDKComponents<S>;
 
@@ -46,13 +46,13 @@ export class BoundedContextConstruct<S extends BoundedContext = BoundedContext> 
 
   constructor(scope: cdk.Construct, id: string, props: BoundedContextConstructProps<S>) {
     super(scope, id);
-    const storm = (this.storm = props.storm);
+    const boundedContext = (this.boundedContext = props.boundedContext);
 
-    const eventStore = (this.eventStore = new EventStore(scope, { storm }));
+    const eventStore = (this.eventStore = new EventStore(scope, { boundedContext }));
 
     const commandConstructs: Map<string, CommandConstruct> = new Map();
 
-    for (const [componentName, component] of Object.entries(storm.components).sort(([nameA, componentA], [nameB, componentB]) =>
+    for (const [componentName, component] of Object.entries(boundedContext.components).sort(([nameA, componentA], [nameB, componentB]) =>
       componentA.kind === "Command" ? -1 : 1,
     )) {
       const componentProps = (props.components as any)?.[componentName] as ComponentProps<Component>;
@@ -61,14 +61,14 @@ export class BoundedContextConstruct<S extends BoundedContext = BoundedContext> 
         con = new AggregateConstruct(this, componentName, {
           ...(componentProps as ComponentProps<Aggregate>),
           component,
-          storm,
+          boundedContext,
           name: componentName,
         });
       } else if (component.kind === "Command") {
         con = new CommandConstruct(this, componentName, {
           ...(componentProps as ComponentProps<Command>),
           component,
-          storm,
+          boundedContext,
           name: componentName,
         });
         commandConstructs.set(componentName, con);
@@ -78,7 +78,7 @@ export class BoundedContextConstruct<S extends BoundedContext = BoundedContext> 
         con = new PolicyConstruct(this, componentName, {
           ...(componentProps as ComponentProps<Policy>),
           component,
-          storm,
+          boundedContext,
           name: componentName,
           commands: commandConstructs,
         });
@@ -103,7 +103,7 @@ export type ComponentProps<C extends Component> = C extends Aggregate
   : never;
 
 /**
- * Map each component in the Event Storm to its corresponding CDK Construct.
+ * Map each component in the Bounded Context to its corresponding CDK Construct.
  */
 export type CDKComponents<S extends BoundedContext> = {
   [id in keyof S["components"]]: CDKComponent<S, S["components"][id]>;
@@ -119,25 +119,25 @@ export type CDKComponent<S extends BoundedContext, C extends Component> = C exte
   : cdk.Construct;
 
 export interface ComponentConstructProps<S extends BoundedContext = BoundedContext, C extends Component = Component> {
-  storm: S;
+  boundedContext: S;
   component: C;
   name: string;
 }
 
 export class ComponentConstruct<S extends BoundedContext = BoundedContext, C extends Component = Component> extends cdk.Construct {
-  readonly storm: S;
+  readonly boundedContext: S;
   readonly component: C;
   readonly name: string;
   constructor(scope: cdk.Construct, id: string, props: ComponentConstructProps<S, C>) {
     super(scope, id);
-    this.storm = props.storm;
+    this.boundedContext = props.boundedContext;
     this.component = props.component;
     this.name = props.name;
   }
 }
 
 export interface EventStoreProps {
-  storm: BoundedContext;
+  boundedContext: BoundedContext;
   // tableProps?: dynamodb.TableProps;
 }
 
@@ -221,7 +221,7 @@ export class CommandConstruct<S extends BoundedContext = BoundedContext, C exten
     super(scope, id, props);
 
     this.handler = new nodeLambda.NodejsFunction(this, "Function", {
-      ...generateHandler(this.name, props.component, props.storm.componentNames),
+      ...generateHandler(this.name, props.component, props.boundedContext.componentNames),
       runtime: lambda.Runtime.NODEJS_14_X,
       ...props,
       environment: {
@@ -291,7 +291,7 @@ export class PolicyConstruct<S extends BoundedContext = BoundedContext, C extend
     super(scope, id, props);
 
     this.handler = new nodeLambda.NodejsFunction(this, "Function", {
-      ...generateHandler(this.name, props.component, props.storm.componentNames),
+      ...generateHandler(this.name, props.component, props.boundedContext.componentNames),
       ...props,
       runtime: lambda.Runtime.NODEJS_14_X,
       environment: {
@@ -303,10 +303,13 @@ export class PolicyConstruct<S extends BoundedContext = BoundedContext, C extend
     });
 
     for (const command of props.component.commands) {
-      const commandName = props.storm.componentNames.get(command)!;
+      const commandName = props.boundedContext.componentNames.get(command)!;
       const commandConstruct = props.commands.get(commandName)!;
 
-      this.handler.addEnvironment(`${props.storm.componentNames.get(command)!}_LAMBDA_ARN`, commandConstruct?.handler.functionArn!);
+      this.handler.addEnvironment(
+        `${props.boundedContext.componentNames.get(command)!}_LAMBDA_ARN`,
+        commandConstruct?.handler.functionArn!,
+      );
       commandConstruct.handler.grantInvoke(this.handler);
     }
 

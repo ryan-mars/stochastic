@@ -2,7 +2,7 @@ import * as cdk from "@aws-cdk/core";
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as dynamodb from "@aws-cdk/aws-dynamodb";
 
-import { flightBoundedContext } from "./flight-event-storm";
+import { flightBoundedContext } from "./flight-bounded-context";
 import { BoundedContextConstruct } from "stochastic-aws-serverless/lib/cjs/infrastructure";
 
 export class FlightOpsStack extends cdk.Stack {
@@ -12,7 +12,7 @@ export class FlightOpsStack extends cdk.Stack {
     super(scope, id, props);
 
     this.boundedContext = new BoundedContextConstruct(this, "FlightBoundedContext", {
-      storm: flightBoundedContext,
+      boundedContext: flightBoundedContext,
       components: {
         // provide options properties for each of the components
         delayFlight: {

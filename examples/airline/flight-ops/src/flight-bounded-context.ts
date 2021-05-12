@@ -9,7 +9,7 @@ import { FlightsAggregate } from "./flights";
 export const flightBoundedContext = new BoundedContext({
   // name of the variable (^ above ^)
   handler: "flightBoundedContext",
-  // friendly name of the Event Storm app
+  // friendly name of the Bounded Context app
   name: "Flight Operations",
   components: {
     flights: FlightsAggregate,

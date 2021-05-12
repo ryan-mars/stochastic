@@ -8,7 +8,7 @@ export class BookingStack extends cdk.Stack {
     super(scope, id, props);
 
     new BoundedContextConstruct(this, "BoundedContext", {
-      storm: booking,
+      boundedContext: booking,
     });
   }
 }
