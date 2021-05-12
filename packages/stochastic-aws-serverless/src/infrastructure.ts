@@ -234,6 +234,17 @@ export class CommandConstruct<S extends BoundedContext = BoundedContext, C exten
         metafile: true,
       },
     });
+    scope.eventStore.table.grant(
+      this.handler,
+      "dynamodb:BatchGetItem",
+      "dynamodb:BatchWriteItem",
+      "dynamodb:ConditionCheckItem",
+      "dynamodb:GetItem",
+      "dynamodb:GetRecords",
+      "dynamodb:PutItem",
+      "dynamodb:Query",
+      "dynamodb:Scan",
+    );
   }
 }
 

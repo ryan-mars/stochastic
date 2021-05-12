@@ -5,7 +5,6 @@ import { CommandInterface, DomainEventEnvelope } from "stochastic";
 import { SQSEvent } from "aws-lambda";
 import { Component } from "stochastic";
 import { connectAggregateInterface, storeEvent } from "./event-store";
-import { table } from "console";
 
 export interface RuntimeOptions {
   credentials?: AWS.Credentials;
