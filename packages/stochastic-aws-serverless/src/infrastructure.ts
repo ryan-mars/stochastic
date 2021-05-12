@@ -10,7 +10,7 @@ import * as cdk from "@aws-cdk/core";
 import { Aggregate } from "stochastic";
 import { Command } from "stochastic";
 import { Component } from "stochastic";
-import { EventStorm } from "stochastic";
+import { BoundedContext } from "stochastic";
 import { Policy } from "stochastic";
 
 import * as path from "path";
@@ -19,16 +19,16 @@ import { ReadModel } from "stochastic";
 import { Query } from "stochastic";
 
 /**
- * Construct Properties for creating an EventStorm CDK Construct.
+ * Construct Properties for creating an BoundedContext CDK Construct.
  */
-export interface EventStormConstructProps<S extends EventStorm> {
+export interface BoundedContextConstructProps<S extends BoundedContext> {
   storm: S;
   components?: {
     [name in keyof S["components"]]?: ComponentProps<S["components"][name]>;
   };
 }
 
-export class EventStormConstruct<S extends EventStorm = EventStorm> extends cdk.Construct {
+export class BoundedContextConstruct<S extends BoundedContext = BoundedContext> extends cdk.Construct {
   readonly storm: S;
   /**
    * The Constructs for each of the Event Storm Components.
@@ -44,7 +44,7 @@ export class EventStormConstruct<S extends EventStorm = EventStorm> extends cdk.
    */
   public readonly eventStore: EventStore;
 
-  constructor(scope: cdk.Construct, id: string, props: EventStormConstructProps<S>) {
+  constructor(scope: cdk.Construct, id: string, props: BoundedContextConstructProps<S>) {
     super(scope, id);
     const storm = (this.storm = props.storm);
 
@@ -105,26 +105,26 @@ export type ComponentProps<C extends Component> = C extends Aggregate
 /**
  * Map each component in the Event Storm to its corresponding CDK Construct.
  */
-export type CDKComponents<S extends EventStorm> = {
+export type CDKComponents<S extends BoundedContext> = {
   [id in keyof S["components"]]: CDKComponent<S, S["components"][id]>;
 };
 
 /**
  * May a Component, `C`, to its corresponding CDK Construct representation.
  */
-export type CDKComponent<S extends EventStorm, C extends Component> = C extends Aggregate
+export type CDKComponent<S extends BoundedContext, C extends Component> = C extends Aggregate
   ? AggregateConstruct<S, C>
   : C extends Command
   ? CommandConstruct<S, C>
   : cdk.Construct;
 
-export interface ComponentConstructProps<S extends EventStorm = EventStorm, C extends Component = Component> {
+export interface ComponentConstructProps<S extends BoundedContext = BoundedContext, C extends Component = Component> {
   storm: S;
   component: C;
   name: string;
 }
 
-export class ComponentConstruct<S extends EventStorm = EventStorm, C extends Component = Component> extends cdk.Construct {
+export class ComponentConstruct<S extends BoundedContext = BoundedContext, C extends Component = Component> extends cdk.Construct {
   readonly storm: S;
   readonly component: C;
   readonly name: string;
@@ -137,7 +137,7 @@ export class ComponentConstruct<S extends EventStorm = EventStorm, C extends Com
 }
 
 export interface EventStoreProps {
-  storm: EventStorm;
+  storm: BoundedContext;
   // tableProps?: dynamodb.TableProps;
 }
 
@@ -198,23 +198,26 @@ export interface AggregateConstructProps<A extends Aggregate = Aggregate> {
 /**
  * Construct for an Aggregate - it creates a DynamoDB Table for storing backing data.
  */
-export class AggregateConstruct<S extends EventStorm = EventStorm, A extends Aggregate = Aggregate> extends ComponentConstruct<S, A> {
-  constructor(scope: EventStormConstruct, id: string, props: ComponentProps<A> & ComponentConstructProps<S, A>) {
+export class AggregateConstruct<S extends BoundedContext = BoundedContext, A extends Aggregate = Aggregate> extends ComponentConstruct<
+  S,
+  A
+> {
+  constructor(scope: BoundedContextConstruct, id: string, props: ComponentProps<A> & ComponentConstructProps<S, A>) {
     super(scope, id, props);
   }
 }
 
 /**
- * Command Construct Props is just the Lambda Props with code omitted - we'll bundle the code from the EventStorm
+ * Command Construct Props is just the Lambda Props with code omitted - we'll bundle the code from the BoundedContext
  * object which contains a reference to its path.
  */
 export interface CommandConstructProps<C extends Command = Command> extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {
   runtime?: lambda.Runtime;
 }
 
-export class CommandConstruct<S extends EventStorm = EventStorm, C extends Command = Command> extends ComponentConstruct<S, C> {
+export class CommandConstruct<S extends BoundedContext = BoundedContext, C extends Command = Command> extends ComponentConstruct<S, C> {
   readonly handler: lambda.Function;
-  constructor(scope: EventStormConstruct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
+  constructor(scope: BoundedContextConstruct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
     super(scope, id, props);
 
     this.handler = new nodeLambda.NodejsFunction(this, "Function", {
@@ -234,7 +237,7 @@ export class CommandConstruct<S extends EventStorm = EventStorm, C extends Comma
 }
 
 /**
- * Command Construct Props is just the Lambda Props with code omitted - we'll bundle the code from the EventStorm
+ * Command Construct Props is just the Lambda Props with code omitted - we'll bundle the code from the BoundedContext
  * object which contains a reference to its path.
  */
 export interface PolicyConstructProps<P extends Policy = Policy> extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {}
@@ -282,9 +285,9 @@ export interface PolicyConstructProps {
   commands: Map<string, CommandConstruct>;
 }
 
-export class PolicyConstruct<S extends EventStorm = EventStorm, C extends Policy = Policy> extends ComponentConstruct<S, C> {
+export class PolicyConstruct<S extends BoundedContext = BoundedContext, C extends Policy = Policy> extends ComponentConstruct<S, C> {
   readonly handler: lambda.Function;
-  constructor(scope: EventStormConstruct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
+  constructor(scope: BoundedContextConstruct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
     super(scope, id, props);
 
     this.handler = new nodeLambda.NodejsFunction(this, "Function", {

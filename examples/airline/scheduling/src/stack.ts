@@ -1,13 +1,13 @@
 import * as cdk from "@aws-cdk/core";
 
 import { scheduling } from "./service";
-import { EventStormConstruct } from "stochastic-aws-serverless/lib/cjs/infrastructure";
+import { BoundedContextConstruct } from "stochastic-aws-serverless/lib/cjs/infrastructure";
 
 export class SchedulingStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    new EventStormConstruct(this, "SchedulingEventStorm", {
+    new BoundedContextConstruct(this, "SchedulingBoundedContext", {
       storm: scheduling,
     });
   }
