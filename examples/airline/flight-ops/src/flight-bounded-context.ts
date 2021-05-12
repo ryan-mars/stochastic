@@ -1,4 +1,4 @@
-import { EventStorm } from "stochastic";
+import { BoundedContext } from "stochastic";
 import { delayFlight } from "./delay-flight";
 import { FlightDelayed } from "./flight-delayed";
 import { FlightLanded } from "./flight-landed";
@@ -6,10 +6,10 @@ import { FlightStatusChanged } from "./policies";
 import { FlightsAggregate } from "./flights";
 
 // TODO: I think this can be moved to the Construct code since we de-coupled runtime from it.
-export const flightEventStorm = new EventStorm({
+export const flightBoundedContext = new BoundedContext({
   // name of the variable (^ above ^)
-  handler: "flightEventStorm",
-  // friendly name of the Event Storm app
+  handler: "flightBoundedContext",
+  // friendly name of the Bounded Context app
   name: "Flight Operations",
   components: {
     flights: FlightsAggregate,
@@ -20,4 +20,4 @@ export const flightEventStorm = new EventStorm({
   },
 });
 
-// TODO: some CDK (Pulumi, Terraform) stuff with myEventStorm
+// TODO: some CDK (Pulumi, Terraform) stuff with myBoundedContext

@@ -1,6 +1,6 @@
-import { EventStorm } from "stochastic";
+import { BoundedContext } from "stochastic";
 
-export const booking = new EventStorm({
+export const booking = new BoundedContext({
   handler: "booking",
   name: "Booking",
   components: {},

@@ -1,4 +1,4 @@
-import { EventStorm, Policy } from "stochastic";
+import { BoundedContext, Policy } from "stochastic";
 
 // const SchedulingBoundedContext = new ExternalBoundedContext({
 //   boundedContext: scheduling,
@@ -20,7 +20,7 @@ import { EventStorm, Policy } from "stochastic";
 //   }
 // );
 
-// export const operations = new EventStorm({
+// export const operations = new BoundedContext({
 //   handler: "operations",
 //   name: "Operations",
 //   components: {

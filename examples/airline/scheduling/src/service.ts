@@ -1,4 +1,4 @@
-import { Aggregate, Command, EventStorm, Shape } from "stochastic";
+import { Aggregate, Command, BoundedContext, Shape } from "stochastic";
 import { DomainEvent } from "stochastic/src/event";
 import { object, record, string } from "superstruct";
 
@@ -123,8 +123,7 @@ export const AddScheduledFlightCommandHandler = new Command(
   },
 );
 
-// TODO: This EventStorm should instead be a BoundedContext. Bounded Context should be able to stand alone. EventStorm is a semantic collection of BoundedContexts only necessary if trying to fit multiple BoundedContexts in the same app
-export const scheduling = new EventStorm({
+export const scheduling = new BoundedContext({
   handler: "scheduling",
   name: "Scheduling",
   components: {
