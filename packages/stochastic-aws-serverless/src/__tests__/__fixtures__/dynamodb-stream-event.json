@@ -1,0 +1,71 @@
+{
+  "Records": [
+    {
+      "eventID": "59ba8d4bc7748dc12ce3feed30200a25",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-2",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1620851349,
+        "Keys": {
+          "sk": {
+            "S": "EVENT#1sS1oCIxZgbic90cQRz5rYUcDwY"
+          },
+          "pk": {
+            "S": "FlightSchedule#PA123"
+          }
+        },
+        "NewImage": {
+          "payload": {
+            "M": {
+              "flightNo": {
+                "S": "PA123"
+              },
+              "aircraftType": {
+                "S": "B787-9"
+              },
+              "__typename": {
+                "S": "FlightCreated"
+              },
+              "origin": {
+                "S": "SFO"
+              },
+              "destination": {
+                "S": "MIA"
+              },
+              "days": {
+                "M": {}
+              }
+            }
+          },
+          "sk": {
+            "S": "EVENT#1sS1oCIxZgbic90cQRz5rYUcDwY"
+          },
+          "id": {
+            "S": "1sS1oCIxZgbic90cQRz5rYUcDwY"
+          },
+          "pk": {
+            "S": "FlightSchedule#PA123"
+          },
+          "source": {
+            "S": "FlightSchedule"
+          },
+          "source_id": {
+            "S": "PA123"
+          },
+          "time": {
+            "S": "2021-05-12T20:29:08.906Z"
+          },
+          "type": {
+            "S": "FlightCreated"
+          }
+        },
+        "SequenceNumber": "100000000009009450812",
+        "SizeBytes": 322,
+        "StreamViewType": "NEW_IMAGE"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-2:611181767269:table/Scheduling-EventStoreTable9A84AAAA-1QBMIRFCHQ171/stream/2021-05-12T19:08:15.124"
+    }
+  ]
+}

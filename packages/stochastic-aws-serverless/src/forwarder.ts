@@ -7,11 +7,9 @@ const sns = new SNSClient({});
 
 export const handler: DynamoDBStreamHandler = async (event) => {
   const EVENT_STREAM_TOPIC_ARN: string = env.get("EVENT_STREAM_TOPIC_ARN").required().asString();
+  console.log(JSON.stringify(event, null, 2));
   for (const record of event.Records) {
     try {
-      // TODO: add shape name (event type)
-      // https://github.com/punchcard/punchcard/blob/dbbd1282a7733e6886571f5f6e537168af95ff40/packages/%40punchcard/shape-json/src/json.ts#L77-L88
-
       if (record.eventName !== "INSERT") {
         console.log(`Skipping ${record.eventName}`);
         continue;
@@ -28,14 +26,13 @@ export const handler: DynamoDBStreamHandler = async (event) => {
           TopicArn: EVENT_STREAM_TOPIC_ARN,
           MessageAttributes: {
             event_type: {
-              // Event type
               DataType: "String",
-              StringValue: item.name ?? "Unspecified", // FIXME: strongly type events
+              StringValue: item.type ?? "Unspecified",
             },
             version: {
               // Event type version
               DataType: "String",
-              StringValue: item.version,
+              StringValue: item.version ?? "0",
             },
           },
         }),
