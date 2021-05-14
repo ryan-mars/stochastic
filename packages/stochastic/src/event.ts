@@ -27,7 +27,7 @@ export class DomainEventEnvelope<Payload extends { __typename: string }> {
   }
 }
 
-export type DomainEvent<__typename extends string = string, T = any, Key extends string = string> = Shape<__typename, T> & {
+export type DomainEvent<__typename extends string = string, S = any, Key extends string = string> = Shape<__typename, S> & {
   kind: "DomainEvent";
   __key: Key;
 };
@@ -36,7 +36,10 @@ export function DomainEvent<__typename extends string, Key extends keyof S, S ex
   __typename: __typename,
   __key: Key,
   schema: S,
-): NewDomainEvent<__typename, S, Key> {
+): NewShape<__typename, S> & {
+  kind: "DomainEvent";
+  __key: Key;
+} {
   const shape = Shape(__typename, schema);
   (shape as any).kind = "DomainEvent";
   if (typeof __key !== "string") {
@@ -49,11 +52,3 @@ export function DomainEvent<__typename extends string, Key extends keyof S, S ex
   (shape as any).__key = __key;
   return shape as any;
 }
-
-export type NewDomainEvent<__typename extends string = string, S extends ObjectSchema = any, Key extends keyof S = keyof S> = NewShape<
-  __typename,
-  S
-> & {
-  kind: "DomainEvent";
-  __key: Key;
-};
