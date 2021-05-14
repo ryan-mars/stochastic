@@ -1,5 +1,5 @@
 import { BoundedContext } from "stochastic";
-import { scheduling } from "scheduling/lib/cjs/index";
+import { scheduling } from "scheduling/lib/index";
 
 console.log(scheduling.components.FlightCreatedEvent.__typename);
 

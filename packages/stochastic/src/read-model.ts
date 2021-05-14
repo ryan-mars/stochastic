@@ -20,7 +20,10 @@ export class ReadModel<Model extends Shape = Shape, Events extends Shape[] = Sha
 }
 
 export namespace ReadModel {
-  export type Reducer<Model = any, Events extends Shape[] = Shape[]> = (events: Shape.Value<Events[number]>[], model: Model) => Model;
+  export type Reducer<Model extends Shape = Shape, Events extends Shape[] = Shape[]> = (
+    events: Shape.Value<Events[number]>[],
+    model: Shape.Value<Model>,
+  ) => Shape.Value<Model>;
 
   export type Runtime<C extends ReadModel[]> = {
     [i in keyof C]: C[i] extends ReadModel<infer Model> ? () => Promise<Shape.Value<Model>> : C[i];
@@ -30,7 +33,7 @@ export namespace ReadModel {
 export interface ByKeyReadModelProps<
   E extends Shape[] = Shape[],
   Model extends Shape = Shape,
-  Key extends keyof Shape.Value<Model> = keyof Shape.Value<Model>
+  Key extends keyof Shape.Value<Model> = keyof Shape.Value<Model>,
 > extends BaseComponentProps {
   events: E;
   shape: Model;
@@ -40,7 +43,7 @@ export interface ByKeyReadModelProps<
 export class ByKeyReadModel<
   Events extends Shape[] = Shape[],
   Model extends Shape = Shape,
-  Key extends keyof Shape.Value<Model> = keyof Shape.Value<Model>
+  Key extends keyof Shape.Value<Model> = keyof Shape.Value<Model>,
 > extends ReadModel<Model, Events> {
   constructor(
     props: ByKeyReadModelProps<Events, Model, Key>,
