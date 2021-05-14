@@ -6,6 +6,7 @@ import { CommandInterface, DomainEventEnvelope } from "stochastic";
 import { SQSEvent } from "aws-lambda";
 import { Component } from "stochastic";
 import { connectAggregateInterface, storeEvent } from "./event-store";
+import { TextEncoder } from "util";
 
 export interface RuntimeOptions {
   credentials?: Credentials;
