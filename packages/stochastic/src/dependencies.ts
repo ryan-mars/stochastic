@@ -1,4 +1,4 @@
-import { Aggregate, AggregateInterface } from "./aggregate";
+import { Aggregate } from "./aggregate";
 
 export class Dependencies<A extends readonly Aggregate[] = readonly Aggregate[]> {
   readonly kind: "Dependencies" = "Dependencies";
