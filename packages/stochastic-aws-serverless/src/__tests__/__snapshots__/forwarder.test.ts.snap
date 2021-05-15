@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`event forwarder forward the event to SNS 1`] = `
+Object {
+  "Message": "{\\"payload\\":{\\"flightNo\\":\\"PA123\\",\\"aircraftType\\":\\"B787-9\\",\\"__typename\\":\\"FlightCreated\\",\\"origin\\":\\"SFO\\",\\"destination\\":\\"MIA\\",\\"days\\":{}},\\"sk\\":\\"EVENT#1sS1oCIxZgbic90cQRz5rYUcDwY\\",\\"id\\":\\"1sS1oCIxZgbic90cQRz5rYUcDwY\\",\\"pk\\":\\"FlightSchedule#PA123\\",\\"source\\":\\"FlightSchedule\\",\\"source_id\\":\\"PA123\\",\\"time\\":\\"2021-05-12T20:29:08.906Z\\",\\"type\\":\\"FlightCreated\\",\\"SequenceNumber\\":\\"100000000009009450812\\"}",
+  "MessageAttributes": Object {
+    "event_type": Object {
+      "DataType": "String",
+      "StringValue": "FlightCreated",
+    },
+    "version": Object {
+      "DataType": "String",
+      "StringValue": "0",
+    },
+  },
+  "TopicArn": "my:sns:arn",
+}
+`;

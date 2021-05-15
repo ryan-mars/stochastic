@@ -1,8 +1,5 @@
-import { Domain } from "domain";
 import KSUID from "ksuid";
-import { string } from "superstruct";
-import { ObjectSchema } from "superstruct/lib/utils";
-import { NewShape, Shape } from "./shape";
+import { NewShape, ObjectSchema, Shape } from "./shape";
 
 export interface DomainEventEnvelopeProps<Payload> {
   source: string;
@@ -30,11 +27,19 @@ export class DomainEventEnvelope<Payload extends { __typename: string }> {
   }
 }
 
+export type DomainEvent<__typename extends string = string, S = any, Key extends string = string> = Shape<__typename, S> & {
+  kind: "DomainEvent";
+  __key: Key;
+};
+
 export function DomainEvent<__typename extends string, Key extends keyof S, S extends ObjectSchema>(
   __typename: __typename,
   __key: Key,
   schema: S,
-): DomainEvent<__typename, S, Key> {
+): NewShape<__typename, S> & {
+  kind: "DomainEvent";
+  __key: Key;
+} {
   const shape = Shape(__typename, schema);
   (shape as any).kind = "DomainEvent";
   if (typeof __key !== "string") {
@@ -47,9 +52,3 @@ export function DomainEvent<__typename extends string, Key extends keyof S, S ex
   (shape as any).__key = __key;
   return shape as any;
 }
-
-export type DomainEvent<__typename extends string = string, S extends ObjectSchema = ObjectSchema, Key extends keyof S = keyof S> =
-  NewShape<__typename, S> & {
-    kind: "DomainEvent";
-    __key: Key;
-  };

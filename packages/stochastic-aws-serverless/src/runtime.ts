@@ -1,14 +1,15 @@
 import * as lambda from "aws-lambda";
 
-import * as AWS from "aws-sdk";
+import { Credentials } from "@aws-sdk/types";
+import { InvokeCommand, LambdaClient } from "@aws-sdk/client-lambda";
 import { CommandInterface, DomainEventEnvelope } from "stochastic";
 import { SQSEvent } from "aws-lambda";
 import { Component } from "stochastic";
 import { connectAggregateInterface, storeEvent } from "./event-store";
-import { table } from "console";
+import { TextEncoder } from "util";
 
 export interface RuntimeOptions {
-  credentials?: AWS.Credentials;
+  credentials?: Credentials;
 }
 
 export interface Runtime {
@@ -17,7 +18,7 @@ export interface Runtime {
 }
 
 export class LambdaRuntime implements Runtime {
-  readonly lambda: AWS.Lambda;
+  readonly lambda: LambdaClient;
   readonly handler: lambda.Handler;
   constructor(
     readonly component: Component,
@@ -25,7 +26,7 @@ export class LambdaRuntime implements Runtime {
     readonly names: Map<Component, string>,
     options?: RuntimeOptions,
   ) {
-    this.lambda = new AWS.Lambda(options?.credentials);
+    this.lambda = new LambdaClient({ credentials: options?.credentials });
 
     const handlerName = process.env.COMPONENT_NAME;
     if (handlerName === undefined) {
@@ -95,13 +96,13 @@ export class LambdaRuntime implements Runtime {
         if (lambdaArn === undefined) {
           throw new Error(`missing environment variable: '${commandName}_LAMBDA_ARN'`);
         }
-        return (input: any) =>
-          this.lambda
-            .invoke({
+        return async (input: any) =>
+          this.lambda.send(
+            new InvokeCommand({
               FunctionName: lambdaArn,
-              Payload: JSON.stringify(input),
-            })
-            .promise();
+              Payload: new TextEncoder().encode(JSON.stringify(input)),
+            }),
+          );
       }) as CommandInterface<typeof component["commands"]>;
       this.handler = (event: SQSEvent, context) =>
         Promise.all(event.Records.map((record) => component.apply(JSON.parse(record.body), ...commands)));

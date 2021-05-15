@@ -133,4 +133,8 @@ export const scheduling = new BoundedContext({
     CreateFlightCommandHandler,
     AddScheduledFlightCommandHandler,
   },
+  // emits: {
+  //   ScheduledFlightAdded,
+  //   FlightCreatedEvent,
+  // },
 });

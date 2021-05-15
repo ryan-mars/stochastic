@@ -1,12 +1,15 @@
-import { create, object } from "superstruct";
-import { ObjectSchema } from "superstruct/lib/utils";
+import { object, Struct } from "superstruct";
+
+export type ObjectSchema = {
+  [fieldName in string]: Struct<any, any>;
+};
 
 export type NewShape<__typename extends string, S extends ObjectSchema> = {
   __typename: __typename;
   fields: S;
 } & (new (
   fields: {
-    [field in keyof S]: S[field]["TYPE"];
+    [field in keyof S]: S[field] extends Struct<infer T> ? T : never;
   },
 ) => {
   __typename: __typename;

@@ -231,8 +231,20 @@ export class CommandConstruct<S extends BoundedContext = BoundedContext, C exten
       },
       bundling: {
         sourceMap: true,
+        metafile: true,
       },
     });
+    scope.eventStore.table.grant(
+      this.handler,
+      "dynamodb:BatchGetItem",
+      "dynamodb:BatchWriteItem",
+      "dynamodb:ConditionCheckItem",
+      "dynamodb:GetItem",
+      "dynamodb:GetRecords",
+      "dynamodb:PutItem",
+      "dynamodb:Query",
+      "dynamodb:Scan",
+    );
   }
 }
 
@@ -254,8 +266,8 @@ export function generateHandler(
   const entry = path.resolve("stochastic.out", componentName + ".ts");
   fs.writeFileSync(
     entry,
-    `import {LambdaRuntime} from "stochastic-aws-serverless";    
-import {${componentName}} from "${requirePath(component)}";
+    `import { LambdaRuntime } from "stochastic-aws-serverless/lib/cjs/runtime";    
+import { ${componentName} } from "${requirePath(component)}";
 
 ${
   component.kind === "Policy"
@@ -299,6 +311,7 @@ export class PolicyConstruct<S extends BoundedContext = BoundedContext, C extend
       },
       bundling: {
         sourceMap: true,
+        metafile: true,
       },
     });
 

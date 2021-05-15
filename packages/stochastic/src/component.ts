@@ -5,7 +5,7 @@ import { Query } from "./query";
 import { ReadModel } from "./read-model";
 import { DomainEvent } from "./event";
 
-export type Component = Aggregate | Command | DomainEvent | Policy | Query | ReadModel;
+export type Component = Aggregate | Command | DomainEvent<string, any, any> | Policy | Query | ReadModel;
 
 export interface BaseComponentProps {
   /**
