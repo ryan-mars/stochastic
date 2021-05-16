@@ -7,33 +7,32 @@ import * as snsSubscriptions from "@aws-cdk/aws-sns-subscriptions";
 import * as sqs from "@aws-cdk/aws-sqs";
 import * as cdk from "@aws-cdk/core";
 
-import { Aggregate } from "stochastic";
-import { Command } from "stochastic";
-import { Component } from "stochastic";
-import { BoundedContext } from "stochastic";
-import { Policy } from "stochastic";
+import { Aggregate, BoundedContextEvents, Command, Component, BoundedContext, Policy } from "stochastic";
 
 import * as path from "path";
 import * as fs from "fs";
 import { ReadModel } from "stochastic";
 import { Query } from "stochastic";
+import { EventBinding } from "./event-binding";
 
-/**
- * Construct Properties for creating an BoundedContext CDK Construct.
- */
-export interface BoundedContextConstructProps<S extends BoundedContext> {
-  boundedContext: S;
-  components?: {
-    [name in keyof S["components"]]?: ComponentProps<S["components"][name]>;
-  };
+export interface IBoundedContextConstruct /* extends cdk.IConstruct */ {
+  readonly eventBridgeArn: string;
 }
 
-export class BoundedContextConstruct<S extends BoundedContext = BoundedContext> extends cdk.Construct {
-  readonly boundedContext: S;
+export class BoundedContextConstruct<Context extends BoundedContext = BoundedContext> extends cdk.Construct implements IBoundedContextConstruct {
+  public static fromArn(eventBridgeArn: string): IBoundedContextConstruct {
+    // TODO: base construct for BoundedContext, following pattern of CDK
+    // https://github.com/aws/aws-cdk/blob/master/packages/%40aws-cdk/aws-lambda/lib/function.ts#L403
+    return {
+      eventBridgeArn
+    };
+  }
+
+  public readonly boundedContext: Context;
   /**
    * The Constructs for each of the Bounded Context Components.
    */
-  public readonly components: CDKComponents<S> = {} as CDKComponents<S>;
+  public readonly components: CDKComponents<Context> = {} as CDKComponents<Context>;
 
   /**
    * Associate the Component reference with the corresponding Construct.
@@ -44,11 +43,25 @@ export class BoundedContextConstruct<S extends BoundedContext = BoundedContext> 
    */
   public readonly eventStore: EventStore;
 
-  constructor(scope: cdk.Construct, id: string, props: BoundedContextConstructProps<S>) {
+  public readonly eventBridgeArn: string;
+
+  public readonly emitEvents: EventBinding<BoundedContextEvents<Context['components']>>[];
+  public readonly receiveEvents: EventBinding<Context['emits'][number]>[];
+
+  constructor(scope: cdk.Construct, id: string, props: {
+    boundedContext: Context;
+    components?: {
+      [name in keyof Context["components"]]?: ComponentProps<Context["components"][name]>;
+    };
+    emitEvents?: EventBinding<Context['emits'][number]>[]
+    receiveEvents?: EventBinding<BoundedContextEvents<Context['components']>>[]
+  }) {
     super(scope, id);
     const boundedContext = (this.boundedContext = props.boundedContext);
-
+    this.emitEvents = props.emitEvents ?? [];
+    this.receiveEvents = props.receiveEvents ?? [];
     const eventStore = (this.eventStore = new EventStore(scope, { boundedContext }));
+    this.eventBridgeArn = "???";
 
     const commandConstructs: Map<string, CommandConstruct> = new Map();
 
@@ -58,14 +71,14 @@ export class BoundedContextConstruct<S extends BoundedContext = BoundedContext> 
       const componentProps = (props.components as any)?.[componentName] as ComponentProps<Component>;
       let con: AggregateConstruct | CommandConstruct | PolicyConstruct | undefined;
       if (component.kind === "Aggregate") {
-        con = new AggregateConstruct(this, componentName, {
+        con = new AggregateConstruct(this as any, componentName, {
           ...(componentProps as ComponentProps<Aggregate>),
           component,
           boundedContext,
           name: componentName,
         });
       } else if (component.kind === "Command") {
-        con = new CommandConstruct(this, componentName, {
+        con = new CommandConstruct(this as any, componentName, {
           ...(componentProps as ComponentProps<Command>),
           component,
           boundedContext,
@@ -75,7 +88,7 @@ export class BoundedContextConstruct<S extends BoundedContext = BoundedContext> 
         // } else if (component.kind === "Event") {
         // TODO
       } else if (component.kind === "Policy") {
-        con = new PolicyConstruct(this, componentName, {
+        con = new PolicyConstruct(this as any, componentName, {
           ...(componentProps as ComponentProps<Policy>),
           component,
           boundedContext,
@@ -89,6 +102,13 @@ export class BoundedContextConstruct<S extends BoundedContext = BoundedContext> 
       }
     }
   }
+
+  public receiveEvent(binding: EventBinding<{
+    [component in keyof Context['components']]: Context['components'][component] extends Policy | Command ? Context['components'][component]['events'][number] : never;
+  }[keyof Context['components']]>): void { }
+
+  public emitEvent(binding: EventBinding<Context['emits'][number]>): void { }
+
 }
 
 /**
@@ -252,7 +272,7 @@ export class CommandConstruct<S extends BoundedContext = BoundedContext, C exten
  * Command Construct Props is just the Lambda Props with code omitted - we'll bundle the code from the BoundedContext
  * object which contains a reference to its path.
  */
-export interface PolicyConstructProps<P extends Policy = Policy> extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {}
+export interface PolicyConstructProps<P extends Policy = Policy> extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> { }
 
 export function generateHandler(
   componentName: string,
@@ -269,17 +289,15 @@ export function generateHandler(
     `import { LambdaRuntime } from "stochastic-aws-serverless/lib/cjs/runtime";    
 import { ${componentName} } from "${requirePath(component)}";
 
-${
-  component.kind === "Policy"
-    ? component.commands.map((command) => `import {${componentNames.get(command)!}} from "${requirePath(command)}"`).join("\n")
-    : ""
-}
+${component.kind === "Policy"
+      ? component.commands.map((command) => `import {${componentNames.get(command)!}} from "${requirePath(command)}"`).join("\n")
+      : ""
+    }
 const names = new Map<any, any>();
-${
-  component.kind === "Policy"
-    ? component.commands.map((command) => `names.set(${componentNames.get(command)!}, "${componentNames.get(command)!}");`).join("\n")
-    : ""
-}
+${component.kind === "Policy"
+      ? component.commands.map((command) => `names.set(${componentNames.get(command)!}, "${componentNames.get(command)!}");`).join("\n")
+      : ""
+    }
 const runtime = new LambdaRuntime(${componentName}, "${componentName}", names);
 export const handler = runtime.handler`,
   );

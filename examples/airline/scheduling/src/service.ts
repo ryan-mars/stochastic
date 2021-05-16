@@ -1,5 +1,4 @@
-import { Aggregate, Command, BoundedContext, Shape } from "stochastic";
-import { DomainEvent } from "stochastic/src/event";
+import { Aggregate, Command, BoundedContext, Shape, Policy, DomainEvent, BoundedContextEvents } from "stochastic";
 import { object, record, string } from "superstruct";
 
 export class FlightSchedule extends Shape("FlightSchedule", {
@@ -8,7 +7,7 @@ export class FlightSchedule extends Shape("FlightSchedule", {
   origin: string(),
   destination: string(),
   days: record(string(), object({ scheduledArrival: string(), scheduledDeparture: string() })),
-}) {}
+}) { }
 
 export class ScheduledFlightAdded extends DomainEvent("ScheduledFlightAdded", "flightNo", {
   flightNo: string(),
@@ -17,7 +16,7 @@ export class ScheduledFlightAdded extends DomainEvent("ScheduledFlightAdded", "f
     scheduledDeparture: string(),
     scheduledArrival: string(),
   }),
-}) {}
+}) { }
 
 export class FlightCreatedEvent extends DomainEvent("FlightCreated", "flightNo", {
   flightNo: string(),
@@ -25,7 +24,15 @@ export class FlightCreatedEvent extends DomainEvent("FlightCreated", "flightNo",
   destination: string(),
   aircraftType: string(),
   days: record(string(), object({ scheduledArrival: string(), scheduledDeparture: string() })),
-}) {}
+}) { }
+
+export class FlightCancelledEvent extends DomainEvent("FlightCancelled", "flightNo", {
+  flightNo: string(),
+}) { }
+
+export class FlightRebookedEvent extends DomainEvent("FlightRebooked", "flightNo", {
+  flightNo: string(),
+}) { }
 
 export const FlightScheduleAggregate = new Aggregate({
   __filename,
@@ -63,7 +70,7 @@ export class CreateFlightIntent extends Shape("CreateFlightIntent", {
   origin: string(),
   destination: string(),
   aircraftType: string(),
-}) {}
+}) { }
 
 export const CreateFlightCommandHandler = new Command(
   {
@@ -90,7 +97,7 @@ export class AddScheduledFlightIntent extends Shape("AddScheduledFlightIntent", 
     scheduledDeparture: string(),
     scheduledArrival: string(),
   }),
-}) {}
+}) { }
 
 export const AddScheduledFlightCommandHandler = new Command(
   {
@@ -123,6 +130,14 @@ export const AddScheduledFlightCommandHandler = new Command(
   },
 );
 
+export const FlightCancelledPolicy = new Policy({
+  __filename,
+  commands: [],
+  events: [
+    FlightCancelledEvent
+  ],
+}, async () => { });
+
 export const scheduling = new BoundedContext({
   handler: "scheduling",
   name: "Scheduling",
@@ -132,9 +147,39 @@ export const scheduling = new BoundedContext({
     FlightCreatedEvent,
     CreateFlightCommandHandler,
     AddScheduledFlightCommandHandler,
+    FlightCancelledPolicy
   },
-  // emits: {
-  //   ScheduledFlightAdded,
-  //   FlightCreatedEvent,
-  // },
+  emits: [
+    FlightCreatedEvent
+  ]
+});
+
+
+export class CancelFlight extends Shape("CancelFlight", {
+  flightNo: string()
+}) { }
+
+export const CancelFlightCommand = new Command(
+  {
+    __filename,
+    aggregate: undefined, // TODO
+    events: [
+      FlightCancelledEvent
+    ],
+    intent: CancelFlight
+  },
+  async (event) => {
+
+  }
+);
+
+export const operations = new BoundedContext({
+  handler: "operations",
+  name: "Operations",
+  components: {
+    CancelFlightCommand
+  },
+  emits: [
+    FlightCancelledEvent
+  ]
 });

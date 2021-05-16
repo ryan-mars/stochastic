@@ -3,4 +3,4 @@ node_modules
 cdk.out
 .DS_Store
 template.yaml
-.vscode/settings.json
+!.vscode
