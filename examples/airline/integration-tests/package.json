@@ -1,0 +1,15 @@
+{
+  "name": "integration-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo 0"
+  },
+  "keywords": [],
+  "author": "",
+  "private": true,
+  "dependencies": {
+    "@cucumber/cucumber": "^7.2.1"
+  }
+}

@@ -1,87 +1,108 @@
 import { DomainEventEnvelope } from "stochastic";
-import {
-  AddScheduledFlightCommandHandler,
-  AddScheduledFlightIntent,
-  CreateFlightCommandHandler,
-  CreateFlightIntent,
-  FlightCreatedEvent,
-  FlightSchedule,
-  FlightScheduleAggregate,
-  ScheduledFlightAdded,
-} from "./service";
+import { RouteAdded, ScheduledFlightsAdded, RouteScheduleAggregate, AddRouteCommand, AddRoute, AddFlightsCommand, AddFlights, RouteSchedule } from "./service";
 
 describe("Scheduling service", () => {
-  const flightCreated = new DomainEventEnvelope({
+  const routeAdded = new DomainEventEnvelope({
     id: "1sC26Tx3VUi42mghcNopBYsRxD9",
     time: new Date("2021-05-07T04:34:35.302Z"),
-    source: "FlightScheduleAggregate",
-    source_id: "PA576",
-    payload: new FlightCreatedEvent({
-      flightNo: "PA576",
-      aircraftType: "B787-9",
-      origin: "SFO",
-      destination: "MIA",
-      days: {},
+    source: "RouteSchedule",
+    source_id: "SFO-MIA",
+    payload: new RouteAdded({
+      route: "SFO-MIA",
     }),
   });
-  const scheduledFlightAdded = new DomainEventEnvelope({
+  const scheduledFlightsAdded = new DomainEventEnvelope({
     id: "1sC539ZsfhN9bHV4K8jZqtSz9bN",
     time: new Date("2021-05-07T04:58:48.459Z"),
     source: "FlightScheduleAggregate",
     source_id: "PA576",
-    payload: new ScheduledFlightAdded({
-      flightNo: "PA576",
-      add: {
-        day: "2021-06-11",
-        scheduledArrival: new Date("2021-06-12T02:30:00.000Z").toISOString(),
-        scheduledDeparture: new Date("2021-06-11T20:30:00.000Z").toISOString(),
-      },
+    payload: new ScheduledFlightsAdded({
+      route: "SFO-MIA",
+      flights: [
+        {
+          day: "2021-06-11",
+          flightNo: "PA576",
+          arrivalTime: "928p",
+          departureTime: "1210p",
+        },
+        {
+          day: "2021-06-11",
+          flightNo: "PA872",
+          arrivalTime: "502p",
+          departureTime: "700a",
+        },
+        {
+          day: "2021-06-11",
+          flightNo: "PA738",
+          arrivalTime: "513p",
+          departureTime: "700a",
+        },
+        {
+          day: "2021-06-12",
+          flightNo: "PA576",
+          arrivalTime: "928p",
+          departureTime: "1210p",
+        },
+        {
+          day: "2021-06-12",
+          flightNo: "PA872",
+          arrivalTime: "502p",
+          departureTime: "700a",
+        },
+        {
+          day: "2021-06-12",
+          flightNo: "PA738",
+          arrivalTime: "513p",
+          departureTime: "700a",
+        },
+      ],
     }),
   });
-  it("should reduce aggregate state from events", () => {
-    let state = FlightScheduleAggregate.reducer(FlightScheduleAggregate.initialState(), flightCreated.payload);
-    state = FlightScheduleAggregate.reducer(state, scheduledFlightAdded.payload);
+
+  it("reduces state from events", () => {
+    let state = [routeAdded.payload, scheduledFlightsAdded.payload].reduce(RouteScheduleAggregate.reducer, RouteScheduleAggregate.initialState());
     expect(state).toMatchSnapshot();
   });
 
-  it("creates a flight", async () => {
-    const event = await CreateFlightCommandHandler.execute(
-      new CreateFlightIntent({
-        flightNo: "PA576",
-        aircraftType: "B787-9",
-        origin: "SFO",
-        destination: "MIA",
+  it("adds routes", async () => {
+    const event = await AddRouteCommand.execute(
+      new AddRoute({
+        route: "SFO-MIA"
       }),
       {
-        get: async (key: string) => ({ state: FlightScheduleAggregate.initialState(), events: [] }),
+        get: async (key: string) => ({ state: undefined as any, events: [] }),
       },
     );
     expect(event).toMatchSnapshot();
   });
 
   it("adds a scheduled flight", async () => {
-    const event = await AddScheduledFlightCommandHandler.execute(
-      new AddScheduledFlightIntent({
-        flightNo: "PA576",
-        add: {
-          scheduledDeparture: new Date("2021-06-11T12:30:00-08:00").toISOString(),
-          scheduledArrival: new Date("2021-06-11T21:30:00-05:00").toISOString(),
-          day: "2021-06-11",
-        },
-      }),
-      {
-        get: async (key) => ({
-          state: new FlightSchedule({
+    const event = await AddFlightsCommand.execute(
+      new AddFlights(new ScheduledFlightsAdded({
+        route: "SFO-MIA",
+        flights: [
+          {
+            day: "2021-06-11",
             flightNo: "PA576",
-            aircraftType: "B787-9",
-            origin: "SFO",
-            destination: "MIA",
-            days: {},
+            arrivalTime: "928p",
+            departureTime: "1210p",
+          },
+          {
+            day: "2021-06-11",
+            flightNo: "PA872",
+            arrivalTime: "502p",
+            departureTime: "700a",
+          },
+        ]
+      })),
+      {
+        get: async (key: string) => ({
+          state: new RouteSchedule({
+            route: "SFO-MIA", flights: []
           }),
-          events: [flightCreated],
+          events: [routeAdded],
         }),
-      },
-    );
+      })
     expect(event).toMatchSnapshot();
   });
 });

@@ -28,4 +28,6 @@
   },
   "editor.formatOnSave": true,
   "typescript.tsc.autoDetect": "off",
+  "prettier.requireConfig": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
 }

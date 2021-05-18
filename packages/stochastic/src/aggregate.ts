@@ -6,19 +6,19 @@ export interface AggregateProps<
   T extends Shape = Shape,
   Key extends keyof Shape.Value<T> = any,
   Events extends readonly DomainEvent[] = readonly DomainEvent[],
-> extends BaseComponentProps {
+  > extends BaseComponentProps {
   readonly stateShape: T;
   readonly stateKey: Key;
   readonly events: Events;
   readonly reducer: (state: Shape.Value<T>, event: Shape.Value<Events[number]>) => Shape.Value<T>;
-  readonly initalState: () => Shape.Value<T>;
+  readonly initialState: () => Shape.Value<T>;
 }
 
 export class Aggregate<
   T extends Shape = Shape,
   Key extends keyof Shape.Value<T> = any,
   Events extends readonly DomainEvent[] = readonly DomainEvent[],
-> extends BaseComponent {
+  > extends BaseComponent {
   readonly events: Events;
   readonly kind: "Aggregate" = "Aggregate";
   readonly stateShape: T;
@@ -29,7 +29,7 @@ export class Aggregate<
     super(props);
     this.events = props.events;
     this.reducer = props.reducer;
-    this.initialState = props.initalState;
+    this.initialState = props.initialState;
     this.stateKey = props.stateKey;
     this.stateShape = props.stateShape;
   }

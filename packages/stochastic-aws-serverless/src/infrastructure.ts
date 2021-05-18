@@ -1,19 +1,15 @@
-import * as dynamodb from "@aws-cdk/aws-dynamodb";
-import * as lambda from "@aws-cdk/aws-lambda";
-import * as lambdaEventSources from "@aws-cdk/aws-lambda-event-sources";
-import * as nodeLambda from "@aws-cdk/aws-lambda-nodejs";
-import * as sns from "@aws-cdk/aws-sns";
-import * as snsSubscriptions from "@aws-cdk/aws-sns-subscriptions";
-import * as sqs from "@aws-cdk/aws-sqs";
-import * as cdk from "@aws-cdk/core";
-
-import { Aggregate, BoundedContextEvents, Command, Component, BoundedContext, Policy } from "stochastic";
-
-import * as path from "path";
-import * as fs from "fs";
-import { ReadModel } from "stochastic";
-import { Query } from "stochastic";
-import { EventBinding } from "./event-binding";
+import * as dynamodb from '@aws-cdk/aws-dynamodb';
+import * as lambda from '@aws-cdk/aws-lambda';
+import * as lambdaEventSources from '@aws-cdk/aws-lambda-event-sources';
+import * as nodeLambda from '@aws-cdk/aws-lambda-nodejs';
+import * as sns from '@aws-cdk/aws-sns';
+import * as snsSubscriptions from '@aws-cdk/aws-sns-subscriptions';
+import * as sqs from '@aws-cdk/aws-sqs';
+import * as cdk from '@aws-cdk/core';
+import * as fs from 'fs';
+import * as path from 'path';
+import { Aggregate, BoundedContext, BoundedContextEvents, Command, Component, Policy, Query, ReadModel } from 'stochastic';
+import { EmitEventBinding, RecieveEventBinding } from '.';
 
 export interface IBoundedContextConstruct /* extends cdk.IConstruct */ {
   readonly eventBridgeArn: string;
@@ -45,16 +41,16 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
 
   public readonly eventBridgeArn: string;
 
-  public readonly emitEvents: EventBinding<BoundedContextEvents<Context['components']>>[];
-  public readonly receiveEvents: EventBinding<Context['emits'][number]>[];
+  public readonly emitEvents: EmitEventBinding<BoundedContextEvents<Context['components']>>[];
+  public readonly receiveEvents: RecieveEventBinding<Context['emits'][number]>[];
 
   constructor(scope: cdk.Construct, id: string, props: {
     boundedContext: Context;
     components?: {
       [name in keyof Context["components"]]?: ComponentProps<Context["components"][name]>;
     };
-    emitEvents?: EventBinding<Context['emits'][number]>[]
-    receiveEvents?: EventBinding<BoundedContextEvents<Context['components']>>[]
+    emitEvents?: EmitEventBinding<Context['emits'][number]>[]
+    receiveEvents?: RecieveEventBinding<BoundedContextEvents<Context['components']>>[]
   }) {
     super(scope, id);
     const boundedContext = (this.boundedContext = props.boundedContext);
@@ -62,6 +58,8 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
     this.receiveEvents = props.receiveEvents ?? [];
     const eventStore = (this.eventStore = new EventStore(scope, { boundedContext }));
     this.eventBridgeArn = "???";
+
+    this.emitEvents.map(binding => this.eventStore.topic.addSubscription(binding.bind(scope)))
 
     const commandConstructs: Map<string, CommandConstruct> = new Map();
 
@@ -103,11 +101,13 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
     }
   }
 
-  public receiveEvent(binding: EventBinding<{
+  public receiveEvent(binding: RecieveEventBinding<{
     [component in keyof Context['components']]: Context['components'][component] extends Policy | Command ? Context['components'][component]['events'][number] : never;
   }[keyof Context['components']]>): void { }
 
-  public emitEvent(binding: EventBinding<Context['emits'][number]>): void { }
+  public emitEvent(binding: EmitEventBinding<Context['emits'][number]>): void {
+
+  }
 
 }
 
@@ -286,7 +286,7 @@ export function generateHandler(
   const entry = path.resolve("stochastic.out", componentName + ".ts");
   fs.writeFileSync(
     entry,
-    `import { LambdaRuntime } from "stochastic-aws-serverless/lib/cjs/runtime";    
+    `import { LambdaRuntime } from "stochastic-aws-serverless/lib/runtime";    
 import { ${componentName} } from "${requirePath(component)}";
 
 ${component.kind === "Policy"

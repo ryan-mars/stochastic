@@ -1,185 +1,121 @@
 import { Aggregate, Command, BoundedContext, Shape, Policy, DomainEvent, BoundedContextEvents } from "stochastic";
-import { object, record, string } from "superstruct";
+import { array, map, object, record, set, string } from "superstruct";
 
-export class FlightSchedule extends Shape("FlightSchedule", {
-  flightNo: string(),
-  aircraftType: string(),
-  origin: string(),
-  destination: string(),
-  days: record(string(), object({ scheduledArrival: string(), scheduledDeparture: string() })),
+export class AddRoute extends Shape("AddRoute", { route: string() }) { }
+export class RouteAdded extends DomainEvent("RouteAdded", "route", {
+  route: string(),
 }) { }
 
-export class ScheduledFlightAdded extends DomainEvent("ScheduledFlightAdded", "flightNo", {
+const flightMeta = {
+  day: string(),
   flightNo: string(),
-  add: object({
-    day: string(),
-    scheduledDeparture: string(),
-    scheduledArrival: string(),
-  }),
+};
+const flightDetail = {
+  ...flightMeta,
+  departureTime: string(),
+  arrivalTime: string(),
+};
+export class AddFlights extends Shape("AddFlights", {
+  route: string(),
+  flights: array(object(flightDetail)),
+}) { }
+export class ScheduledFlightsAdded extends DomainEvent("ScheduledFlightsAdded", "route", {
+  route: string(),
+  flights: array(object(flightDetail)),
+}) { }
+export class RemoveFlights extends Shape("RemoveFlights", {
+  route: string(),
+  flights: array(object(flightMeta)),
+}) { }
+export class FlightsRemoved extends DomainEvent("FlightsRemoved", "route", {
+  route: string(),
+  flights: array(object(flightMeta)),
+}) { }
+export class UpdateFlights extends Shape("UpdateFlights", {
+  route: string(),
+  flights: array(object(flightDetail)),
+}) { }
+export class FlightsUpdated extends DomainEvent("FlightsUpdated", "route", {
+  route: string(),
+  flights: array(object(flightDetail)),
 }) { }
 
-export class FlightCreatedEvent extends DomainEvent("FlightCreated", "flightNo", {
-  flightNo: string(),
-  origin: string(),
-  destination: string(),
-  aircraftType: string(),
-  days: record(string(), object({ scheduledArrival: string(), scheduledDeparture: string() })),
+export class RouteSchedule extends Shape("RouteSchedule", {
+  route: string(),
+  //days: map(string(), object(flightDetail))
+  flights: array(object(flightDetail)),
 }) { }
 
-export class FlightCancelledEvent extends DomainEvent("FlightCancelled", "flightNo", {
-  flightNo: string(),
-}) { }
-
-export class FlightRebookedEvent extends DomainEvent("FlightRebooked", "flightNo", {
-  flightNo: string(),
-}) { }
-
-export const FlightScheduleAggregate = new Aggregate({
+export const RouteScheduleAggregate = new Aggregate({
   __filename,
-  stateKey: "flightNo",
-  stateShape: FlightSchedule,
-  events: [ScheduledFlightAdded, FlightCreatedEvent], // HERE
+  stateKey: "route",
+  stateShape: RouteSchedule,
+  events: [ScheduledFlightsAdded, FlightsRemoved, FlightsUpdated, RouteAdded],
   reducer: (state, event) => {
     switch (event.__typename) {
-      case "ScheduledFlightAdded":
-        const {
-          add: { day, scheduledDeparture, scheduledArrival },
-        } = event;
-        return new FlightSchedule({
+      case "RouteAdded":
+        const { route } = event;
+        return new RouteSchedule({ ...state, route });
+      case "ScheduledFlightsAdded":
+        return new RouteSchedule({
           ...state,
-          days: { ...state.days, [day]: { scheduledArrival, scheduledDeparture } },
+          flights: [...state.flights, ...event.flights],
         });
-      case "FlightCreated":
-        return new FlightSchedule({ ...state, ...event });
+      case "FlightsRemoved":
+        return new RouteSchedule({
+          ...state,
+          flights: state.flights.filter((sf) => event.flights.find((ef) => ef.day === sf.day && ef.flightNo === sf.flightNo)),
+        });
       default:
         return state;
     }
   },
-  initalState: () =>
-    new FlightSchedule({
-      flightNo: "",
-      aircraftType: "",
-      origin: "",
-      destination: "",
-      days: {},
-    }),
+  initialState: () => new RouteSchedule({ route: "", flights: [] }),
 });
 
-export class CreateFlightIntent extends Shape("CreateFlightIntent", {
-  flightNo: string(),
-  origin: string(),
-  destination: string(),
-  aircraftType: string(),
-}) { }
-
-export const CreateFlightCommandHandler = new Command(
-  {
-    __filename,
-    aggregate: FlightScheduleAggregate,
-    intent: CreateFlightIntent,
-    events: [FlightCreatedEvent],
-  },
-  async (command, aggregate) => {
-    const latest = await aggregate.get(command.flightNo);
-    console.log(JSON.stringify({ latest }, null, 2));
-    if (latest.events.length > 0) {
-      throw new Error("Can only create new flights that don't already exist");
-    }
-
-    return [new FlightCreatedEvent({ ...command, days: {} })];
-  },
-);
-
-export class AddScheduledFlightIntent extends Shape("AddScheduledFlightIntent", {
-  flightNo: string(),
-  add: object({
-    day: string(),
-    scheduledDeparture: string(),
-    scheduledArrival: string(),
-  }),
-}) { }
-
-export const AddScheduledFlightCommandHandler = new Command(
-  {
-    __filename,
-    aggregate: FlightScheduleAggregate,
-    intent: AddScheduledFlightIntent,
-    events: [ScheduledFlightAdded],
-  },
-  async (command, aggregate) => {
-    const { state: schedule, events } = await aggregate.get(command.flightNo);
-    if (events.length === 0) {
-      throw new Error("Can't find flight");
-    }
-
-    const {
-      flightNo,
-      add: { scheduledArrival, scheduledDeparture, day },
-    } = command;
-
-    return [
-      new ScheduledFlightAdded({
-        flightNo,
-        add: {
-          day,
-          scheduledArrival,
-          scheduledDeparture,
-        },
-      }),
-    ];
-  },
-);
-
-export const FlightCancelledPolicy = new Policy({
+export const AddRouteCommand = new Command({
   __filename,
-  commands: [],
-  events: [
-    FlightCancelledEvent
-  ],
-}, async () => { });
+  events: [RouteAdded],
+  intent: AddRoute,
+  aggregate: RouteScheduleAggregate
+}, async (command, aggregate) => {
+  const { route } = command
+  const { state, events } = await aggregate.get(route)
+  if (events.length > 0) {
+    throw new Error(`Route ${route} already exists`)
+  }
+
+  return [new RouteAdded({ route })]
+})
+
+export const AddFlightsCommand = new Command({
+  __filename,
+  events: [ScheduledFlightsAdded],
+  intent: AddFlights,
+  aggregate: RouteScheduleAggregate
+}, async (command, aggregate) => { return [new ScheduledFlightsAdded(command)] })
+
+export const RemoveFlightsCommand = new Command({
+  __filename,
+  events: [FlightsRemoved],
+  intent: RemoveFlights,
+  aggregate: RouteScheduleAggregate
+}, async (command, aggregate) => { return [new FlightsRemoved(command)] })
 
 export const scheduling = new BoundedContext({
   handler: "scheduling",
   name: "Scheduling",
   components: {
-    FlightScheduleAggregate,
-    ScheduledFlightAdded,
-    FlightCreatedEvent,
-    CreateFlightCommandHandler,
-    AddScheduledFlightCommandHandler,
-    FlightCancelledPolicy
+    RouteScheduleAggregate,
+    AddFlightsCommand,
+    AddRouteCommand,
   },
   emits: [
-    FlightCreatedEvent
+    ScheduledFlightsAdded,
+    //FlightsRemoved, //TODO: Fix these
+    //FlightsUpdated 
+
   ]
+
 });
 
-
-export class CancelFlight extends Shape("CancelFlight", {
-  flightNo: string()
-}) { }
-
-export const CancelFlightCommand = new Command(
-  {
-    __filename,
-    aggregate: undefined, // TODO
-    events: [
-      FlightCancelledEvent
-    ],
-    intent: CancelFlight
-  },
-  async (event) => {
-
-  }
-);
-
-export const operations = new BoundedContext({
-  handler: "operations",
-  name: "Operations",
-  components: {
-    CancelFlightCommand
-  },
-  emits: [
-    FlightCancelledEvent
-  ]
-});
