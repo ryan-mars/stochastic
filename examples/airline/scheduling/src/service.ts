@@ -109,13 +109,12 @@ export const scheduling = new BoundedContext({
     RouteScheduleAggregate,
     AddFlightsCommand,
     AddRouteCommand,
+    RemoveFlightsCommand
   },
   emits: [
     ScheduledFlightsAdded,
-    //FlightsRemoved, //TODO: Fix these
-    //FlightsUpdated 
-
+    FlightsRemoved,
+    FlightsUpdated
   ]
-
 });
 

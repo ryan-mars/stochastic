@@ -1,3 +1,4 @@
+import { Aggregate } from "./aggregate";
 import { Command } from "./command";
 import { Component } from "./component";
 import { Policy } from "./policy";
@@ -36,5 +37,5 @@ export class BoundedContext<
 }
 
 export type BoundedContextEvents<Components extends BoundedContextComponents> = {
-  [component in keyof Components]: Components[component] extends Policy | Command ? Components[component]['events'][number] : never;
+  [component in keyof Components]: Components[component] extends Policy<any, infer E> | Command<any, any, infer E> | Aggregate<any, any, infer E> ? E[number] : never;
 }[keyof Components];
