@@ -10,14 +10,12 @@ export class SchedulingStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    console.log(this.formatArn({
+    const eventBus = EventBus.fromEventBusArn(this, "DefaultEventBus", this.formatArn({
       service: "events",
       resource: "event-bus",
       sep: "/",
       resourceName: "default"
     }))
-
-    const eventBus = EventBus.fromEventBusArn(this, "DefaultEventBus", 'arn:aws:events:us-east-2:611181767269:event-bus/default')
 
     this.scheduling = new BoundedContextConstruct(this, "SchedulingBoundedContext", {
       boundedContext: scheduling,
