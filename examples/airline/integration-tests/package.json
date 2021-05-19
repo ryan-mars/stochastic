@@ -10,6 +10,8 @@
   "author": "",
   "private": true,
   "dependencies": {
-    "@cucumber/cucumber": "^7.2.1"
+    "@aws-sdk/client-lambda": "^3.16.0",
+    "@cucumber/cucumber": "^7.2.1",
+    "ts-node": "^9.1.1"
   }
 }

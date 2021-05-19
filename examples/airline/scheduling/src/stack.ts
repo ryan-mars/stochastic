@@ -1,48 +1,29 @@
+import { EventBus } from "@aws-cdk/aws-events";
 import * as cdk from "@aws-cdk/core";
 
-import { BoundedContextConstruct, ReceiveEventBridgeEventBinding, EmitEventBridgeBinding } from "stochastic-aws-serverless";
+import { BoundedContextConstruct, EmitEventBridgeBinding } from "stochastic-aws-serverless";
 import { ScheduledFlightsAdded, scheduling, } from "./service";
 
 export class SchedulingStack extends cdk.Stack {
   readonly scheduling: BoundedContextConstruct<typeof scheduling>;
-  //readonly operations: BoundedContextConstruct<typeof operations>;
+
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
+    console.log(this.formatArn({
+      service: "events",
+      resource: "event-bus",
+      sep: "/",
+      resourceName: "default"
+    }))
+
+    const eventBus = EventBus.fromEventBusArn(this, "DefaultEventBus", 'arn:aws:events:us-east-2:611181767269:event-bus/default')
+
     this.scheduling = new BoundedContextConstruct(this, "SchedulingBoundedContext", {
       boundedContext: scheduling,
-      emitEvents: [new EmitEventBridgeBinding({ events: [ScheduledFlightsAdded], account: "" })]
+      emitEvents: [new EmitEventBridgeBinding({ events: [ScheduledFlightsAdded], eventBus })]
     });
-
-    //this.scheduling.emitEvent(new EmitEventBridgeBinding({ events: [FlightsAdded], account: "" }))
-    // this.operations = new BoundedContextConstruct(this, "Operators", {
-    //   boundedContext: operations,
-    //   emitEvents: [
-    //     new EmitEventBridgeBinding({
-    //       account: "",
-    //       events: [
-    //         FlightCancelledEvent
-    //       ]
-    //     })
-    //   ],
-    //   receiveEvents: []
-    // });
-
-    // this.operations.emitEvent(new EmitEventBridgeBinding({
-    //   account: "abcdef",
-    //   events: [
-    //     FlightCancelledEvent
-    //   ]
-    // }));
-
-    // this.scheduling.receiveEvent(new ReceiveEventBridgeEventBinding({
-    //   eventBridgeArn: "blah",
-    //   events: [
-    //     FlightCancelledEvent,
-    //   ]
-    // }));
   }
 }
-
 const app = new cdk.App();
-new SchedulingStack(app, "Scheduling");
+new SchedulingStack(app, "Scheduling", { description: "Flight Scheduling service" });

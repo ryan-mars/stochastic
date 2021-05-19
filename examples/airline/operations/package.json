@@ -15,6 +15,7 @@
   "keywords": [],
   "author": "Ryan Marsh",
   "dependencies": {
+    "@aws-cdk/aws-events": "^1.103.0",
     "@aws-cdk/core": "^1.103.0",
     "aws-cdk": "^1.103.0",
     "scheduling": "^0.1.0",

@@ -59,7 +59,8 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
     const eventStore = (this.eventStore = new EventStore(scope, { boundedContext }));
     this.eventBridgeArn = "???";
 
-    this.emitEvents.map(binding => this.eventStore.topic.addSubscription(binding.bind(scope)))
+    this.emitEvents.map(binding => this.eventStore.topic.addSubscription(binding.bind(scope, this.boundedContext.name)))
+    this.receiveEvents.map(binding => binding.bind(scope, this.eventStore.topic))
 
     const commandConstructs: Map<string, CommandConstruct> = new Map();
 

@@ -5,3 +5,4 @@ cdk.out
 template.yaml
 !.vscode
 stochastic.out
+*.log
