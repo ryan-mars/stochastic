@@ -1,6 +1,6 @@
-import { Aggregate, BoundedContext, Command, DomainEvent, Policy, Shape } from "stochastic";
-import { ScheduledFlightsAdded } from "scheduling";
-import { string } from "superstruct";
+import { Aggregate, BoundedContext, Command, DomainEvent, Policy, Shape } from "stochastic"
+import { ScheduledFlightsAdded } from "scheduling"
+import { string } from "superstruct"
 
 const flightScheduleDetail = {
   flightNo: string(),
@@ -12,13 +12,17 @@ const flightScheduleDetail = {
   arrivalTime: string()
 }
 
-export class AddFlight extends Shape("AddFlight", flightScheduleDetail) { }
+export class AddFlightIntent extends Shape("AddFlight", flightScheduleDetail) {}
 
-export class FlightAddedEvent extends DomainEvent("FlightAdded", "flightNo", flightScheduleDetail) { }
+export class FlightAddedEvent extends DomainEvent("FlightAdded", "flightNo", flightScheduleDetail) {}
+export class FlightCancelled extends DomainEvent("FlightCancelled", "flightNo", {
+  flightNo: string(),
+  day: string()
+}) {}
 
 export class OperatedFlight extends Shape("OperatedFlight", {
   flightNo: string()
-}) { }
+}) {}
 
 const FlightAggregate = new Aggregate({
   __filename,
@@ -36,39 +40,63 @@ const FlightAggregate = new Aggregate({
   }
 })
 
-export const AddFlightCommand = new Command({
-  __filename,
-  aggregate: FlightAggregate,
-  intent: AddFlight,
-  events: [FlightAddedEvent],
-}, async (command, aggregate) => {
-  const { state, events } = await aggregate.get(command.flightNo)
+export const AddFlight = new Command(
+  {
+    __filename,
+    aggregate: FlightAggregate,
+    intent: AddFlightIntent,
+    events: [FlightAddedEvent]
+  },
+  async (command, aggregate) => {
+    const { state, events } = await aggregate.get(command.flightNo)
 
-  if (events.length > 0) {
-    throw new Error("cannot create a flight that already exists")
+    if (events.length > 0) {
+      throw new Error("cannot create a flight that already exists")
+    }
+
+    return [
+      new FlightAddedEvent({
+        ...command
+      })
+    ]
   }
+)
 
-  return [new FlightAddedEvent({
-    ...command
-  })]
+export class CancelFlightIntent extends Shape("CancelFlightIntent", {
+  flightNo: string(),
+  day: string()
+}) {}
 
-})
+export const CancelFlight = new Command(
+  {
+    __filename,
+    aggregate: FlightAggregate,
+    intent: CancelFlightIntent,
+    events: [FlightCancelled]
+  },
+  async (command, aggregate) => {
+    return [new FlightCancelled(command)]
+  }
+)
 
-export const MyPolicy = new Policy({
-  __filename,
-  events: [ScheduledFlightsAdded],
-  commands: []
-}, async (event) => {
-  console.log(JSON.stringify(event, null, 2))
-})
+export const MyPolicy = new Policy(
+  {
+    __filename,
+    events: [ScheduledFlightsAdded, FlightCancelled],
+    commands: []
+  },
+  async event => {
+    console.log(JSON.stringify(event, null, 2))
+  }
+)
 
 export const operations = new BoundedContext({
   handler: "operations",
   name: "Operations",
   components: {
-    AddFlightCommand,
+    AddFlight,
+    CancelFlight,
     MyPolicy,
-    FlightAggregate,
-    ScheduledFlightsAdded
-  },
-});
+    FlightAggregate
+  }
+})
