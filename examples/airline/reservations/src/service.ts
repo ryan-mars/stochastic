@@ -1,7 +1,9 @@
 import { Aggregate, BoundedContext, Command, Dependency, DomainEvent, Policy, ReadModel, Shape } from "stochastic"
 import { array, object, string } from "superstruct"
 import { FlightCancelled } from "operations"
-import { EventHandler } from "stochastic/lib/event-handler"
+
+import dynamodb from "@aws-sdk/client-dynamodb"
+import dynamodbUtil from "@aws-sdk/util-dynamodb"
 
 const reservationShape = {
   reservationNo: string(),
@@ -134,10 +136,15 @@ export const AvailableSeats = new ReadModel(
     dependencies: [dynamoTable]
   },
   ({ SeatsTable }) => {
-    // const ddb = new AWS.DynamoDB()
+    const ddb = new dynamodb.DynamoDBClient({})
 
     return async event => {
-      event.flights
+      await ddb.send(
+        new dynamodb.PutItemCommand({
+          Item: dynamodbUtil.marshall(event),
+          TableName: SeatsTable
+        })
+      )
     }
   }
 )

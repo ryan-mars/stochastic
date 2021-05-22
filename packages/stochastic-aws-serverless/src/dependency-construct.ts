@@ -8,12 +8,16 @@ export interface DependencyConstruct {
 
 export class DynamoDBDependency implements DependencyConstruct {
   readonly resourceId: string
-  constructor(readonly table: dynamodb.Table) {
+  constructor(readonly table: dynamodb.Table, readonly access: "read" | "write" | "read-write" = "read-write") {
     this.resourceId = table.tableArn
   }
   public bind(grantable: iam.IGrantable): void {
-    this.table.grantReadData(grantable)
-    // this.table.grantWriteData()
-    // this.table.grantReadWriteData()
+    if (this.access === "read") {
+      this.table.grantReadData(grantable)
+    } else if (this.access === "write") {
+      this.table.grantWriteData(grantable)
+    } else if (this.access === "read-write") {
+      this.table.grantReadWriteData(grantable)
+    }
   }
 }

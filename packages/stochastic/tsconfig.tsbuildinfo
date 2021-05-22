@@ -522,8 +522,8 @@
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "1dc7cde39cf48ffd1fb2ac10d7e973bc3448794ba76fddb8ecb5738079901a14",
-        "signature": "1c4b7f61cd75d44807aca8dd0425390ece4bd7e601bb8bc911d6a0066c198575",
+        "version": "9f0a5b0fcabdc23a74398ed48d3d935523c9ec0b3bca09b822261802a19439e6",
+        "signature": "0cd2f0068f3fddb6877246180eb051e20c38b189e21669c386c3d5d58ec80fff",
         "affectsGlobalScope": false
       },
       "./node_modules/@babel/types/lib/index.d.ts": {
@@ -689,6 +689,7 @@
       "outDir": "./lib",
       "composite": true,
       "rootDir": "./src",
+      "watch": true,
       "configFilePath": "./tsconfig.json"
     },
     "referencedMap": {
@@ -992,6 +993,7 @@
         "./src/command.ts",
         "./src/component.ts",
         "./src/dependencies.ts",
+        "./src/event-handler.ts",
         "./src/event.ts",
         "./src/policy.ts",
         "./src/query.ts",
@@ -1319,6 +1321,7 @@
         "./src/command.ts",
         "./src/component.ts",
         "./src/dependencies.ts",
+        "./src/event-handler.ts",
         "./src/event.ts",
         "./src/policy.ts",
         "./src/query.ts",

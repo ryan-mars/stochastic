@@ -191,6 +191,106 @@
         "signature": "506b80b9951c9381dc5f11897b31fca5e2a65731d96ddefa19687fbc26b23c6e",
         "affectsGlobalScope": true
       },
+      "../stochastic/node_modules/superstruct/lib/error.d.ts": {
+        "version": "51c7e7813dd1c1e7b5144ebff587c97bf8022bb2d6e12c6b3c4e3597686b8bd8",
+        "signature": "51c7e7813dd1c1e7b5144ebff587c97bf8022bb2d6e12c6b3c4e3597686b8bd8",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/node_modules/superstruct/lib/utils.d.ts": {
+        "version": "3fafd3cac35e168ccae81a4396bd17d98bb221776cf17a5dd36e1ce5312cc136",
+        "signature": "3fafd3cac35e168ccae81a4396bd17d98bb221776cf17a5dd36e1ce5312cc136",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/node_modules/superstruct/lib/struct.d.ts": {
+        "version": "193e45dd974dff7630cec4c07aa73963458dc9d137778a5890ae7532e1b71e48",
+        "signature": "193e45dd974dff7630cec4c07aa73963458dc9d137778a5890ae7532e1b71e48",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/node_modules/superstruct/lib/structs/coercions.d.ts": {
+        "version": "a50599c08934a62f11657bdbe0dc929ab66da1b1f09974408fd9a33ec1bb8060",
+        "signature": "a50599c08934a62f11657bdbe0dc929ab66da1b1f09974408fd9a33ec1bb8060",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/node_modules/superstruct/lib/structs/refinements.d.ts": {
+        "version": "646db7ca35ff40efc95ed24e295eed66a3e862af207c141817417e1ad5414517",
+        "signature": "646db7ca35ff40efc95ed24e295eed66a3e862af207c141817417e1ad5414517",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/node_modules/superstruct/lib/structs/types.d.ts": {
+        "version": "bcc5467b2e094d7f8500292eedf3d9d571b570443cccf68f628d04cd68c93e09",
+        "signature": "bcc5467b2e094d7f8500292eedf3d9d571b570443cccf68f628d04cd68c93e09",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/node_modules/superstruct/lib/structs/utilities.d.ts": {
+        "version": "5dad563052506bf3c495b121239b32e655dc9e7905d52849f29026610a83dd9e",
+        "signature": "5dad563052506bf3c495b121239b32e655dc9e7905d52849f29026610a83dd9e",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/node_modules/superstruct/lib/index.d.ts": {
+        "version": "9df4662ca3dbc2522bc115833ee04faa1afbb4e249a85ef4a0a09c621346bd08",
+        "signature": "9df4662ca3dbc2522bc115833ee04faa1afbb4e249a85ef4a0a09c621346bd08",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/lib/shape.d.ts": {
+        "version": "0a09965ec771e1280c6d04d696696e337bb142e00dafdcb7d9e3486d401c844e",
+        "signature": "0a09965ec771e1280c6d04d696696e337bb142e00dafdcb7d9e3486d401c844e",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/lib/event.d.ts": {
+        "version": "7c3e9d02fc5d016d1755271c5829e906903e57111cc377f56558e2be196d470e",
+        "signature": "7c3e9d02fc5d016d1755271c5829e906903e57111cc377f56558e2be196d470e",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/lib/command.d.ts": {
+        "version": "cdb374212dc8e4c2114f3ac55feb4efe81ae2370b7500624ed03ea16e5e9b63a",
+        "signature": "cdb374212dc8e4c2114f3ac55feb4efe81ae2370b7500624ed03ea16e5e9b63a",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/lib/policy.d.ts": {
+        "version": "18e86ea8185949bdaa67fe0ebb67f9e3b33150a88ba97fa44dab870d757ed16d",
+        "signature": "18e86ea8185949bdaa67fe0ebb67f9e3b33150a88ba97fa44dab870d757ed16d",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/lib/dependencies.d.ts": {
+        "version": "c99b2a84054c02121af38398a43266283f32f118d940b0c7119e824c548b6b3c",
+        "signature": "c99b2a84054c02121af38398a43266283f32f118d940b0c7119e824c548b6b3c",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/lib/event-handler.d.ts": {
+        "version": "b5dd9c3d4d119e8c46010d7aa706a1da7f726273cfaf9a0804bfbfce6c0add3a",
+        "signature": "b5dd9c3d4d119e8c46010d7aa706a1da7f726273cfaf9a0804bfbfce6c0add3a",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/lib/read-model.d.ts": {
+        "version": "5e635a292d287c021b216be277bdd648b205efcd0a51d7f92dc26e75a2946bd1",
+        "signature": "5e635a292d287c021b216be277bdd648b205efcd0a51d7f92dc26e75a2946bd1",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/lib/query.d.ts": {
+        "version": "473f8653323855a72a8522ead888883a45c465e06b6a87d3666f59e9ca6d5948",
+        "signature": "473f8653323855a72a8522ead888883a45c465e06b6a87d3666f59e9ca6d5948",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/lib/component.d.ts": {
+        "version": "09b90a5fe13f8e24941671b95c2b930acd82dc595ee9940e2e1d22f61f4a0e55",
+        "signature": "09b90a5fe13f8e24941671b95c2b930acd82dc595ee9940e2e1d22f61f4a0e55",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/lib/aggregate.d.ts": {
+        "version": "37c6847d8fa03e5428bff355b18b44b79755428d99bc16d2e79cbcc552a21c62",
+        "signature": "37c6847d8fa03e5428bff355b18b44b79755428d99bc16d2e79cbcc552a21c62",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/lib/bounded-context.d.ts": {
+        "version": "954b8ff831e2f9acbf9ceafefa3b20234ac15f24ac4de2253cd744ae086dd84a",
+        "signature": "954b8ff831e2f9acbf9ceafefa3b20234ac15f24ac4de2253cd744ae086dd84a",
+        "affectsGlobalScope": false
+      },
+      "../stochastic/lib/index.d.ts": {
+        "version": "0cd2f0068f3fddb6877246180eb051e20c38b189e21669c386c3d5d58ec80fff",
+        "signature": "0cd2f0068f3fddb6877246180eb051e20c38b189e21669c386c3d5d58ec80fff",
+        "affectsGlobalScope": false
+      },
       "./node_modules/@aws-cdk/cx-api/lib/cxapi.d.ts": {
         "version": "9f13242b332d6b666c651578be05e9622cbe9c3265b46f22c688a590a484837f",
         "signature": "9f13242b332d6b666c651578be05e9622cbe9c3265b46f22c688a590a484837f",
@@ -706,34 +806,14 @@
         "signature": "c9f3cf262c8c1a1073c9dda0ff39862d94b9da91da8111c04c335cbbf9f244ca",
         "affectsGlobalScope": false
       },
-      "./node_modules/@aws-cdk/aws-dynamodb/lib/dynamodb.generated.d.ts": {
-        "version": "247188d0fd447f186261d2e5845d06968fc60f9e22299fde1a5886b1bec48394",
-        "signature": "247188d0fd447f186261d2e5845d06968fc60f9e22299fde1a5886b1bec48394",
+      "./node_modules/@aws-cdk/aws-events/lib/rule-ref.d.ts": {
+        "version": "02501bc4f55ada2360dd05c3c94897ef788700cc58eb5e5dd4e30ce9001ba729",
+        "signature": "02501bc4f55ada2360dd05c3c94897ef788700cc58eb5e5dd4e30ce9001ba729",
         "affectsGlobalScope": false
       },
-      "./node_modules/@aws-cdk/aws-cloudwatch/lib/alarm-base.d.ts": {
-        "version": "9be0b9de9d5dbbda085e298d51d201f7a16b537b92d61c67d5151462a4efa9c8",
-        "signature": "9be0b9de9d5dbbda085e298d51d201f7a16b537b92d61c67d5151462a4efa9c8",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-cloudwatch/lib/alarm-action.d.ts": {
-        "version": "8b454cfd8ee9c647f69e353655d07427bdf216306260c56fc7f0436264cff93d",
-        "signature": "8b454cfd8ee9c647f69e353655d07427bdf216306260c56fc7f0436264cff93d",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-cloudwatch/lib/metric-types.d.ts": {
-        "version": "aa67dd8a3cdd7a2ef07eb5fc3d1c750805be4e49dbd1aa27928a697698d6aa39",
-        "signature": "aa67dd8a3cdd7a2ef07eb5fc3d1c750805be4e49dbd1aa27928a697698d6aa39",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-cloudwatch/lib/widget.d.ts": {
-        "version": "e9ab7f9322a354d2887a29ecbc644ae7ebb868ff0232c73491007e0351b31902",
-        "signature": "e9ab7f9322a354d2887a29ecbc644ae7ebb868ff0232c73491007e0351b31902",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-cloudwatch/lib/graph.d.ts": {
-        "version": "d4963bca0ba5d6c773150b2d94449c4a8bb4c80c190dd2ad4b9f59e67fe552c9",
-        "signature": "d4963bca0ba5d6c773150b2d94449c4a8bb4c80c190dd2ad4b9f59e67fe552c9",
+      "./node_modules/@aws-cdk/aws-events/lib/input.d.ts": {
+        "version": "b3bad74b0e21ba36367247066bfe8bed880e8ad8be0a07d702b93f20710ff102",
+        "signature": "b3bad74b0e21ba36367247066bfe8bed880e8ad8be0a07d702b93f20710ff102",
         "affectsGlobalScope": false
       },
       "./node_modules/@aws-cdk/aws-iam/lib/oidc-provider.d.ts": {
@@ -821,6 +901,76 @@
         "signature": "525cd7f8102bcceba6ad4958d48df6d9e833e3175b629fd8a3cfb28688c9ae32",
         "affectsGlobalScope": false
       },
+      "./node_modules/@aws-cdk/aws-events/lib/event-pattern.d.ts": {
+        "version": "5acfbe3443b8df5b7f17f2baacbf59d657b8425326231d1e329032b8bbb3b4f3",
+        "signature": "5acfbe3443b8df5b7f17f2baacbf59d657b8425326231d1e329032b8bbb3b4f3",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-events/lib/archive.d.ts": {
+        "version": "fd6d7ffcfd1bfcd3e20135b1f2d94e61f4f9da1706d5027c88d626504e93281d",
+        "signature": "fd6d7ffcfd1bfcd3e20135b1f2d94e61f4f9da1706d5027c88d626504e93281d",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-events/lib/event-bus.d.ts": {
+        "version": "a01d36b38211257b073336f79df826f8787ca077b39da3fa3a31eff7243eecdb",
+        "signature": "a01d36b38211257b073336f79df826f8787ca077b39da3fa3a31eff7243eecdb",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-events/lib/schedule.d.ts": {
+        "version": "9b73b49643446762111ebb3c428309928f5811e196ca5cdbe4059227a84ae6e7",
+        "signature": "9b73b49643446762111ebb3c428309928f5811e196ca5cdbe4059227a84ae6e7",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-events/lib/events.generated.d.ts": {
+        "version": "8a348588591527fb09901a86873a49e8ca78343fbcae6efdf0441683542cba93",
+        "signature": "8a348588591527fb09901a86873a49e8ca78343fbcae6efdf0441683542cba93",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-events/lib/target.d.ts": {
+        "version": "04ec9fc509fc72b793520288945c388541a9e352666e81ca9abc1c7ce7535704",
+        "signature": "04ec9fc509fc72b793520288945c388541a9e352666e81ca9abc1c7ce7535704",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-events/lib/rule.d.ts": {
+        "version": "9b72f4a8c276525862e1ed741aa6cc081dcb9b428cf59e3b9a03844f6eac7df2",
+        "signature": "9b72f4a8c276525862e1ed741aa6cc081dcb9b428cf59e3b9a03844f6eac7df2",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-events/lib/on-event-options.d.ts": {
+        "version": "845edc5dc1f5c0a125cf921eb1c17a258dcbe9e4889e4e9f62e8d96dd145150a",
+        "signature": "845edc5dc1f5c0a125cf921eb1c17a258dcbe9e4889e4e9f62e8d96dd145150a",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-events/lib/index.d.ts": {
+        "version": "d03d20fda933084a618a4b8c7639c33f45e30b9c191d151bcacfe4cb3f0405a8",
+        "signature": "d03d20fda933084a618a4b8c7639c33f45e30b9c191d151bcacfe4cb3f0405a8",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-cloudwatch/lib/alarm-base.d.ts": {
+        "version": "9be0b9de9d5dbbda085e298d51d201f7a16b537b92d61c67d5151462a4efa9c8",
+        "signature": "9be0b9de9d5dbbda085e298d51d201f7a16b537b92d61c67d5151462a4efa9c8",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-cloudwatch/lib/alarm-action.d.ts": {
+        "version": "8b454cfd8ee9c647f69e353655d07427bdf216306260c56fc7f0436264cff93d",
+        "signature": "8b454cfd8ee9c647f69e353655d07427bdf216306260c56fc7f0436264cff93d",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-cloudwatch/lib/metric-types.d.ts": {
+        "version": "aa67dd8a3cdd7a2ef07eb5fc3d1c750805be4e49dbd1aa27928a697698d6aa39",
+        "signature": "aa67dd8a3cdd7a2ef07eb5fc3d1c750805be4e49dbd1aa27928a697698d6aa39",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-cloudwatch/lib/widget.d.ts": {
+        "version": "e9ab7f9322a354d2887a29ecbc644ae7ebb868ff0232c73491007e0351b31902",
+        "signature": "e9ab7f9322a354d2887a29ecbc644ae7ebb868ff0232c73491007e0351b31902",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-cloudwatch/lib/graph.d.ts": {
+        "version": "d4963bca0ba5d6c773150b2d94449c4a8bb4c80c190dd2ad4b9f59e67fe552c9",
+        "signature": "d4963bca0ba5d6c773150b2d94449c4a8bb4c80c190dd2ad4b9f59e67fe552c9",
+        "affectsGlobalScope": false
+      },
       "./node_modules/@aws-cdk/aws-cloudwatch/lib/metric.d.ts": {
         "version": "4dd98bb1b8b43e21eb41842e2bf315ab35aa5d943db48dd9944810a6a05752d8",
         "signature": "4dd98bb1b8b43e21eb41842e2bf315ab35aa5d943db48dd9944810a6a05752d8",
@@ -876,6 +1026,16 @@
         "signature": "0b1640f8dbf20789ddc459cc041401e80a556df30c67c8a3de73496d0a1fece9",
         "affectsGlobalScope": false
       },
+      "./node_modules/@aws-cdk/aws-ec2/lib/peer.d.ts": {
+        "version": "42070a4dc44c15a5954566de1c2e2e2b397297c885feb1a643eb2a67561134da",
+        "signature": "42070a4dc44c15a5954566de1c2e2e2b397297c885feb1a643eb2a67561134da",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-ec2/lib/port.d.ts": {
+        "version": "4501b93e10a6191c0df275245f761dbcbff375588866b407f88e6b10191e035d",
+        "signature": "4501b93e10a6191c0df275245f761dbcbff375588866b407f88e6b10191e035d",
+        "affectsGlobalScope": false
+      },
       "./node_modules/@aws-cdk/aws-kms/lib/alias.d.ts": {
         "version": "97e75e84757384b11d5c5af54ffcefab607663bf355dfabb09fe352009db861f",
         "signature": "97e75e84757384b11d5c5af54ffcefab607663bf355dfabb09fe352009db861f",
@@ -899,131 +1059,6 @@
       "./node_modules/@aws-cdk/aws-kms/lib/index.d.ts": {
         "version": "c0f49657eaf590bc9e47bcd57b4a5a59a743e354c317d92ed28d86c03d6c1229",
         "signature": "c0f49657eaf590bc9e47bcd57b4a5a59a743e354c317d92ed28d86c03d6c1229",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/applicationautoscaling.generated.d.ts": {
-        "version": "b62d01dd7739c52709f9994b3e480a59f8c0f394261ef68cccaf6e8f0aef614f",
-        "signature": "b62d01dd7739c52709f9994b3e480a59f8c0f394261ef68cccaf6e8f0aef614f",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/schedule.d.ts": {
-        "version": "66d226d2f5bc6883d58cf3d0a0fc4b0460f74326c2a00c4cb8d5d985cc4dc31e",
-        "signature": "66d226d2f5bc6883d58cf3d0a0fc4b0460f74326c2a00c4cb8d5d985cc4dc31e",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/step-scaling-action.d.ts": {
-        "version": "e48a41020195ff4cf2ad4e735eba7da880193ec0dcd9556f97b933e85416ba4c",
-        "signature": "e48a41020195ff4cf2ad4e735eba7da880193ec0dcd9556f97b933e85416ba4c",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/step-scaling-policy.d.ts": {
-        "version": "71dfca6393b7777e1961e0e1c4d79e55a0f73a1af895375371a6a63bf695f72a",
-        "signature": "71dfca6393b7777e1961e0e1c4d79e55a0f73a1af895375371a6a63bf695f72a",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/target-tracking-scaling-policy.d.ts": {
-        "version": "79e4e3bd46c3352cf4c6797c7f684bc9b5556ba55f86a54ea468766788ae7b5b",
-        "signature": "79e4e3bd46c3352cf4c6797c7f684bc9b5556ba55f86a54ea468766788ae7b5b",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/scalable-target.d.ts": {
-        "version": "12bb86e20f55bf93bf8c12c8db1f18f7f2f9b7a02149d37f4ad373592184dd17",
-        "signature": "12bb86e20f55bf93bf8c12c8db1f18f7f2f9b7a02149d37f4ad373592184dd17",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/base-scalable-attribute.d.ts": {
-        "version": "737aa3e0ae7d81f9f22d79fcfb7bf5a02cd835851b35ee74bc0b8ebc729b94b7",
-        "signature": "737aa3e0ae7d81f9f22d79fcfb7bf5a02cd835851b35ee74bc0b8ebc729b94b7",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/index.d.ts": {
-        "version": "b29ef08f595c3af2bd38eab4365a7e3cff7008cce9e347ffe1f7ae20303804ef",
-        "signature": "b29ef08f595c3af2bd38eab4365a7e3cff7008cce9e347ffe1f7ae20303804ef",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-dynamodb/lib/scalable-attribute-api.d.ts": {
-        "version": "1eac7726c6b32ad1386f04c4be821c489332ffd8e0f5d154e5c9240192a0e764",
-        "signature": "1eac7726c6b32ad1386f04c4be821c489332ffd8e0f5d154e5c9240192a0e764",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-dynamodb/lib/table.d.ts": {
-        "version": "8c14593e9a4ce9ec40f1ca8189727a77212f6ab3abe1dbfde3af41a5fd68f1dc",
-        "signature": "8c14593e9a4ce9ec40f1ca8189727a77212f6ab3abe1dbfde3af41a5fd68f1dc",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-dynamodb/lib/index.d.ts": {
-        "version": "9a271e6241b3751078f16b72954c3ca52e1453204fc422d48f9ef8d04ba0c641",
-        "signature": "9a271e6241b3751078f16b72954c3ca52e1453204fc422d48f9ef8d04ba0c641",
-        "affectsGlobalScope": false
-      },
-      "./src/dependency-construct.ts": {
-        "version": "bb585eeda876da83e0ca977912f61fc1de20c4c73392255197023610d7c363bc",
-        "signature": "d7397c80e0b63668fb4832d34bace37a1f49b44de5e9cdf4bf413d44585fd886",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-events/lib/rule-ref.d.ts": {
-        "version": "02501bc4f55ada2360dd05c3c94897ef788700cc58eb5e5dd4e30ce9001ba729",
-        "signature": "02501bc4f55ada2360dd05c3c94897ef788700cc58eb5e5dd4e30ce9001ba729",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-events/lib/input.d.ts": {
-        "version": "b3bad74b0e21ba36367247066bfe8bed880e8ad8be0a07d702b93f20710ff102",
-        "signature": "b3bad74b0e21ba36367247066bfe8bed880e8ad8be0a07d702b93f20710ff102",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-events/lib/event-pattern.d.ts": {
-        "version": "5acfbe3443b8df5b7f17f2baacbf59d657b8425326231d1e329032b8bbb3b4f3",
-        "signature": "5acfbe3443b8df5b7f17f2baacbf59d657b8425326231d1e329032b8bbb3b4f3",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-events/lib/archive.d.ts": {
-        "version": "fd6d7ffcfd1bfcd3e20135b1f2d94e61f4f9da1706d5027c88d626504e93281d",
-        "signature": "fd6d7ffcfd1bfcd3e20135b1f2d94e61f4f9da1706d5027c88d626504e93281d",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-events/lib/event-bus.d.ts": {
-        "version": "a01d36b38211257b073336f79df826f8787ca077b39da3fa3a31eff7243eecdb",
-        "signature": "a01d36b38211257b073336f79df826f8787ca077b39da3fa3a31eff7243eecdb",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-events/lib/schedule.d.ts": {
-        "version": "9b73b49643446762111ebb3c428309928f5811e196ca5cdbe4059227a84ae6e7",
-        "signature": "9b73b49643446762111ebb3c428309928f5811e196ca5cdbe4059227a84ae6e7",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-events/lib/events.generated.d.ts": {
-        "version": "8a348588591527fb09901a86873a49e8ca78343fbcae6efdf0441683542cba93",
-        "signature": "8a348588591527fb09901a86873a49e8ca78343fbcae6efdf0441683542cba93",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-events/lib/target.d.ts": {
-        "version": "04ec9fc509fc72b793520288945c388541a9e352666e81ca9abc1c7ce7535704",
-        "signature": "04ec9fc509fc72b793520288945c388541a9e352666e81ca9abc1c7ce7535704",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-events/lib/rule.d.ts": {
-        "version": "9b72f4a8c276525862e1ed741aa6cc081dcb9b428cf59e3b9a03844f6eac7df2",
-        "signature": "9b72f4a8c276525862e1ed741aa6cc081dcb9b428cf59e3b9a03844f6eac7df2",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-events/lib/on-event-options.d.ts": {
-        "version": "845edc5dc1f5c0a125cf921eb1c17a258dcbe9e4889e4e9f62e8d96dd145150a",
-        "signature": "845edc5dc1f5c0a125cf921eb1c17a258dcbe9e4889e4e9f62e8d96dd145150a",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-events/lib/index.d.ts": {
-        "version": "d03d20fda933084a618a4b8c7639c33f45e30b9c191d151bcacfe4cb3f0405a8",
-        "signature": "d03d20fda933084a618a4b8c7639c33f45e30b9c191d151bcacfe4cb3f0405a8",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-ec2/lib/peer.d.ts": {
-        "version": "42070a4dc44c15a5954566de1c2e2e2b397297c885feb1a643eb2a67561134da",
-        "signature": "42070a4dc44c15a5954566de1c2e2e2b397297c885feb1a643eb2a67561134da",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@aws-cdk/aws-ec2/lib/port.d.ts": {
-        "version": "4501b93e10a6191c0df275245f761dbcbff375588866b407f88e6b10191e035d",
-        "signature": "4501b93e10a6191c0df275245f761dbcbff375588866b407f88e6b10191e035d",
         "affectsGlobalScope": false
       },
       "./node_modules/@aws-cdk/aws-logs/lib/log-stream.d.ts": {
@@ -1606,6 +1641,46 @@
         "signature": "9295b0c4a44b08bae0e47bb41e569b1724a02a25b7daf2e82b1d75407a0b89bb",
         "affectsGlobalScope": false
       },
+      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/applicationautoscaling.generated.d.ts": {
+        "version": "b62d01dd7739c52709f9994b3e480a59f8c0f394261ef68cccaf6e8f0aef614f",
+        "signature": "b62d01dd7739c52709f9994b3e480a59f8c0f394261ef68cccaf6e8f0aef614f",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/schedule.d.ts": {
+        "version": "66d226d2f5bc6883d58cf3d0a0fc4b0460f74326c2a00c4cb8d5d985cc4dc31e",
+        "signature": "66d226d2f5bc6883d58cf3d0a0fc4b0460f74326c2a00c4cb8d5d985cc4dc31e",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/step-scaling-action.d.ts": {
+        "version": "e48a41020195ff4cf2ad4e735eba7da880193ec0dcd9556f97b933e85416ba4c",
+        "signature": "e48a41020195ff4cf2ad4e735eba7da880193ec0dcd9556f97b933e85416ba4c",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/step-scaling-policy.d.ts": {
+        "version": "71dfca6393b7777e1961e0e1c4d79e55a0f73a1af895375371a6a63bf695f72a",
+        "signature": "71dfca6393b7777e1961e0e1c4d79e55a0f73a1af895375371a6a63bf695f72a",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/target-tracking-scaling-policy.d.ts": {
+        "version": "79e4e3bd46c3352cf4c6797c7f684bc9b5556ba55f86a54ea468766788ae7b5b",
+        "signature": "79e4e3bd46c3352cf4c6797c7f684bc9b5556ba55f86a54ea468766788ae7b5b",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/scalable-target.d.ts": {
+        "version": "12bb86e20f55bf93bf8c12c8db1f18f7f2f9b7a02149d37f4ad373592184dd17",
+        "signature": "12bb86e20f55bf93bf8c12c8db1f18f7f2f9b7a02149d37f4ad373592184dd17",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/base-scalable-attribute.d.ts": {
+        "version": "737aa3e0ae7d81f9f22d79fcfb7bf5a02cd835851b35ee74bc0b8ebc729b94b7",
+        "signature": "737aa3e0ae7d81f9f22d79fcfb7bf5a02cd835851b35ee74bc0b8ebc729b94b7",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-applicationautoscaling/lib/index.d.ts": {
+        "version": "b29ef08f595c3af2bd38eab4365a7e3cff7008cce9e347ffe1f7ae20303804ef",
+        "signature": "b29ef08f595c3af2bd38eab4365a7e3cff7008cce9e347ffe1f7ae20303804ef",
+        "affectsGlobalScope": false
+      },
       "./node_modules/@aws-cdk/aws-lambda/lib/scalable-attribute-api.d.ts": {
         "version": "fe3c3e36c0fffb09b083000de3704b97400d3f0b4b95c62a273e95407b0505ba",
         "signature": "fe3c3e36c0fffb09b083000de3704b97400d3f0b4b95c62a273e95407b0505ba",
@@ -1931,6 +2006,26 @@
         "signature": "623fc299cae0f66c72396827fe871fe2965854f49089e8b8f18bef7b1d443b29",
         "affectsGlobalScope": false
       },
+      "./node_modules/@aws-cdk/aws-dynamodb/lib/dynamodb.generated.d.ts": {
+        "version": "247188d0fd447f186261d2e5845d06968fc60f9e22299fde1a5886b1bec48394",
+        "signature": "247188d0fd447f186261d2e5845d06968fc60f9e22299fde1a5886b1bec48394",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-dynamodb/lib/scalable-attribute-api.d.ts": {
+        "version": "1eac7726c6b32ad1386f04c4be821c489332ffd8e0f5d154e5c9240192a0e764",
+        "signature": "1eac7726c6b32ad1386f04c4be821c489332ffd8e0f5d154e5c9240192a0e764",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-dynamodb/lib/table.d.ts": {
+        "version": "8c14593e9a4ce9ec40f1ca8189727a77212f6ab3abe1dbfde3af41a5fd68f1dc",
+        "signature": "8c14593e9a4ce9ec40f1ca8189727a77212f6ab3abe1dbfde3af41a5fd68f1dc",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@aws-cdk/aws-dynamodb/lib/index.d.ts": {
+        "version": "9a271e6241b3751078f16b72954c3ca52e1453204fc422d48f9ef8d04ba0c641",
+        "signature": "9a271e6241b3751078f16b72954c3ca52e1453204fc422d48f9ef8d04ba0c641",
+        "affectsGlobalScope": false
+      },
       "./node_modules/@aws-cdk/aws-lambda-event-sources/lib/stream.d.ts": {
         "version": "6e4e8b8f413b2ea7dcf6407ddd6c68db3d83e02db4b278eaaac2b51d6abe4a80",
         "signature": "6e4e8b8f413b2ea7dcf6407ddd6c68db3d83e02db4b278eaaac2b51d6abe4a80",
@@ -2119,106 +2214,6 @@
       "./node_modules/@aws-cdk/aws-lambda-nodejs/lib/index.d.ts": {
         "version": "7a0c358d533807c6328dde3bf98c3c4de18848ae75b80b78f51ea7daea355226",
         "signature": "7a0c358d533807c6328dde3bf98c3c4de18848ae75b80b78f51ea7daea355226",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/node_modules/superstruct/lib/error.d.ts": {
-        "version": "51c7e7813dd1c1e7b5144ebff587c97bf8022bb2d6e12c6b3c4e3597686b8bd8",
-        "signature": "51c7e7813dd1c1e7b5144ebff587c97bf8022bb2d6e12c6b3c4e3597686b8bd8",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/node_modules/superstruct/lib/utils.d.ts": {
-        "version": "3fafd3cac35e168ccae81a4396bd17d98bb221776cf17a5dd36e1ce5312cc136",
-        "signature": "3fafd3cac35e168ccae81a4396bd17d98bb221776cf17a5dd36e1ce5312cc136",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/node_modules/superstruct/lib/struct.d.ts": {
-        "version": "193e45dd974dff7630cec4c07aa73963458dc9d137778a5890ae7532e1b71e48",
-        "signature": "193e45dd974dff7630cec4c07aa73963458dc9d137778a5890ae7532e1b71e48",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/node_modules/superstruct/lib/structs/coercions.d.ts": {
-        "version": "a50599c08934a62f11657bdbe0dc929ab66da1b1f09974408fd9a33ec1bb8060",
-        "signature": "a50599c08934a62f11657bdbe0dc929ab66da1b1f09974408fd9a33ec1bb8060",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/node_modules/superstruct/lib/structs/refinements.d.ts": {
-        "version": "646db7ca35ff40efc95ed24e295eed66a3e862af207c141817417e1ad5414517",
-        "signature": "646db7ca35ff40efc95ed24e295eed66a3e862af207c141817417e1ad5414517",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/node_modules/superstruct/lib/structs/types.d.ts": {
-        "version": "bcc5467b2e094d7f8500292eedf3d9d571b570443cccf68f628d04cd68c93e09",
-        "signature": "bcc5467b2e094d7f8500292eedf3d9d571b570443cccf68f628d04cd68c93e09",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/node_modules/superstruct/lib/structs/utilities.d.ts": {
-        "version": "5dad563052506bf3c495b121239b32e655dc9e7905d52849f29026610a83dd9e",
-        "signature": "5dad563052506bf3c495b121239b32e655dc9e7905d52849f29026610a83dd9e",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/node_modules/superstruct/lib/index.d.ts": {
-        "version": "9df4662ca3dbc2522bc115833ee04faa1afbb4e249a85ef4a0a09c621346bd08",
-        "signature": "9df4662ca3dbc2522bc115833ee04faa1afbb4e249a85ef4a0a09c621346bd08",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/lib/shape.d.ts": {
-        "version": "0a09965ec771e1280c6d04d696696e337bb142e00dafdcb7d9e3486d401c844e",
-        "signature": "0a09965ec771e1280c6d04d696696e337bb142e00dafdcb7d9e3486d401c844e",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/lib/event.d.ts": {
-        "version": "7c3e9d02fc5d016d1755271c5829e906903e57111cc377f56558e2be196d470e",
-        "signature": "7c3e9d02fc5d016d1755271c5829e906903e57111cc377f56558e2be196d470e",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/lib/command.d.ts": {
-        "version": "cdb374212dc8e4c2114f3ac55feb4efe81ae2370b7500624ed03ea16e5e9b63a",
-        "signature": "cdb374212dc8e4c2114f3ac55feb4efe81ae2370b7500624ed03ea16e5e9b63a",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/lib/policy.d.ts": {
-        "version": "18e86ea8185949bdaa67fe0ebb67f9e3b33150a88ba97fa44dab870d757ed16d",
-        "signature": "18e86ea8185949bdaa67fe0ebb67f9e3b33150a88ba97fa44dab870d757ed16d",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/lib/dependencies.d.ts": {
-        "version": "c99b2a84054c02121af38398a43266283f32f118d940b0c7119e824c548b6b3c",
-        "signature": "c99b2a84054c02121af38398a43266283f32f118d940b0c7119e824c548b6b3c",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/lib/event-handler.d.ts": {
-        "version": "b5dd9c3d4d119e8c46010d7aa706a1da7f726273cfaf9a0804bfbfce6c0add3a",
-        "signature": "b5dd9c3d4d119e8c46010d7aa706a1da7f726273cfaf9a0804bfbfce6c0add3a",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/lib/read-model.d.ts": {
-        "version": "5e635a292d287c021b216be277bdd648b205efcd0a51d7f92dc26e75a2946bd1",
-        "signature": "5e635a292d287c021b216be277bdd648b205efcd0a51d7f92dc26e75a2946bd1",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/lib/query.d.ts": {
-        "version": "473f8653323855a72a8522ead888883a45c465e06b6a87d3666f59e9ca6d5948",
-        "signature": "473f8653323855a72a8522ead888883a45c465e06b6a87d3666f59e9ca6d5948",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/lib/component.d.ts": {
-        "version": "09b90a5fe13f8e24941671b95c2b930acd82dc595ee9940e2e1d22f61f4a0e55",
-        "signature": "09b90a5fe13f8e24941671b95c2b930acd82dc595ee9940e2e1d22f61f4a0e55",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/lib/aggregate.d.ts": {
-        "version": "37c6847d8fa03e5428bff355b18b44b79755428d99bc16d2e79cbcc552a21c62",
-        "signature": "37c6847d8fa03e5428bff355b18b44b79755428d99bc16d2e79cbcc552a21c62",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/lib/bounded-context.d.ts": {
-        "version": "954b8ff831e2f9acbf9ceafefa3b20234ac15f24ac4de2253cd744ae086dd84a",
-        "signature": "954b8ff831e2f9acbf9ceafefa3b20234ac15f24ac4de2253cd744ae086dd84a",
-        "affectsGlobalScope": false
-      },
-      "../stochastic/lib/index.d.ts": {
-        "version": "1c4b7f61cd75d44807aca8dd0425390ece4bd7e601bb8bc911d6a0066c198575",
-        "signature": "1c4b7f61cd75d44807aca8dd0425390ece4bd7e601bb8bc911d6a0066c198575",
         "affectsGlobalScope": false
       },
       "./node_modules/@aws-cdk/aws-events-targets/lib/batch.d.ts": {
@@ -2884,6 +2879,51 @@
       "./src/event-binding.ts": {
         "version": "123f9303691539465c209f1ab4651395fb478ef90bce88a127e96e94b6334fad",
         "signature": "3452f12bb5bfc30a760719c1190f6d0e243a7de6de6c6c952cf289e0a902e3d8",
+        "affectsGlobalScope": false
+      },
+      "./src/dependency-construct.ts": {
+        "version": "a4085029f34ec0ca79648cfac3d7f56c425138d70370687939ba0df332a495d2",
+        "signature": "66d94170221e96bc0c3f7ed073c35c1d4b7dcef6b51d537080493e773cf8ec1a",
+        "affectsGlobalScope": false
+      },
+      "./src/event-store-construct.ts": {
+        "version": "e7162d6dff7cc41c599290aaca54f50b279339e93b00e9419e1adb857273294b",
+        "signature": "b4a5cac92f68f34a43b3e5ef519672beaab8565b853baeee2d7c47d49d7895b0",
+        "affectsGlobalScope": false
+      },
+      "./src/code-gen.ts": {
+        "version": "7776178f3fed0c16a4d3ee6f611165edc264d48ae9f4efa9d87e8c068d111749",
+        "signature": "f3b8cdaa5a2ab6f54760068fee6b658a941ce2aa97bcd150a3fdc947c23a297d",
+        "affectsGlobalScope": false
+      },
+      "./src/event-handler-construct.ts": {
+        "version": "f7d7f4a96a30ccb193ab072689d30a8501f9f2a5f997a8971e36ed18267db1cd",
+        "signature": "f463e001dd02198a02f4aa5be4187bb394186f0705ee9a9a290791bac8c97830",
+        "affectsGlobalScope": false
+      },
+      "./src/policy-construct.ts": {
+        "version": "377db6938abd4b3cb19bdf68195f7b2650ea51b7785bc7b87584b1e6780f7ddb",
+        "signature": "366ebfc4447395db8e0d42b3f649deaf412dfeeb0e6a7df0b5565de92b4d7b1b",
+        "affectsGlobalScope": false
+      },
+      "./src/component-construct.ts": {
+        "version": "ce7157383007546a5ec612465b652d40c4b2da7ddd1c6904ab81a79826afbcbb",
+        "signature": "9ba4deb23b610de1f87389dbb6244c53d5210c8d17d714fb1972ad77af1d09d8",
+        "affectsGlobalScope": false
+      },
+      "./src/command-construct.ts": {
+        "version": "462a37129abc4f6e7cd1dadeddb38a1c798e0e26ce26d2682188c67c9064d144",
+        "signature": "2f891bfc1dc1e91844e8147b5ab6d002977a80f57fb31bbcfdeae39b6a39d822",
+        "affectsGlobalScope": false
+      },
+      "./src/bounded-context-construct.ts": {
+        "version": "d097c0076b9e57b2c69353c56e34810c1105be5e0936aeca5354e79e5935f640",
+        "signature": "11dc00e22418c25da0ee4442eb733c2bb9bb3c1d73c3fff73e461c713396e06e",
+        "affectsGlobalScope": false
+      },
+      "./src/aggregate-construct.ts": {
+        "version": "3631f34b9c9b33a925e8d6981163591c75d0f06800f18b1b2503cacfb9d7a2a1",
+        "signature": "d5b0ed0d981e8d1c4d6faea038582c3d92ef40b902faaa8037efc372670e039c",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/aws-lambda/handler.d.ts": {
@@ -4561,9 +4601,9 @@
         "signature": "ca85a4da0977db8145d8eefa82f2997a78d20eef63d2cdf29c0bb62f09f85785",
         "affectsGlobalScope": false
       },
-      "./src/infrastructure.ts": {
-        "version": "639d79fe412b6d26799ad32b8848dc4e1a86eee19522c84afa8934dc8e64ec8f",
-        "signature": "e1eef8c60b77aebdd0d318c3864421a360dd4158cbc536d17979b6d0e6763f75",
+      "./src/index.ts": {
+        "version": "eaeea5fe4d749c4515cc0b028496581ff4b29a0dd93f1aa290ab166961f84b29",
+        "signature": "5811ce0861ab218264a488e77850b67976fb5533618e67d064efdd066244aae3",
         "affectsGlobalScope": false
       },
       "./node_modules/@aws-sdk/client-lambda/dist/types/models/models_0.d.ts": {
@@ -4956,11 +4996,6 @@
         "signature": "6e017a13419bb4e7e30391a0bd4756985e58f6ca0d1768b3a2dc6c5d891fee11",
         "affectsGlobalScope": false
       },
-      "./src/index.ts": {
-        "version": "e3e81f1af4dfaeed4847b7f200b1b4497348b888bd156388084482e8f935b58e",
-        "signature": "d5fc14c879364cfa9e1a16a4944aba980ffb5341b5badaa951b4c79e5c290abf",
-        "affectsGlobalScope": false
-      },
       "./src/__tests__/__fixtures__/dynamodb-stream-event.json": {
         "version": "4c7d547229325e2763ce269c07f1745eea8415a36d1b3da0c775e3dbaa808568",
         "affectsGlobalScope": true
@@ -5141,6 +5176,7 @@
       "outDir": "./lib",
       "composite": true,
       "rootDir": "./src",
+      "watch": true,
       "configFilePath": "./tsconfig.json"
     },
     "referencedMap": {
@@ -10715,6 +10751,44 @@
         "./src/__tests__/__fixtures__/forwarder-sns-message.json",
         "./src/forwarder.ts"
       ],
+      "./src/aggregate-construct.ts": [
+        "../stochastic/lib/index.d.ts",
+        "./src/bounded-context-construct.ts",
+        "./src/component-construct.ts"
+      ],
+      "./src/bounded-context-construct.ts": [
+        "../stochastic/lib/index.d.ts",
+        "./node_modules/@aws-cdk/core/lib/index.d.ts",
+        "./src/aggregate-construct.ts",
+        "./src/command-construct.ts",
+        "./src/component-construct.ts",
+        "./src/dependency-construct.ts",
+        "./src/event-binding.ts",
+        "./src/event-handler-construct.ts",
+        "./src/event-store-construct.ts",
+        "./src/policy-construct.ts"
+      ],
+      "./src/code-gen.ts": [
+        "../stochastic/lib/index.d.ts",
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/path.d.ts"
+      ],
+      "./src/command-construct.ts": [
+        "../stochastic/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-lambda-nodejs/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-lambda/lib/index.d.ts",
+        "./src/bounded-context-construct.ts",
+        "./src/code-gen.ts",
+        "./src/component-construct.ts"
+      ],
+      "./src/component-construct.ts": [
+        "../stochastic/lib/index.d.ts",
+        "./node_modules/@aws-cdk/core/lib/index.d.ts",
+        "./src/aggregate-construct.ts",
+        "./src/command-construct.ts",
+        "./src/event-handler-construct.ts",
+        "./src/policy-construct.ts"
+      ],
       "./src/dependency-construct.ts": [
         "./node_modules/@aws-cdk/aws-dynamodb/lib/index.d.ts",
         "./node_modules/@aws-cdk/aws-iam/lib/index.d.ts"
@@ -10742,6 +10816,30 @@
         "./node_modules/@types/aws-lambda/index.d.ts",
         "./node_modules/env-var/env-var.d.ts"
       ],
+      "./src/event-handler-construct.ts": [
+        "../stochastic/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-lambda-event-sources/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-lambda-nodejs/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-lambda/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-sns-subscriptions/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-sns/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-sqs/lib/index.d.ts",
+        "./src/bounded-context-construct.ts",
+        "./src/code-gen.ts",
+        "./src/component-construct.ts",
+        "./src/dependency-construct.ts"
+      ],
+      "./src/event-store-construct.ts": [
+        "../stochastic/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-dynamodb/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-lambda-event-sources/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-lambda-nodejs/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-lambda/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-sns/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-sqs/lib/index.d.ts",
+        "./node_modules/@aws-cdk/core/lib/index.d.ts",
+        "./node_modules/@types/node/path.d.ts"
+      ],
       "./src/event-store.ts": [
         "../stochastic/lib/index.d.ts",
         "./node_modules/@aws-sdk/client-dynamodb/dist/types/index.d.ts",
@@ -10754,26 +10852,28 @@
         "./node_modules/env-var/env-var.d.ts"
       ],
       "./src/index.ts": [
+        "./src/aggregate-construct.ts",
+        "./src/bounded-context-construct.ts",
+        "./src/command-construct.ts",
+        "./src/component-construct.ts",
         "./src/dependency-construct.ts",
         "./src/event-binding.ts",
+        "./src/event-store-construct.ts",
         "./src/event-store.ts",
-        "./src/infrastructure.ts",
-        "./src/runtime.ts"
+        "./src/policy-construct.ts"
       ],
-      "./src/infrastructure.ts": [
+      "./src/policy-construct.ts": [
         "../stochastic/lib/index.d.ts",
-        "./node_modules/@aws-cdk/aws-dynamodb/lib/index.d.ts",
         "./node_modules/@aws-cdk/aws-lambda-event-sources/lib/index.d.ts",
         "./node_modules/@aws-cdk/aws-lambda-nodejs/lib/index.d.ts",
         "./node_modules/@aws-cdk/aws-lambda/lib/index.d.ts",
         "./node_modules/@aws-cdk/aws-sns-subscriptions/lib/index.d.ts",
         "./node_modules/@aws-cdk/aws-sns/lib/index.d.ts",
         "./node_modules/@aws-cdk/aws-sqs/lib/index.d.ts",
-        "./node_modules/@aws-cdk/core/lib/index.d.ts",
-        "./node_modules/@types/node/fs.d.ts",
-        "./node_modules/@types/node/path.d.ts",
-        "./src/dependency-construct.ts",
-        "./src/index.ts"
+        "./src/bounded-context-construct.ts",
+        "./src/code-gen.ts",
+        "./src/command-construct.ts",
+        "./src/component-construct.ts"
       ],
       "./src/runtime.ts": [
         "../stochastic/lib/index.d.ts",
@@ -10828,6 +10928,7 @@
         "../stochastic/lib/command.d.ts",
         "../stochastic/lib/component.d.ts",
         "../stochastic/lib/dependencies.d.ts",
+        "../stochastic/lib/event-handler.d.ts",
         "../stochastic/lib/event.d.ts",
         "../stochastic/lib/policy.d.ts",
         "../stochastic/lib/query.d.ts",
@@ -16449,6 +16550,38 @@
       "./node_modules/pretty-format/build/index.d.ts": [
         "./node_modules/pretty-format/build/types.d.ts"
       ],
+      "./src/aggregate-construct.ts": [
+        "../stochastic/lib/index.d.ts",
+        "./src/bounded-context-construct.ts",
+        "./src/component-construct.ts"
+      ],
+      "./src/bounded-context-construct.ts": [
+        "../stochastic/lib/index.d.ts",
+        "./node_modules/@aws-cdk/core/lib/index.d.ts",
+        "./src/aggregate-construct.ts",
+        "./src/command-construct.ts",
+        "./src/component-construct.ts",
+        "./src/dependency-construct.ts",
+        "./src/event-binding.ts",
+        "./src/event-store-construct.ts"
+      ],
+      "./src/code-gen.ts": [
+        "../stochastic/lib/index.d.ts"
+      ],
+      "./src/command-construct.ts": [
+        "../stochastic/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-lambda/lib/index.d.ts",
+        "./src/bounded-context-construct.ts",
+        "./src/component-construct.ts"
+      ],
+      "./src/component-construct.ts": [
+        "../stochastic/lib/index.d.ts",
+        "./node_modules/@aws-cdk/core/lib/index.d.ts",
+        "./src/aggregate-construct.ts",
+        "./src/command-construct.ts",
+        "./src/event-handler-construct.ts",
+        "./src/policy-construct.ts"
+      ],
       "./src/dependency-construct.ts": [
         "./node_modules/@aws-cdk/aws-dynamodb/lib/index.d.ts",
         "./node_modules/@aws-cdk/aws-iam/lib/index.d.ts"
@@ -16465,6 +16598,19 @@
       "./src/event-bridge-receiver.ts": [
         "./node_modules/@types/aws-lambda/index.d.ts"
       ],
+      "./src/event-handler-construct.ts": [
+        "../stochastic/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-lambda/lib/index.d.ts",
+        "./src/bounded-context-construct.ts",
+        "./src/component-construct.ts",
+        "./src/dependency-construct.ts"
+      ],
+      "./src/event-store-construct.ts": [
+        "../stochastic/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-dynamodb/lib/index.d.ts",
+        "./node_modules/@aws-cdk/aws-sns/lib/index.d.ts",
+        "./node_modules/@aws-cdk/core/lib/index.d.ts"
+      ],
       "./src/event-store.ts": [
         "../stochastic/lib/index.d.ts"
       ],
@@ -16472,20 +16618,22 @@
         "./node_modules/@types/aws-lambda/index.d.ts"
       ],
       "./src/index.ts": [
+        "./src/aggregate-construct.ts",
+        "./src/bounded-context-construct.ts",
+        "./src/command-construct.ts",
+        "./src/component-construct.ts",
         "./src/dependency-construct.ts",
         "./src/event-binding.ts",
+        "./src/event-store-construct.ts",
         "./src/event-store.ts",
-        "./src/infrastructure.ts",
-        "./src/runtime.ts"
+        "./src/policy-construct.ts"
       ],
-      "./src/infrastructure.ts": [
+      "./src/policy-construct.ts": [
         "../stochastic/lib/index.d.ts",
-        "./node_modules/@aws-cdk/aws-dynamodb/lib/index.d.ts",
         "./node_modules/@aws-cdk/aws-lambda/lib/index.d.ts",
-        "./node_modules/@aws-cdk/aws-sns/lib/index.d.ts",
-        "./node_modules/@aws-cdk/core/lib/index.d.ts",
-        "./src/dependency-construct.ts",
-        "./src/index.ts"
+        "./src/bounded-context-construct.ts",
+        "./src/command-construct.ts",
+        "./src/component-construct.ts"
       ],
       "./src/runtime.ts": [
         "../stochastic/lib/index.d.ts",
@@ -16538,6 +16686,7 @@
         "../stochastic/lib/command.d.ts",
         "../stochastic/lib/component.d.ts",
         "../stochastic/lib/dependencies.d.ts",
+        "../stochastic/lib/event-handler.d.ts",
         "../stochastic/lib/event.d.ts",
         "../stochastic/lib/policy.d.ts",
         "../stochastic/lib/query.d.ts",
@@ -17588,14 +17737,21 @@
       "./src/__tests__/__fixtures__/event-bridge-event.json",
       "./src/__tests__/__fixtures__/forwarder-sns-message.json",
       "./src/__tests__/forwarder.test.ts",
+      "./src/aggregate-construct.ts",
+      "./src/bounded-context-construct.ts",
+      "./src/code-gen.ts",
+      "./src/command-construct.ts",
+      "./src/component-construct.ts",
       "./src/dependency-construct.ts",
       "./src/event-binding.ts",
       "./src/event-bridge-forwarder.ts",
       "./src/event-bridge-receiver.ts",
+      "./src/event-handler-construct.ts",
+      "./src/event-store-construct.ts",
       "./src/event-store.ts",
       "./src/forwarder.ts",
       "./src/index.ts",
-      "./src/infrastructure.ts",
+      "./src/policy-construct.ts",
       "./src/runtime.ts",
       "../stochastic/lib/aggregate.d.ts",
       "../stochastic/lib/bounded-context.d.ts",
