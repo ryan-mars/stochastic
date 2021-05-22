@@ -1,0 +1,30 @@
+{
+  "version": "0",
+  "id": "6243b01b-3b10-3a67-9045-7f086ed12988",
+  "detail-type": "ScheduledFlightsAdded",
+  "source": "Scheduling",
+  "account": "611181767269",
+  "time": "2021-05-19T06:47:17Z",
+  "region": "us-east-2",
+  "resources": [],
+  "detail": {
+    "payload": {
+      "route": "SFO-MIA",
+      "__typename": "ScheduledFlightsAdded",
+      "flights": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "sk": "EVENT#1skAZNDpE7WsoWNTCSvepXpafBF",
+    "id": "1skAZNDpE7WsoWNTCSvepXpafBF",
+    "pk": "RouteSchedule#SFO-MIA",
+    "source": "RouteSchedule",
+    "source_id": "SFO-MIA",
+    "time": "2021-05-19T06:37:47.369Z",
+    "type": "ScheduledFlightsAdded",
+    "SequenceNumber": "30539500000000006240193587"
+  }
+}

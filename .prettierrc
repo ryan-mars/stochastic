@@ -1,12 +1,12 @@
 {
-  "arrowParens": "always",
+  "arrowParens": "avoid",
   "bracketSpacing": true,
   "embeddedLanguageFormatting": "auto",
-  "printWidth": 140,
+  "printWidth": 120,
   "proseWrap": "never",
-  "semi": true,
+  "semi": false,
   "singleQuote": false,
   "tabWidth": 2,
-  "trailingComma": "all",
+  "trailingComma": "none",
   "useTabs": false
 }

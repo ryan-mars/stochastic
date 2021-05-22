@@ -2,43 +2,77 @@
 
 exports[`Scheduling service adds a scheduled flight 1`] = `
 Array [
-  ScheduledFlightAdded {
-    "__typename": "ScheduledFlightAdded",
-    "add": Object {
-      "day": "2021-06-11",
-      "scheduledArrival": "2021-06-12T02:30:00.000Z",
-      "scheduledDeparture": "2021-06-11T20:30:00.000Z",
-    },
-    "flightNo": "PA576",
+  ScheduledFlightsAdded {
+    "__typename": "ScheduledFlightsAdded",
+    "flights": Array [
+      Object {
+        "arrivalTime": "928p",
+        "day": "2021-06-11",
+        "departureTime": "1210p",
+        "flightNo": "PA576",
+      },
+      Object {
+        "arrivalTime": "502p",
+        "day": "2021-06-11",
+        "departureTime": "700a",
+        "flightNo": "PA872",
+      },
+    ],
+    "route": "SFO-MIA",
   },
 ]
 `;
 
-exports[`Scheduling service creates a flight 1`] = `
+exports[`Scheduling service adds routes 1`] = `
 Array [
-  FlightCreatedEvent {
-    "__typename": "FlightCreated",
-    "aircraftType": "B787-9",
-    "days": Object {},
-    "destination": "MIA",
-    "flightNo": "PA576",
-    "origin": "SFO",
+  RouteAdded {
+    "__typename": "RouteAdded",
+    "route": "SFO-MIA",
   },
 ]
 `;
 
-exports[`Scheduling service should reduce aggregate state from events 1`] = `
-FlightSchedule {
-  "__typename": "FlightSchedule",
-  "aircraftType": "B787-9",
-  "days": Object {
-    "2021-06-11": Object {
-      "scheduledArrival": "2021-06-12T02:30:00.000Z",
-      "scheduledDeparture": "2021-06-11T20:30:00.000Z",
+exports[`Scheduling service reduces state from events 1`] = `
+RouteSchedule {
+  "__typename": "RouteSchedule",
+  "flights": Array [
+    Object {
+      "arrivalTime": "928p",
+      "day": "2021-06-11",
+      "departureTime": "1210p",
+      "flightNo": "PA576",
     },
-  },
-  "destination": "MIA",
-  "flightNo": "PA576",
-  "origin": "SFO",
+    Object {
+      "arrivalTime": "502p",
+      "day": "2021-06-11",
+      "departureTime": "700a",
+      "flightNo": "PA872",
+    },
+    Object {
+      "arrivalTime": "513p",
+      "day": "2021-06-11",
+      "departureTime": "700a",
+      "flightNo": "PA738",
+    },
+    Object {
+      "arrivalTime": "928p",
+      "day": "2021-06-12",
+      "departureTime": "1210p",
+      "flightNo": "PA576",
+    },
+    Object {
+      "arrivalTime": "502p",
+      "day": "2021-06-12",
+      "departureTime": "700a",
+      "flightNo": "PA872",
+    },
+    Object {
+      "arrivalTime": "513p",
+      "day": "2021-06-12",
+      "departureTime": "700a",
+      "flightNo": "PA738",
+    },
+  ],
+  "route": "SFO-MIA",
 }
 `;

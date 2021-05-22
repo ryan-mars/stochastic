@@ -1,6 +1,51 @@
 {
   "Records": [
     {
+      "eventID": "6ea0022a2cd04233a17715e3589285ed",
+      "eventName": "REMOVE",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-2",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1621406187,
+        "Keys": {
+          "sk": {
+            "S": "EVENT#1sjrs9AOdAy7ETi1EDuDDGGmrYo"
+          },
+          "pk": {
+            "S": "RouteSchedule#LAX-MIA"
+          }
+        },
+        "SequenceNumber": "30539200000000006240165366",
+        "SizeBytes": 58,
+        "StreamViewType": "NEW_IMAGE"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-2:611181767269:table/Scheduling-EventStoreTable9A84AAAA-1QBMIRFCHQ171/stream/2021-05-12T19:08:15.124"
+    },
+    {
+      "eventID": "cba3cf8b53734bbb54d538b0e0c96082",
+      "eventName": "REMOVE",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-2",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1621406187,
+        "Keys": {
+          "sk": {
+            "S": "EVENT#1sjrs2gudrt2Ae73ZtriucyguAV"
+          },
+          "pk": {
+            "S": "RouteSchedule#LAX-MIA"
+          }
+        },
+        "SequenceNumber": "30539300000000006240165367",
+        "SizeBytes": 58,
+        "StreamViewType": "NEW_IMAGE"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-2:611181767269:table/Scheduling-EventStoreTable9A84AAAA-1QBMIRFCHQ171/stream/2021-05-12T19:08:15.124"
+    },
+
+    {
       "eventID": "59ba8d4bc7748dc12ce3feed30200a25",
       "eventName": "INSERT",
       "eventVersion": "1.1",

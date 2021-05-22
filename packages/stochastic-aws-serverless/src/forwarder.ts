@@ -12,7 +12,7 @@ export const handler: DynamoDBStreamHandler = async (event) => {
     try {
       if (record.eventName !== "INSERT") {
         console.log(`Skipping ${record.eventName}`);
-        continue;
+        continue
       }
 
       if (!record.dynamodb?.NewImage) {

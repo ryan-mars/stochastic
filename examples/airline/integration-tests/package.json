@@ -1,0 +1,26 @@
+{
+  "name": "integration-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo 0",
+    "integration": "cucumber-js --require-module ts-node/register --require features/step-definitions/**/*.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "private": true,
+  "dependencies": {
+    "@aws-sdk/client-lambda": "^3.16.0",
+    "@cucumber/cucumber": "^7.2.1",
+    "@types/faker": "^5.5.5",
+    "reservations": "^0.1.0",
+    "faker": "^5.5.3",
+    "loyalty": "^0.1.0",
+    "nanoid": "^3.1.23",
+    "operations": "^0.1.0",
+    "proposal-temporal": "^0.8.0",
+    "scheduling": "^0.1.0",
+    "ts-node": "^9.1.1"
+  }
+}
