@@ -15,9 +15,9 @@
   "keywords": [],
   "author": "Ryan Marsh",
   "dependencies": {
-    "@aws-cdk/aws-events": "^1.103.0",
-    "@aws-cdk/core": "^1.103.0",
-    "aws-cdk": "^1.103.0",
+    "@aws-cdk/aws-events": "^1.105.0",
+    "@aws-cdk/core": "^1.105.0",
+    "aws-cdk": "^1.105.0",
     "scheduling": "^0.1.0",
     "stochastic": "^0.1.0",
     "stochastic-aws-serverless": "^0.1.0",

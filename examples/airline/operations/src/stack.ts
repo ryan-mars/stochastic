@@ -1,7 +1,11 @@
 import * as cdk from "@aws-cdk/core"
 
-import { BoundedContextConstruct, ReceiveEventBridgeEventBinding } from "stochastic-aws-serverless"
-import { operations } from "./service"
+import {
+  BoundedContextConstruct,
+  EmitEventBridgeBinding,
+  ReceiveEventBridgeEventBinding
+} from "stochastic-aws-serverless"
+import { FlightCancelled, operations } from "./service"
 import { scheduling, ScheduledFlightsAdded } from "scheduling"
 import { EventBus } from "@aws-cdk/aws-events"
 
@@ -30,7 +34,8 @@ export class OperationsStack extends cdk.Stack {
           events: [ScheduledFlightsAdded],
           eventBus
         })
-      ]
+      ],
+      emitEvents: [new EmitEventBridgeBinding({ events: [FlightCancelled], eventBus })]
     })
   }
 }

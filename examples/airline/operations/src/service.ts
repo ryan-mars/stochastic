@@ -28,7 +28,7 @@ const FlightAggregate = new Aggregate({
   __filename,
   stateKey: "flightNo",
   stateShape: OperatedFlight,
-  events: [FlightAddedEvent],
+  events: [FlightAddedEvent, FlightCancelled],
   initialState: () => new OperatedFlight({ flightNo: "" }),
   reducer: (state, event) => {
     switch (event.__typename) {
@@ -96,6 +96,7 @@ export const operations = new BoundedContext({
   components: {
     AddFlight,
     CancelFlight,
+    FlightCancelled,
     MyPolicy,
     FlightAggregate
   }

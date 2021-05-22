@@ -2,7 +2,7 @@ import { InvokeCommand, LambdaClient } from "@aws-sdk/client-lambda"
 import { DataTable } from "@cucumber/cucumber"
 import { Temporal } from "proposal-temporal"
 import { AddFlights, AddRoute } from "scheduling"
-import { CreateReservationIntent } from "booking/lib/service"
+import { BookReservationIntent } from "reservations/lib/service"
 import { CancelFlightIntent } from "operations/lib/service"
 import { TextEncoder } from "util"
 import faker from "faker"
@@ -16,7 +16,7 @@ const { Given, When, Then, World } = require("@cucumber/cucumber")
 const commands = {
   AddRoute: `Scheduling-AddRouteCommand`,
   AddFlights: "Scheduling-AddFlightsCommand",
-  CreateReservation: "Booking-CreateReservation",
+  BookReservation: "Reservation-BookReservation",
   CancelFlight: "Operations-CancelFlight"
 }
 const lambda = new LambdaClient({})
@@ -70,8 +70,8 @@ Given(
       [day1, day2].map(day => {
         return schedule.hashes().map(flight => {
           return Array.from(Array(passengerCount).keys()).map(i => {
-            const intent = new CreateReservationIntent({
-              bookingNo: nanoid(),
+            const intent = new BookReservationIntent({
+              reservationNo: nanoid(),
               flights: [
                 {
                   day: Temporal.PlainDate.from(day).toString(),
@@ -93,7 +93,7 @@ Given(
               }
             })
 
-            return invoke(commands.CreateReservation, intent)
+            return invoke(commands.BookReservation, intent)
           })
         })
       })
@@ -106,7 +106,7 @@ When("flight {string} is cancelled on {string}", async function (flightNo: strin
 })
 
 Then("the passengers should be rebooked on the available flights", function () {
-  // TODO: Implement the rebooking policy
+  // TODO: Implement the rereservation policy
   // TODO: Query the read model and assert passengers were rebooked
 
   return "pending"
