@@ -130,8 +130,23 @@ export const RebookingPolicy = new Policy(
     events: [FlightCancelled],
     commands: [ModifyReservationFlights]
   },
-  async event => {
+  async (event, commands) => {
     console.log(JSON.stringify(event, null, 2))
+    console.log({ commands })
+
+    // TODO: get the passengers for this flight (booking read model)
+    // TODO: sort passengers by status
+    // TODO: find flights leaving in no less than one hour from the same origin to the same destination (scheduling read model)
+    // TODO: Check seat availability (booking read model)
+    // TODO: Change reservation to the next available flight
+    // TODO: Handle failures gracefully
+
+    /**
+     * CAVEATS:
+     * Usually operations takes over ownership of the manifest for a flight 1 hour before departure and booking cannot modify it. In this case we're going to pretend Reservations always owns the manifest.
+     * Customer service will want to be able to "lock" a reservation so no other procesess modify it while they're on the phone with a customer
+     *
+     */
   }
 )
 
