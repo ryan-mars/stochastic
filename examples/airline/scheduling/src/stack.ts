@@ -23,7 +23,8 @@ export class SchedulingStack extends cdk.Stack {
 
     this.scheduling = new BoundedContextConstruct(this, "Scheduling", {
       boundedContext: scheduling,
-      emitEvents: [new EmitEventBridgeBinding({ events: [ScheduledFlightsAdded], eventBus })]
+      emitEvents: [new EmitEventBridgeBinding({ events: [ScheduledFlightsAdded], eventBus })],
+      dependencies: {}
     })
   }
 }

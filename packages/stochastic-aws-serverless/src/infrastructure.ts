@@ -8,8 +8,20 @@ import * as sqs from "@aws-cdk/aws-sqs"
 import * as cdk from "@aws-cdk/core"
 import * as fs from "fs"
 import * as path from "path"
-import { Aggregate, BoundedContext, BoundedContextEvents, Command, Component, Policy, Query, ReadModel } from "stochastic"
+import {
+  Aggregate,
+  BoundedContext,
+  BoundedContextDependencies,
+  CreatedEvents,
+  Command,
+  Component,
+  Policy,
+  Query,
+  ReadModel,
+  ConsumedEvents
+} from "stochastic"
 import { EmitEventBinding, RecieveEventBinding } from "."
+import { DependencyConstruct } from "./dependency-construct"
 
 export interface IBoundedContextConstruct /* extends cdk.IConstruct */ {
   readonly eventBridgeArn: string
@@ -19,6 +31,8 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
   extends cdk.Construct
   implements IBoundedContextConstruct
 {
+  emitScope: cdk.Construct
+  receiveScope: cdk.Construct
   public static fromArn(eventBridgeArn: string): IBoundedContextConstruct {
     // TODO: base construct for BoundedContext, following pattern of CDK
     // https://github.com/aws/aws-cdk/blob/master/packages/%40aws-cdk/aws-lambda/lib/function.ts#L403
@@ -44,7 +58,7 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
 
   public readonly eventBridgeArn: string
 
-  public readonly emitEvents: EmitEventBinding<BoundedContextEvents<Context["components"]>>[]
+  public readonly emitEvents: EmitEventBinding<CreatedEvents<Context["components"]>>[]
   public readonly receiveEvents: RecieveEventBinding<Context["emits"][number]>[]
 
   constructor(
@@ -56,7 +70,10 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
         [name in keyof Context["components"]]?: ComponentProps<Context["components"][name]>
       }
       emitEvents?: EmitEventBinding<Context["emits"][number]>[]
-      receiveEvents?: RecieveEventBinding<BoundedContextEvents<Context["components"]>>[]
+      receiveEvents?: RecieveEventBinding<ConsumedEvents<Context["components"]>>[]
+      dependencies: {
+        [dependencyName in BoundedContextDependencies<Context["components"]>["name"]]: DependencyConstruct
+      }
     }
   ) {
     super(scope, id)
@@ -66,13 +83,18 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
     const eventStore = (this.eventStore = new EventStore(scope, { boundedContext }))
     this.eventBridgeArn = "???"
 
-    this.emitEvents.map(binding => this.eventStore.topic.addSubscription(binding.bind(scope, this.boundedContext.name)))
-    this.receiveEvents.map(binding => binding.bind(scope, this.eventStore.topic))
+    this.emitScope = new cdk.Construct(this, "Emits")
+    this.receiveScope = new cdk.Construct(this, "Receive")
+
+    this.emitEvents.map(binding =>
+      this.eventStore.topic.addSubscription(binding.bind(this.emitScope, this.boundedContext.name))
+    )
+    this.receiveEvents.map(binding => binding.bind(this.receiveScope, this.eventStore.topic))
 
     const commandConstructs: Map<string, CommandConstruct> = new Map()
 
-    for (const [componentName, component] of Object.entries(boundedContext.components).sort(([nameA, componentA], [nameB, componentB]) =>
-      componentA.kind === "Command" ? -1 : 1
+    for (const [componentName, component] of Object.entries(boundedContext.components).sort(
+      ([nameA, componentA], [nameB, componentB]) => (componentA.kind === "Command" ? -1 : 1)
     )) {
       const componentProps = (props.components as any)?.[componentName] as ComponentProps<Component>
       let con: AggregateConstruct | CommandConstruct | PolicyConstruct | undefined
@@ -109,17 +131,13 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
     }
   }
 
-  public receiveEvent(
-    binding: RecieveEventBinding<
-      {
-        [component in keyof Context["components"]]: Context["components"][component] extends Policy | Command
-          ? Context["components"][component]["events"][number]
-          : never
-      }[keyof Context["components"]]
-    >
-  ): void {}
+  public receiveEvent(binding: RecieveEventBinding<CreatedEvents<Context["components"]>>): void {
+    binding.bind(this.receiveScope, this.eventStore.topic)
+  }
 
-  public emitEvent(binding: EmitEventBinding<Context["emits"][number]>): void {}
+  public emitEvent(binding: EmitEventBinding<Context["emits"][number]>): void {
+    binding.bind(this.emitScope, this.boundedContext.name)
+  }
 }
 
 /**
@@ -155,7 +173,10 @@ export interface ComponentConstructProps<S extends BoundedContext = BoundedConte
   name: string
 }
 
-export class ComponentConstruct<S extends BoundedContext = BoundedContext, C extends Component = Component> extends cdk.Construct {
+export class ComponentConstruct<
+  S extends BoundedContext = BoundedContext,
+  C extends Component = Component
+> extends cdk.Construct {
   readonly boundedContext: S
   readonly component: C
   readonly name: string
@@ -229,10 +250,10 @@ export interface AggregateConstructProps<A extends Aggregate = Aggregate> {
 /**
  * Construct for an Aggregate - it creates a DynamoDB Table for storing backing data.
  */
-export class AggregateConstruct<S extends BoundedContext = BoundedContext, A extends Aggregate = Aggregate> extends ComponentConstruct<
-  S,
-  A
-> {
+export class AggregateConstruct<
+  S extends BoundedContext = BoundedContext,
+  A extends Aggregate = Aggregate
+> extends ComponentConstruct<S, A> {
   constructor(scope: BoundedContextConstruct, id: string, props: ComponentProps<A> & ComponentConstructProps<S, A>) {
     super(scope, id, props)
   }
@@ -242,11 +263,15 @@ export class AggregateConstruct<S extends BoundedContext = BoundedContext, A ext
  * Command Construct Props is just the Lambda Props with code omitted - we'll bundle the code from the BoundedContext
  * object which contains a reference to its path.
  */
-export interface CommandConstructProps<C extends Command = Command> extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {
+export interface CommandConstructProps<C extends Command = Command>
+  extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {
   runtime?: lambda.Runtime
 }
 
-export class CommandConstruct<S extends BoundedContext = BoundedContext, C extends Command = Command> extends ComponentConstruct<S, C> {
+export class CommandConstruct<
+  S extends BoundedContext = BoundedContext,
+  C extends Command = Command
+> extends ComponentConstruct<S, C> {
   readonly handler: lambda.Function
   constructor(scope: BoundedContextConstruct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
     super(scope, id, props)
@@ -284,7 +309,8 @@ export class CommandConstruct<S extends BoundedContext = BoundedContext, C exten
  * Command Construct Props is just the Lambda Props with code omitted - we'll bundle the code from the BoundedContext
  * object which contains a reference to its path.
  */
-export interface PolicyConstructProps<P extends Policy = Policy> extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {}
+export interface PolicyConstructProps<P extends Policy = Policy>
+  extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {}
 
 export function generateHandler(
   componentName: string,
@@ -303,13 +329,17 @@ import { ${componentName} } from "${requirePath(component)}";
 
 ${
   component.kind === "Policy"
-    ? component.commands.map(command => `import {${componentNames.get(command)!}} from "${requirePath(command)}"`).join("\n")
+    ? component.commands
+        .map(command => `import {${componentNames.get(command)!}} from "${requirePath(command)}"`)
+        .join("\n")
     : ""
 }
 const names = new Map<any, any>();
 ${
   component.kind === "Policy"
-    ? component.commands.map(command => `names.set(${componentNames.get(command)!}, "${componentNames.get(command)!}");`).join("\n")
+    ? component.commands
+        .map(command => `names.set(${componentNames.get(command)!}, "${componentNames.get(command)!}");`)
+        .join("\n")
     : ""
 }
 const runtime = new LambdaRuntime(${componentName}, "${componentName}", names);
@@ -329,7 +359,10 @@ export interface PolicyConstructProps {
   commands: Map<string, CommandConstruct>
 }
 
-export class PolicyConstruct<S extends BoundedContext = BoundedContext, C extends Policy = Policy> extends ComponentConstruct<S, C> {
+export class PolicyConstruct<
+  S extends BoundedContext = BoundedContext,
+  C extends Policy = Policy
+> extends ComponentConstruct<S, C> {
   readonly handler: lambda.Function
   constructor(scope: BoundedContextConstruct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
     super(scope, id, props)
@@ -352,7 +385,10 @@ export class PolicyConstruct<S extends BoundedContext = BoundedContext, C extend
       const commandName = props.boundedContext.componentNames.get(command)!
       const commandConstruct = props.commands.get(commandName)!
 
-      this.handler.addEnvironment(`${props.boundedContext.componentNames.get(command)!}_LAMBDA_ARN`, commandConstruct?.handler.functionArn!)
+      this.handler.addEnvironment(
+        `${props.boundedContext.componentNames.get(command)!}_LAMBDA_ARN`,
+        commandConstruct?.handler.functionArn!
+      )
       commandConstruct.handler.grantInvoke(this.handler)
     }
 

@@ -6,8 +6,6 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "clean": "rm -rf lib cdk.out",
-    "build": "tsc",
-    "watch": "tsc -w",
     "cdk": "cdk",
     "test": "jest --passWithNoTests",
     "synth": "cdk synth"
@@ -16,6 +14,7 @@
   "author": "Ryan Marsh",
   "dependencies": {
     "@aws-cdk/aws-events": "^1.105.0",
+    "@aws-cdk/aws-dynamodb": "^1.105.0",
     "@aws-cdk/core": "^1.105.0",
     "aws-cdk": "^1.105.0",
     "operations": "^0.1.0",
