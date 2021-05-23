@@ -1,6 +1,6 @@
 import { BaseComponent, BaseComponentProps } from "./component"
 import { Shape } from "./shape"
-import { ReadModel } from "./read-model"
+import { ReadModel, ReadModelInterface } from "./read-model"
 
 export interface QueryProps<
   Request extends Shape = Shape,
@@ -31,7 +31,9 @@ export class Query<
 
 export namespace Query {
   export type Handler<Request extends Shape, Results extends Shape, Models extends ReadModel[]> = (
-    request: Shape.Value<Request>
-    // ...models: ReadModel.Runtime<Models>
+    request: Shape.Value<Request>,
+    ...models: {
+      [m in keyof Models]: m extends number ? ReadModelInterface<Models[m]> : Models[m]
+    }
   ) => Promise<Shape.Value<Results>>
 }

@@ -1,5 +1,15 @@
-import { Aggregate, BoundedContext, Command, Dependency, DomainEvent, Policy, ReadModel, Shape } from "stochastic"
-import { array, object, string } from "superstruct"
+import {
+  Aggregate,
+  BoundedContext,
+  Command,
+  Dependency,
+  DomainEvent,
+  Policy,
+  Query,
+  ReadModel,
+  Shape
+} from "stochastic"
+import { array, number, object, string } from "superstruct"
 import { FlightCancelled } from "operations"
 
 import dynamodb from "@aws-sdk/client-dynamodb"
@@ -135,17 +145,85 @@ export const AvailableSeats = new ReadModel(
     events: [ReservationBooked],
     dependencies: [dynamoTable]
   },
+  /**
+   * Projection function that aggregates events to prepare the read model.
+   */
   ({ SeatsTable }) => {
     const ddb = new dynamodb.DynamoDBClient({})
 
     return async event => {
       await ddb.send(
-        new dynamodb.PutItemCommand({
-          Item: dynamodbUtil.marshall(event),
-          TableName: SeatsTable
+        new dynamodb.UpdateItemCommand({
+          TableName: SeatsTable,
+          Key: {
+            reservationNo: {
+              S: event.reservationNo
+            }
+          },
+          UpdateExpression: "ADD availableSeats :q",
+          ExpressionAttributeValues: {
+            ":q": {
+              N: "1"
+            }
+          }
         })
       )
     }
+  },
+  /**
+   * Initializer for the interface to this read model.
+   */
+  ({ SeatsTable }) => {
+    const ddb = new dynamodb.DynamoDBClient({})
+
+    return async (reservationNo: string) => {
+      const item = await ddb.send(
+        new dynamodb.GetItemCommand({
+          TableName: SeatsTable,
+          Key: {
+            reservationNo: {
+              S: reservationNo
+            }
+          }
+        })
+      )
+
+      if (item.Item?.availableSeats.N !== undefined) {
+        return parseInt(item.Item.availableSeats.N, 10)
+      } else {
+        return null
+      }
+    }
+  }
+)
+
+export class GetSeatAvailabilityRequest extends Shape("GetSeatAvailabilityRequest", {
+  reservationNo: string()
+}) {}
+
+export class GetSeatAvailabilityResponse extends Shape("GetSeatAvailabilityResponse", {
+  reservationNo: string(),
+  availableSeats: number()
+}) {}
+
+export const AvailabilityQuery = new Query(
+  {
+    __filename,
+    /**
+     * We take a dependency on one or mode read models
+     */
+    models: [AvailableSeats],
+    request: GetSeatAvailabilityRequest,
+    results: GetSeatAvailabilityResponse
+  },
+  async (request, availableSeats) => {
+    /**
+     * Then, implement a function to implement the Query's request/response contract
+     */
+    return new GetSeatAvailabilityResponse({
+      reservationNo: request.reservationNo,
+      availableSeats: (await availableSeats(request.reservationNo)) ?? 0
+    })
   }
 )
 
@@ -183,7 +261,8 @@ export const reservations = new BoundedContext({
     BookReservation,
     ModifyReservationFlights,
     RebookingPolicy,
-    AvailableSeats
+    AvailableSeats,
+    AvailabilityQuery
   },
   emits: [FlightReservationsChanged]
 })

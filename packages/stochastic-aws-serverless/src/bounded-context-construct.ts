@@ -9,7 +9,8 @@ import {
   Policy,
   ConsumedEvents,
   ReadModel,
-  EventHandler
+  EventHandler,
+  Query
 } from "stochastic"
 import { EmitEventBinding, RecieveEventBinding } from "./event-binding"
 import { DependencyConstruct } from "./dependency-construct"
@@ -19,6 +20,7 @@ import { CommandConstruct } from "./command-construct"
 import { ComponentProps } from "./component-construct"
 import { PolicyConstruct } from "./policy-construct"
 import { EventHandlerConstruct } from "./event-handler-construct"
+import { QueryConstruct } from "./query-construct"
 
 /**
  * Map each component in the Bounded Context to its corresponding CDK Construct.
@@ -104,13 +106,20 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
     )
     this.receiveEvents.map(binding => binding.bind(this.receiveScope, this.eventStore.topic))
 
-    const commandConstructs: Map<string, CommandConstruct> = new Map()
+    const commandConstructs = new Map<string, CommandConstruct>()
 
     for (const [componentName, component] of Object.entries(boundedContext.components).sort(
       ([nameA, componentA], [nameB, componentB]) => (componentA.kind === "Command" ? -1 : 1)
     )) {
       const componentProps = (props.components as any)?.[componentName] as ComponentProps<Component>
-      let con: AggregateConstruct | CommandConstruct | PolicyConstruct | EventHandlerConstruct | undefined
+      let con:
+        | AggregateConstruct
+        | CommandConstruct
+        | PolicyConstruct
+        | EventHandlerConstruct
+        | QueryConstruct
+        | undefined
+
       if (component.kind === "Aggregate") {
         con = new AggregateConstruct(this as any, componentName, {
           ...(componentProps as ComponentProps<Aggregate>),
@@ -148,7 +157,16 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
           ...(componentProps as ComponentProps<ReadModel>),
           component,
           boundedContext,
-          name: componentName
+          name: componentName,
+          dependencies: props.dependencies
+        })
+      } else if (component.kind === "Query") {
+        con = new QueryConstruct(this as any, componentName, {
+          ...(componentProps as ComponentProps<Query>),
+          component,
+          boundedContext,
+          name: componentName,
+          dependencies: props.dependencies
         })
       }
       if (con) {
