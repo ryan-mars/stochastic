@@ -12,6 +12,9 @@
     },
     {
       "path": "../../../packages/stochastic-aws-serverless/tsconfig.json"
+    },
+    {
+      "path": "../operations/tsconfig.json"
     }
   ]
 }
