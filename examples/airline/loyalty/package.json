@@ -6,8 +6,6 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "clean": "rm -rf lib cdk.out",
-    "build": "tsc",
-    "watch": "tsc -w",
     "cdk": "cdk",
     "test": "jest --passWithNoTests",
     "synth": "cdk synth"

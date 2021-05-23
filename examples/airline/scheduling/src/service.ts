@@ -1,4 +1,4 @@
-import { Aggregate, Command, BoundedContext, Shape, Policy, DomainEvent, BoundedContextEvents } from "stochastic"
+import { Aggregate, Command, BoundedContext, Shape, Policy, DomainEvent } from "stochastic"
 import { array, map, object, record, set, string } from "superstruct"
 
 export class AddRoute extends Shape("AddRoute", { route: string() }) {}
@@ -126,5 +126,5 @@ export const scheduling = new BoundedContext({
     AddRouteCommand,
     RemoveFlightsCommand
   },
-  emits: [ScheduledFlightsAdded, FlightsRemoved, FlightsUpdated]
+  emits: [ScheduledFlightsAdded, FlightsRemoved]
 })

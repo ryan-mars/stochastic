@@ -1,10 +1,10 @@
 import * as cdk from "@aws-cdk/core"
+import * as ddb from "@aws-cdk/aws-dynamodb"
 import { EventBus } from "@aws-cdk/aws-events"
 
 import { reservations } from "./service"
-import { operations, FlightCancelled } from "operations/lib/service"
-import { BoundedContextConstruct } from "stochastic-aws-serverless/lib/infrastructure"
-import { ReceiveEventBridgeEventBinding } from "stochastic-aws-serverless"
+import { operations, FlightCancelled } from "operations"
+import { BoundedContextConstruct, ReceiveEventBridgeEventBinding, DynamoDBDependency } from "stochastic-aws-serverless"
 
 export class ReservationStack extends cdk.Stack {
   readonly operations: BoundedContextConstruct<typeof operations>
@@ -22,7 +22,14 @@ export class ReservationStack extends cdk.Stack {
       })
     )
 
-    new BoundedContextConstruct(this, "BoundedContext", {
+    const table = new ddb.Table(this, "SeatsTable", {
+      partitionKey: {
+        name: "id",
+        type: ddb.AttributeType.STRING
+      }
+    })
+
+    const context = new BoundedContextConstruct(this, "BoundedContext", {
       boundedContext: reservations,
       receiveEvents: [
         new ReceiveEventBridgeEventBinding({
@@ -30,7 +37,10 @@ export class ReservationStack extends cdk.Stack {
           events: [FlightCancelled],
           eventBus
         })
-      ]
+      ],
+      dependencies: {
+        SeatsTable: new DynamoDBDependency(table)
+      }
     })
   }
 }

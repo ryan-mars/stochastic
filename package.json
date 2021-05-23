@@ -4,9 +4,11 @@
   "scripts": {
     "postinstall": "lerna bootstrap",
     "clean": "lerna run clean --parallel && lerna clean -y",
-    "build": "lerna run build",
+    "build": "tsc -b",
+    "pre-synth": "npm run build",
+    "synth": "lerna run synth --parallel",
     "test": "lerna run test",
-    "watch": "lerna run watch --parallel"
+    "watch": "tsc -b -w"
   },
   "devDependencies": {
     "lerna": "^3.22.1",

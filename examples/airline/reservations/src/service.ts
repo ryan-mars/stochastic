@@ -1,6 +1,9 @@
-import { Aggregate, BoundedContext, Command, DomainEvent, Policy, Shape } from "stochastic"
+import { Aggregate, BoundedContext, Command, Dependency, DomainEvent, Policy, ReadModel, Shape } from "stochastic"
 import { array, object, string } from "superstruct"
-import { FlightCancelled } from "operations/lib/service"
+import { FlightCancelled } from "operations"
+
+import dynamodb from "@aws-sdk/client-dynamodb"
+import dynamodbUtil from "@aws-sdk/util-dynamodb"
 
 const reservationShape = {
   reservationNo: string(),
@@ -124,6 +127,28 @@ export const ModifyReservationFlights = new Command(
   }
 )
 
+const dynamoTable = new Dependency("SeatsTable")
+
+export const AvailableSeats = new ReadModel(
+  {
+    __filename,
+    events: [ReservationBooked],
+    dependencies: [dynamoTable]
+  },
+  ({ SeatsTable }) => {
+    const ddb = new dynamodb.DynamoDBClient({})
+
+    return async event => {
+      await ddb.send(
+        new dynamodb.PutItemCommand({
+          Item: dynamodbUtil.marshall(event),
+          TableName: SeatsTable
+        })
+      )
+    }
+  }
+)
+
 export const RebookingPolicy = new Policy(
   {
     __filename,
@@ -157,6 +182,8 @@ export const reservations = new BoundedContext({
     CustomerReservationAggregate,
     BookReservation,
     ModifyReservationFlights,
-    RebookingPolicy
-  }
+    RebookingPolicy,
+    AvailableSeats
+  },
+  emits: [FlightReservationsChanged]
 })

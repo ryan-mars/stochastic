@@ -6,3 +6,4 @@ template.yaml
 !.vscode
 stochastic.out
 *.log
+tsconfig.tsbuildinfo
