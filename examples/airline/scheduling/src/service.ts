@@ -75,21 +75,27 @@ export const RouteScheduleAggregate = new Aggregate({
   initialState: () => new RouteSchedule({ route: "", flights: [] })
 })
 
+class AddRouteConfirmation extends Shape("AddRouteConfirmation", {}) {}
+
 export const AddRouteCommand = new Command(
   {
     __filename,
     events: [RouteAdded],
     intent: AddRoute,
-    aggregate: RouteScheduleAggregate
+    confirmation: AddRouteConfirmation,
+    state: RouteScheduleAggregate
   },
-  async (command, aggregate) => {
+  context => async (command, aggregate) => {
     const { route } = command
     const { state, events } = await aggregate.get(route)
     if (events.length > 0) {
       throw new Error(`Route ${route} already exists`)
     }
 
-    return [new RouteAdded({ route })]
+    return {
+      events: [new RouteAdded({ route })],
+      confirmation: new AddRouteConfirmation({})
+    }
   }
 )
 
@@ -98,9 +104,10 @@ export const AddFlightsCommand = new Command(
     __filename,
     events: [ScheduledFlightsAdded],
     intent: AddFlights,
-    aggregate: RouteScheduleAggregate
+    confirmation: undefined,
+    state: RouteScheduleAggregate
   },
-  async (command, aggregate) => {
+  context => async (command, aggregate) => {
     return [new ScheduledFlightsAdded(command)]
   }
 )
@@ -110,9 +117,10 @@ export const RemoveFlightsCommand = new Command(
     __filename,
     events: [FlightsRemoved],
     intent: RemoveFlights,
-    aggregate: RouteScheduleAggregate
+    confirmation: undefined,
+    state: RouteScheduleAggregate
   },
-  async (command, aggregate) => {
+  context => async (command, aggregate) => {
     return [new FlightsRemoved(command)]
   }
 )

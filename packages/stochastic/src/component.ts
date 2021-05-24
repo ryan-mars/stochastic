@@ -23,13 +23,7 @@ export abstract class BaseComponent {
    */
   readonly filename: string
 
-  constructor(
-    props: BaseComponentProps,
-    /**
-     * Name of the entrypoint in the file.
-     */
-    readonly handler?: string
-  ) {
+  constructor(props: BaseComponentProps) {
     this.filename = props.__filename
   }
 }

@@ -2,7 +2,7 @@ import * as cdk from "@aws-cdk/core"
 import {
   Aggregate,
   BoundedContext,
-  BoundedContextDependencies,
+  BoundedContextConfig,
   CreatedEvents,
   Command,
   Component,
@@ -10,10 +10,11 @@ import {
   ConsumedEvents,
   ReadModel,
   EventHandler,
-  Query
+  Query,
+  Shape
 } from "stochastic"
 import { EmitEventBinding, RecieveEventBinding } from "./event-binding"
-import { DependencyConstruct } from "./dependency-construct"
+import { ConfigBinding } from "./config-binding"
 import { EventStore } from "./event-store-construct"
 import { AggregateConstruct } from "./aggregate-construct"
 import { CommandConstruct } from "./command-construct"
@@ -46,8 +47,6 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
   extends cdk.Construct
   implements IBoundedContextConstruct
 {
-  emitScope: cdk.Construct
-  receiveScope: cdk.Construct
   public static fromArn(eventBridgeArn: string): IBoundedContextConstruct {
     // TODO: base construct for BoundedContext, following pattern of CDK
     // https://github.com/aws/aws-cdk/blob/master/packages/%40aws-cdk/aws-lambda/lib/function.ts#L403
@@ -73,8 +72,15 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
 
   public readonly eventBridgeArn: string
 
+  public readonly emitScope: cdk.Construct
   public readonly emitEvents: EmitEventBinding<CreatedEvents<Context["components"]>>[]
+
+  public readonly receiveScope: cdk.Construct
   public readonly receiveEvents: RecieveEventBinding<Context["emits"][number]>[]
+
+  readonly config: {
+    [configName in BoundedContextConfig<Context["components"]>["name"]]: ConfigBinding
+  }
 
   constructor(
     scope: cdk.Construct,
@@ -86,12 +92,15 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
       }
       emitEvents?: EmitEventBinding<Context["emits"][number]>[]
       receiveEvents?: RecieveEventBinding<ConsumedEvents<Context["components"]>>[]
-      dependencies: {
-        [dependencyName in BoundedContextDependencies<Context["components"]>["name"]]: DependencyConstruct
+      config: {
+        [configName in BoundedContextConfig<Context["components"]>["name"]]: ConfigBinding<
+          Shape.Value<BoundedContextConfig<Context["components"]>["shape"]>
+        >
       }
     }
   ) {
     super(scope, id)
+    this.config = props.config
     const boundedContext = (this.boundedContext = props.boundedContext)
     this.emitEvents = props.emitEvents ?? []
     this.receiveEvents = props.receiveEvents ?? []
@@ -158,7 +167,7 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
           component,
           boundedContext,
           name: componentName,
-          dependencies: props.dependencies
+          dependencies: props.config
         })
       } else if (component.kind === "Query") {
         con = new QueryConstruct(this as any, componentName, {
@@ -166,7 +175,7 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
           component,
           boundedContext,
           name: componentName,
-          dependencies: props.dependencies
+          dependencies: props.config
         })
       }
       if (con) {

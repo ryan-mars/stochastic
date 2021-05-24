@@ -36,7 +36,7 @@ export class OperationsStack extends cdk.Stack {
         })
       ],
       emitEvents: [new EmitEventBridgeBinding({ events: [FlightCancelled], eventBus })],
-      dependencies: {}
+      config: {}
     })
   }
 }

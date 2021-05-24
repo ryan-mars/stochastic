@@ -42,12 +42,12 @@ export class BoundedContext<
 }
 
 export type CreatedEvents<Components extends BoundedContextComponents> = {
-  [component in keyof Components]: Components[component] extends Command<any, any, infer E> ? E[number] : never
+  [component in keyof Components]: Components[component] extends Command<any, any, any, infer E> ? E[number] : never
 }[keyof Components]
 
 export type ConsumedEvents<Components extends BoundedContextComponents> = {
   [component in keyof Components]: Components[component] extends
-    | Command<any, any, infer E>
+    | Command<any, any, any, infer E>
     | Policy<any, infer E>
     | EventHandler<infer E>
     | ReadModel<infer E>
@@ -59,8 +59,8 @@ export type AllEvents<Components extends BoundedContextComponents> =
   | CreatedEvents<Components>
   | ConsumedEvents<Components>
 
-export type BoundedContextDependencies<Components extends BoundedContextComponents> = {
-  [component in keyof Components]: Components[component] extends ReadModel<any, infer D> | EventHandler<any, infer D>
-    ? D[number]
+export type BoundedContextConfig<Components extends BoundedContextComponents> = {
+  [component in keyof Components]: Components[component] extends ReadModel<any, infer C> | EventHandler<any, infer C>
+    ? C[number]
     : never
 }[keyof Components]

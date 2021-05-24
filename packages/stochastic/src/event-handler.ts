@@ -1,37 +1,37 @@
-import { BaseComponent, BaseComponentProps, Component } from "./component"
-import { Dependency, DependencyRuntime } from "./dependencies"
+import { BaseComponent, BaseComponentProps } from "./component"
+import { Config, ConfigRuntime } from "./config"
 import { DomainEvent } from "./event"
 import { Shape } from "./shape"
 
-export interface EventHandlerProps<E extends readonly DomainEvent[], D extends readonly Dependency[] = Dependency[]>
+export interface EventHandlerProps<E extends readonly DomainEvent[], C extends readonly Config[] = Config[]>
   extends BaseComponentProps {
   readonly events: E
-  readonly dependencies?: D
+  readonly config?: C
 }
 
 export abstract class BaseEventHandler<
   E extends readonly DomainEvent[],
-  D extends readonly Dependency[]
+  C extends readonly Config[]
 > extends BaseComponent {
   readonly events: E
-  readonly dependencies: D
+  readonly config: C
 
   constructor(
-    props: EventHandlerProps<E, D>,
-    readonly handle: (
-      dependencies: DependencyRuntime<D>,
+    props: EventHandlerProps<E, C>,
+    readonly init: (
+      config: ConfigRuntime<C>,
       context: any
-    ) => (event: Shape.Value<E[number]>) => Promise<void>
+    ) => (event: Shape.Value<E[number]>, context: any) => Promise<void>
   ) {
     super(props)
     this.events = props.events
-    this.dependencies = (props.dependencies ?? []) as D
+    this.config = (props.config ?? []) as C
   }
 }
 
 export class EventHandler<
   E extends readonly DomainEvent[] = DomainEvent[],
-  D extends readonly Dependency[] = Dependency[]
+  D extends readonly Config[] = Config[]
 > extends BaseEventHandler<E, D> {
   readonly kind: "EventHandler" = "EventHandler"
 }

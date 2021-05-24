@@ -43,11 +43,12 @@ const FlightAggregate = new Aggregate({
 export const AddFlight = new Command(
   {
     __filename,
-    aggregate: FlightAggregate,
+    state: FlightAggregate,
     intent: AddFlightIntent,
+    confirmation: undefined,
     events: [FlightAddedEvent]
   },
-  async (command, aggregate) => {
+  context => async (command, aggregate) => {
     const { state, events } = await aggregate.get(command.flightNo)
 
     if (events.length > 0) {
@@ -70,11 +71,12 @@ export class CancelFlightIntent extends Shape("CancelFlightIntent", {
 export const CancelFlight = new Command(
   {
     __filename,
-    aggregate: FlightAggregate,
+    state: FlightAggregate,
     intent: CancelFlightIntent,
+    confirmation: undefined,
     events: [FlightCancelled]
   },
-  async (command, aggregate) => {
+  context => async (command, aggregate) => {
     return [new FlightCancelled(command)]
   }
 )
@@ -83,9 +85,10 @@ export const MyPolicy = new Policy(
   {
     __filename,
     events: [ScheduledFlightsAdded, FlightCancelled],
-    commands: []
+    commands: {},
+    reads: {}
   },
-  async event => {
+  context => async event => {
     console.log(JSON.stringify(event, null, 2))
   }
 )

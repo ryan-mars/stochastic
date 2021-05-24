@@ -1,14 +1,12 @@
+import * as cdk from "@aws-cdk/core"
 import * as lambda from "@aws-cdk/aws-lambda"
-import * as lambdaEventSources from "@aws-cdk/aws-lambda-event-sources"
 import * as nodeLambda from "@aws-cdk/aws-lambda-nodejs"
-import * as sns from "@aws-cdk/aws-sns"
-import * as snsSubscriptions from "@aws-cdk/aws-sns-subscriptions"
-import * as sqs from "@aws-cdk/aws-sqs"
 import { BoundedContext, Query, ReadModel } from "stochastic"
 import { BoundedContextConstruct } from "./bounded-context-construct"
 import { generateHandler } from "./code-gen"
 import { ComponentConstruct, ComponentConstructProps } from "./component-construct"
-import { DependencyConstruct } from "./dependency-construct"
+import { ConfigBinding, ConfigBindings } from "./config-binding"
+import { ReadModelBindings } from "./read-model-binding"
 
 // export interface QueryConstructProps {
 //   dependencies: Map<string, DependencyConstruct>
@@ -20,7 +18,7 @@ import { DependencyConstruct } from "./dependency-construct"
  */
 export interface QueryConstructProps<Q extends Query = Query>
   extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {
-  dependencies: Record<string, DependencyConstruct>
+  dependencies: Record<string, ConfigBinding>
 }
 
 export class QueryConstruct<
@@ -49,16 +47,10 @@ export class QueryConstruct<
       }
     })
 
-    for (const model of props.component.models) {
-      for (const dependency of model.dependencies) {
-        const depConstruct = props.dependencies[dependency.name]
-        if (depConstruct === undefined) {
-          throw new Error(`cannot find dependency: '${dependency.name}'`)
-        }
-
-        depConstruct.bind(this.handler)
-        this.handler.addEnvironment(`DEPENDENCY_${dependency.name}`, depConstruct.resourceId)
-      }
-    }
+    new ReadModelBindings(this, "ReadModelBindings", {
+      context: scope,
+      handler: this.handler,
+      readModels: props.component.readModels
+    })
   }
 }

@@ -8,7 +8,7 @@ import { BoundedContext, EventHandler, ReadModel } from "stochastic"
 import { BoundedContextConstruct } from "./bounded-context-construct"
 import { generateHandler } from "./code-gen"
 import { ComponentConstruct, ComponentConstructProps } from "./component-construct"
-import { DependencyConstruct } from "./dependency-construct"
+import { ConfigBindings, ConfigBinding } from "./config-binding"
 
 // export interface EventHandlerConstructProps {
 //   dependencies: Map<string, DependencyConstruct>
@@ -20,7 +20,7 @@ import { DependencyConstruct } from "./dependency-construct"
  */
 export interface EventHandlerConstructProps<P extends EventHandler | ReadModel = EventHandler | ReadModel>
   extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {
-  dependencies: Record<string, DependencyConstruct>
+  dependencies: Record<string, ConfigBinding>
 }
 
 export class EventHandlerConstruct<
@@ -49,15 +49,11 @@ export class EventHandlerConstruct<
       }
     })
 
-    for (const dependency of props.component.dependencies) {
-      const depConstruct = props.dependencies[dependency.name]
-      if (depConstruct === undefined) {
-        throw new Error(`cannot find dependency: '${dependency.name}'`)
-      }
-
-      depConstruct.bind(this.handler)
-      this.handler.addEnvironment(`DEPENDENCY_${dependency.name}`, depConstruct.resourceId)
-    }
+    new ConfigBindings(this, "ConfigBindings", {
+      context: scope,
+      config: props.component.config,
+      handler: this.handler
+    })
 
     const queue = new sqs.Queue(this, `Queue`)
     this.handler.addEventSource(new lambdaEventSources.SqsEventSource(queue))
