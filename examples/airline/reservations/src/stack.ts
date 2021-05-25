@@ -12,6 +12,7 @@ import {
 
 export class ReservationStack extends cdk.Stack {
   readonly operations: BoundedContextConstruct<typeof operations>
+  readonly reservations: BoundedContextConstruct<typeof reservations>
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
@@ -33,7 +34,7 @@ export class ReservationStack extends cdk.Stack {
       }
     })
 
-    const context = new BoundedContextConstruct(this, "BoundedContext", {
+    this.reservations = new BoundedContextConstruct(this, "BoundedContext", {
       boundedContext: reservations,
       receiveEvents: [
         new ReceiveEventBridgeEventBinding({
@@ -46,6 +47,9 @@ export class ReservationStack extends cdk.Stack {
         SeatsTable: new DynamoDBConfigBinding(table)
       }
     })
+
+    // Destroy this table when the stack is destroyed since this is just an example app.
+    this.reservations.eventStore.table.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY)
   }
 }
 

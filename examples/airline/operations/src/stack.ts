@@ -38,6 +38,8 @@ export class OperationsStack extends cdk.Stack {
       emitEvents: [new EmitEventBridgeBinding({ events: [FlightCancelled], eventBus })],
       config: {}
     })
+    // Destroy this table when the stack is destroyed since this is just an example app.
+    this.operations.eventStore.table.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY)
   }
 }
 

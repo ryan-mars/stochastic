@@ -26,6 +26,8 @@ export class SchedulingStack extends cdk.Stack {
       emitEvents: [new EmitEventBridgeBinding({ events: [ScheduledFlightsAdded], eventBus })],
       config: {}
     })
+    // Destroy this table when the stack is destroyed since this is just an example app.
+    this.scheduling.eventStore.table.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY)
   }
 }
 const app = new cdk.App()

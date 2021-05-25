@@ -13,7 +13,8 @@ const flightMeta = {
 const flightDetail = {
   ...flightMeta,
   departureTime: string(),
-  arrivalTime: string()
+  arrivalTime: string(),
+  aircraft: string()
 }
 export class AddFlights extends Shape("AddFlights", {
   route: string(),

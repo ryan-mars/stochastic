@@ -1,16 +1,26 @@
 Feature: Journey through the system
 
   Background: 
-    Given the following the "2021" schedule for "SFO-MIA":
-      | Frequency | Departure | Arrival | Flight No. | Meals |
-      | Daily     | 0700      | 1702    | 872        | SB    |
-      | Daily     | 0700      | 1713    | 738        | SB    |
-      | Daily     | 1210      | 2128    | 576        | LD    |
-    
-  Scenario: Operations cancels flight and booking rebooks the passengers
-   Given each of the flights on "2021-06-11" and "2021-06-12" have 200 passengers each
+    Given the following the schedule for "SFO-MIA" on "2021-06-11" and "2021-06-12":
+      | Frequency | Departure | Arrival | Flight No. | Aircraft |
+      | Daily     | 0700      | 1702    | 872        | 787-10   |
+      | Daily     | 0700      | 1713    | 738        | 787-10   |
+      | Daily     | 1210      | 2128    | 576        | 787-10   |
+    And the "787-10" has 318 seats 
+
+Rule: Passengers on cancelled flights should be rebooked evenly on the earliest available flight(s)    
+  Scenario: No more flights same day, two early the next morning
+   Given the flights have 200 passengers each
     When flight "576" is cancelled on "2021-06-11"
-    Then the passengers should be rebooked on the available flights 
+    Then the passengers should be rebooked accordingly: 
+      | Date       | Flight No. | Passengers Added |
+      | 2021-06-12 | 872        | 59               |
+      | 2021-06-12 | 738        | 59               |
+      | 2021-06-12 | 576        | 0                |
+      
+
+# Rule: Higher status passengers should be rebooked first
+#   Scenario: 
 
   # Scenario: Scheduling -> Booking 
   #   Given a customer reserves seats "3E" and "3F" on flight 576 on "6/11/21"

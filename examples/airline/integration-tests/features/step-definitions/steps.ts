@@ -35,79 +35,83 @@ const sample = (arr: any[]) => {
 }
 
 Given(
-  "the following the {string} schedule for {string}:",
-  async function (this: typeof World, year: string, route: string, schedule: DataTable) {
+  "the following the schedule for {string} on {string} and {string}:",
+  async function (this: typeof World, route: string, day1: string, day2: string, schedule: DataTable) {
     this.schedule = schedule
+    this.days = [day1, day2]
     // TODO: Save pk's in world so we can clean up after this test
     await invoke(commands.AddRoute, new AddRoute({ route }))
+
     const flights = schedule.hashes().map(async row => {
       if (row.Frequency !== "Daily") {
         throw 'Only written for "Daily" at the moment'
       }
-      let date = Temporal.PlainDate.from(`${year}-01-01`)
       const addFlights = new AddFlights({
         route,
-        flights: Array.from(Array(date.daysInYear).keys()).map(i => {
+        flights: [day1, day2].map(day => {
           return {
             departureTime: Temporal.PlainTime.from(row.Departure).toString(),
             arrivalTime: Temporal.PlainTime.from(row.Arrival).toString(),
-            day: date.add({ days: i }).toString(),
-            flightNo: row["Flight No."]
+            day: Temporal.PlainDate.from(day).toString(),
+            flightNo: row["Flight No."],
+            aircraft: row.Aircraft
           }
         })
       })
-      await invoke(commands.AddFlights, addFlights)
+      return invoke(commands.AddFlights, addFlights)
     })
     await Promise.all(flights)
   }
 )
 
-Given(
-  "each of the flights on {string} and {string} have {int} passengers each",
-  async function (this: typeof World, day1: string, day2: string, passengerCount: number) {
-    const schedule = this.schedule as DataTable
-    const result = await Promise.all(
-      [day1, day2].map(day => {
-        return schedule.hashes().map(flight => {
-          return Array.from(Array(passengerCount).keys()).map(i => {
-            const intent = new BookReservationIntent({
-              reservationNo: nanoid(),
-              flights: [
-                {
-                  day: Temporal.PlainDate.from(day).toString(),
-                  flightNo: flight["Flight No."],
-                  origin: "SFO",
-                  destination: "MIA",
-                  departureTime: Temporal.PlainTime.from(flight.Departure).toString(),
-                  arrivalTime: Temporal.PlainTime.from(flight.Arrival).toString()
-                }
-              ],
-              traveler: {
-                firstName: faker.name.firstName(),
-                lastName: faker.name.lastName(),
-                dob: Intl.DateTimeFormat("en-US").format(
-                  faker.date.past(50, new Date("Sat Sep 20 1992 21:35:02 GMT+0200 (CEST)"))
-                ),
-                loyaltyId: nanoid(),
-                loyaltyStatus: sample(["Silver", "Gold", "Platinum", "Diamond"])
-              }
-            })
+Given("the {string} has {int} seats", function (aircraftType: string, seats: number) {
+  // Given('the {string} has {float} seats', function (string, float) {
+  // Write code here that turns the phrase above into concrete actions
+  return "pending"
+})
 
-            return invoke(commands.BookReservation, intent)
+Given("the flights have {int} passengers each", async function (this: typeof World, passengerCount: number) {
+  const days = this.days as string[]
+  const schedule = this.schedule as DataTable
+  await Promise.all(
+    days.map(day => {
+      return schedule.hashes().map(flight => {
+        return Array.from(Array(passengerCount).keys()).map(i => {
+          const intent = new BookReservationIntent({
+            reservationNo: nanoid(),
+            flights: [
+              {
+                day: Temporal.PlainDate.from(day).toString(),
+                flightNo: flight["Flight No."],
+                origin: "SFO",
+                destination: "MIA",
+                departureTime: Temporal.PlainTime.from(flight.Departure).toString(),
+                arrivalTime: Temporal.PlainTime.from(flight.Arrival).toString()
+              }
+            ],
+            traveler: {
+              firstName: faker.name.firstName(),
+              lastName: faker.name.lastName(),
+              dob: Intl.DateTimeFormat("en-US").format(
+                faker.date.past(50, new Date("Sat Sep 20 1992 21:35:02 GMT+0200 (CEST)"))
+              ),
+              loyaltyId: nanoid(),
+              loyaltyStatus: sample(["Silver", "Gold", "Platinum", "Diamond"])
+            }
           })
+
+          return invoke(commands.BookReservation, intent)
         })
       })
-    )
-  }
-)
+    })
+  )
+})
 
 When("flight {string} is cancelled on {string}", async function (flightNo: string, day: string) {
   await invoke(commands.CancelFlight, new CancelFlightIntent({ flightNo, day }))
 })
 
-Then("the passengers should be rebooked on the available flights", function () {
-  // TODO: Implement the rereservation policy
-  // TODO: Query the read model and assert passengers were rebooked
-
+Then("the passengers should be rebooked accordingly:", function (table: DataTable) {
+  // Write code here that turns the phrase above into concrete actions
   return "pending"
 })
