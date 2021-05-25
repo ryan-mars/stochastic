@@ -1,50 +1,71 @@
-import { Aggregate, AggregateInterface } from "./aggregate";
-import { BaseComponent, BaseComponentProps } from "./component";
-import { DomainEvent } from "./event";
-import { Shape } from "./shape";
+import { Store, StoreInterface } from "./store"
+import { BaseComponent, BaseComponentProps } from "./component"
+import { DomainEvent } from "./event"
+import { Init } from "./init"
+import { Shape } from "./shape"
 
+/**
+ * A command accepts a message with the business intent, ensures
+ * transactional consistency with the store and emits domain events.
+ */
 export interface CommandProps<
-  Agg extends Aggregate = Aggregate,
-  Intent extends Shape = Shape,
-  Events extends readonly DomainEvent[] = readonly DomainEvent[],
+  State extends Store,
+  Intent extends Shape,
+  Confirmation extends Shape | undefined,
+  Events extends readonly DomainEvent[]
 > extends BaseComponentProps {
-  readonly intent: Intent;
-  readonly aggregate: Agg;
-  readonly events: Events;
+  readonly intent: Intent
+  readonly confirmation: Confirmation
+  readonly store: State
+  readonly events: Events
 }
 
 export class Command<
-  Agg extends Aggregate = Aggregate,
+  State extends Store = Store,
   Intent extends Shape = Shape,
-  Events extends readonly DomainEvent[] = readonly DomainEvent[],
+  Confirmation extends Shape | undefined = Shape | undefined,
+  Events extends readonly DomainEvent[] = readonly DomainEvent[]
 > extends BaseComponent {
-  readonly kind: "Command" = "Command";
-  readonly intent: Intent;
-  readonly aggregate: Agg;
-  readonly events: Events;
-  constructor(props: CommandProps<Agg, Intent, Events>, readonly execute: CommandHandler<Shape.Value<Intent>, Agg, Events>) {
-    super(props);
-    this.intent = props.intent;
-    this.aggregate = props.aggregate;
-    this.events = props.events;
+  readonly kind: "Command" = "Command"
+  readonly intent: Intent
+  readonly confirmation: Confirmation
+  readonly store: State
+  readonly events: Events
+  constructor(
+    props: CommandProps<State, Intent, Confirmation, Events>,
+    readonly init: Init<
+      (intent: Shape.Value<Intent>, store: StoreInterface<State>) => Promise<CommandResponse<Confirmation, Events>>
+    >
+  ) {
+    super(props)
+    this.intent = props.intent
+    this.confirmation = props.confirmation!
+    this.store = props.store
+    this.events = props.events
   }
 }
 
-export type CommandResponse<T, Events> =
-  | {
-      events: Events;
-      confirmation?: T;
-    }
-  | Events;
+export type CommandResponse<Confirmation extends Shape | undefined, Events extends readonly DomainEvent[]> =
+  Confirmation extends Shape
+    ? {
+        events: Shape.Value<Events[number]>[]
+        confirmation: Shape.Value<Confirmation>
+      }
+    : Shape.Value<Events[number]>[]
 
-export type CommandHandler<Intent, Agg extends Aggregate, Events extends readonly DomainEvent[]> = (
+export type CommandHandler<
+  Intent extends Shape,
+  Confirmation extends Shape | undefined,
+  State extends Store,
+  Events extends readonly DomainEvent[]
+> = (
   intent: Intent,
-  aggregate: AggregateInterface<Agg>,
-) => Promise<CommandResponse<any, Shape.Value<Events[number]>[]>>;
+  store: StoreInterface<State>
+) => Promise<CommandResponse<Confirmation, Shape.Value<Events[number]>[]>>
 
 /**
  * The interface to a Command from a Policy
  */
-export type CommandInterface<C extends readonly Command[]> = {
-  [i in keyof C]: C[i] extends Command ? (intent: Shape.Value<C[i]["intent"]>) => any : C[i];
-};
+export type CommandInterface<C extends Command> = (
+  intent: Shape.Value<C["intent"]>
+) => Promise<C["confirmation"] extends Shape ? Shape.Value<C["confirmation"]> : undefined>

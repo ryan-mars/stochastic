@@ -1,17 +1,21 @@
+import * as cdk from "@aws-cdk/core"
 import * as lambda from "@aws-cdk/aws-lambda"
 import * as lambdaEventSources from "@aws-cdk/aws-lambda-event-sources"
 import * as nodeLambda from "@aws-cdk/aws-lambda-nodejs"
 import * as sns from "@aws-cdk/aws-sns"
 import * as snsSubscriptions from "@aws-cdk/aws-sns-subscriptions"
 import * as sqs from "@aws-cdk/aws-sqs"
-import { BoundedContext, Policy } from "stochastic"
+import { BoundedContext, Command, Policy, ReadModel } from "stochastic"
 import { BoundedContextConstruct } from "./bounded-context-construct"
 import { generateHandler } from "./code-gen"
 import { CommandConstruct } from "./command-construct"
 import { ComponentConstruct, ComponentConstructProps, ComponentProps } from "./component-construct"
+import { ConfigBindings, ConfigBinding } from "./config-binding"
+import { ReadModelBindings } from "./read-model-binding"
 
 export interface PolicyConstructProps {
   commands: Map<string, CommandConstruct>
+  dependencies: Record<string, ConfigBinding>
 }
 
 /**
@@ -43,7 +47,7 @@ export class PolicyConstruct<
       }
     })
 
-    for (const command of props.component.commands) {
+    for (const command of Object.values(props.component.commands as Record<string, Command>)) {
       const commandName = props.boundedContext.componentNames.get(command)!
       const commandConstruct = props.commands.get(commandName)!
 
@@ -53,6 +57,12 @@ export class PolicyConstruct<
       )
       commandConstruct.handler.grantInvoke(this.handler)
     }
+
+    new ReadModelBindings(this, "ReadModel", {
+      context: scope,
+      handler: this.handler,
+      readModels: props.component.reads
+    })
 
     const queue = new sqs.Queue(this, `Queue`)
     this.handler.addEventSource(new lambdaEventSources.SqsEventSource(queue))
@@ -70,8 +80,9 @@ export class PolicyConstruct<
     /**
      * Allow policy to invoke commands
      */
-    for (const command of this.component.commands) {
-      ;(scope.componentMap.get(command) as CommandConstruct).handler.grantInvoke(this.handler)
+    for (const command of Object.values(this.component.commands as Record<string, Command>)) {
+      const commandCon = scope.componentMap.get(command) as CommandConstruct
+      commandCon.handler.grantInvoke(this.handler)
     }
   }
 }

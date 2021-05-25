@@ -1,4 +1,4 @@
-import { Aggregate, BoundedContext, Command, DomainEvent, Policy, Shape } from "stochastic"
+import { Store, BoundedContext, Command, DomainEvent, Policy, Shape } from "stochastic"
 import { ScheduledFlightsAdded } from "scheduling"
 import { string } from "superstruct"
 
@@ -24,7 +24,7 @@ export class OperatedFlight extends Shape("OperatedFlight", {
   flightNo: string()
 }) {}
 
-const FlightAggregate = new Aggregate({
+const FlightStore = new Store({
   __filename,
   stateKey: "flightNo",
   stateShape: OperatedFlight,
@@ -43,12 +43,13 @@ const FlightAggregate = new Aggregate({
 export const AddFlight = new Command(
   {
     __filename,
-    aggregate: FlightAggregate,
+    store: FlightStore,
     intent: AddFlightIntent,
+    confirmation: undefined,
     events: [FlightAddedEvent]
   },
-  async (command, aggregate) => {
-    const { state, events } = await aggregate.get(command.flightNo)
+  context => async (command, store) => {
+    const { state, events } = await store.get(command.flightNo)
 
     if (events.length > 0) {
       throw new Error("cannot create a flight that already exists")
@@ -70,11 +71,12 @@ export class CancelFlightIntent extends Shape("CancelFlightIntent", {
 export const CancelFlight = new Command(
   {
     __filename,
-    aggregate: FlightAggregate,
+    store: FlightStore,
     intent: CancelFlightIntent,
+    confirmation: undefined,
     events: [FlightCancelled]
   },
-  async (command, aggregate) => {
+  context => async (command, store) => {
     return [new FlightCancelled(command)]
   }
 )
@@ -83,9 +85,10 @@ export const MyPolicy = new Policy(
   {
     __filename,
     events: [ScheduledFlightsAdded, FlightCancelled],
-    commands: []
+    commands: {},
+    reads: {}
   },
-  async event => {
+  context => async event => {
     console.log(JSON.stringify(event, null, 2))
   }
 )
@@ -98,6 +101,6 @@ export const operations = new BoundedContext({
     CancelFlight,
     FlightCancelled,
     MyPolicy,
-    FlightAggregate
+    FlightStore
   }
 })

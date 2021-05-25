@@ -19,7 +19,7 @@ import { ${componentName} } from "${requirePath(component)}";
 
 ${
   component.kind === "Policy"
-    ? component.commands
+    ? Object.values(component.commands as Record<string, Command>)
         .map(command => `import {${componentNames.get(command)!}} from "${requirePath(command)}"`)
         .join("\n")
     : ""
@@ -27,13 +27,20 @@ ${
 const names = new Map<any, any>();
 ${
   component.kind === "Policy"
-    ? component.commands
+    ? Object.values(component.commands as Record<string, Command>)
         .map(command => `names.set(${componentNames.get(command)!}, "${componentNames.get(command)!}");`)
         .join("\n")
     : ""
 }
 const runtime = new LambdaRuntime(${componentName}, "${componentName}", names);
-export const handler = runtime.handler`
+let _handler: any;
+export const handler = async (event: any, context: any) => {
+  if (_handler === undefined) {
+    _handler = runtime.handler(context)
+  }
+  return _handler(event, context)
+}
+`
   )
   return {
     entry,

@@ -1,35 +1,61 @@
-import { Command, CommandInterface } from "./command"
+import { Command } from "./command"
 import { BaseComponent, BaseComponentProps } from "./component"
 import { DomainEvent } from "./event"
+import { Init } from "./init"
+import { ReadModel, ReadModelInterface } from "./read-model"
 import { Shape } from "./shape"
 
 export interface PolicyProps<
-  E extends readonly DomainEvent[] = readonly DomainEvent[],
-  C extends readonly Command[] = readonly Command[]
+  Events extends readonly DomainEvent[] = readonly DomainEvent[],
+  Commands extends Record<string, Command> = Record<string, Command>,
+  ReadModels extends Record<string, ReadModel> = Record<string, ReadModel>
 > extends BaseComponentProps {
-  readonly events: E
-  readonly commands: C
+  readonly events: Events
+  readonly commands: Commands
+  readonly reads: ReadModels
 }
 
 export class Policy<
   Name extends string = string,
   Events extends readonly DomainEvent[] = readonly DomainEvent[],
-  Commands extends readonly Command[] = readonly Command[]
+  Commands extends Record<string, Command> = any,
+  ReadModels extends Record<string, ReadModel> = any
 > extends BaseComponent {
   readonly kind: "Policy" = "Policy"
-  public readonly events: Events
-  public readonly commands: Commands
+  readonly events: Events
+  readonly commands: Commands
+  readonly reads: ReadModels
 
-  constructor(props: PolicyProps<Events, Commands>, readonly apply: Policy.Handler<Events, Commands>) {
+  constructor(
+    props: PolicyProps<Events, Commands, ReadModels>,
+    readonly init: Init<Policy.Handler<Events, Commands, ReadModels>>
+  ) {
     super(props)
     this.events = props.events
     this.commands = props.commands
+    this.reads = props.reads
   }
 }
 
 export namespace Policy {
-  export type Handler<E extends readonly DomainEvent[], C extends readonly Command[]> = (
+  export type Handler<
+    E extends readonly DomainEvent[],
+    C extends Record<string, Command>,
+    R extends Record<string, ReadModel>
+  > = (
     event: Shape.Value<E[number]>,
-    ...commands: CommandInterface<C>
+    commands: {
+      [i in keyof C]: C[i] extends Command
+        ? (
+            intent: Shape.Value<C[i]["intent"]>
+          ) => Promise<
+            C[i]["confirmation"] extends Shape ? Shape.Value<Exclude<C[i]["confirmation"], undefined>> : undefined
+          >
+        : C[i]
+    },
+    readModels: {
+      [i in keyof R]: R[i] extends ReadModel ? ReadModelInterface<R[i]> : R[i]
+    },
+    context: any
   ) => Promise<void>
 }

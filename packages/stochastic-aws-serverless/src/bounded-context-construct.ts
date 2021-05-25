@@ -1,24 +1,27 @@
 import * as cdk from "@aws-cdk/core"
 import {
-  Aggregate,
+  Store,
   BoundedContext,
-  BoundedContextDependencies,
+  BoundedContextConfig,
   CreatedEvents,
   Command,
   Component,
   Policy,
   ConsumedEvents,
   ReadModel,
-  EventHandler
+  EventHandler,
+  Query,
+  Shape
 } from "stochastic"
 import { EmitEventBinding, RecieveEventBinding } from "./event-binding"
-import { DependencyConstruct } from "./dependency-construct"
+import { ConfigBinding } from "./config-binding"
 import { EventStore } from "./event-store-construct"
-import { AggregateConstruct } from "./aggregate-construct"
+import { StoreConstruct } from "./store-construct"
 import { CommandConstruct } from "./command-construct"
 import { ComponentProps } from "./component-construct"
 import { PolicyConstruct } from "./policy-construct"
 import { EventHandlerConstruct } from "./event-handler-construct"
+import { QueryConstruct } from "./query-construct"
 
 /**
  * Map each component in the Bounded Context to its corresponding CDK Construct.
@@ -30,8 +33,8 @@ type CDKComponents<S extends BoundedContext> = {
 /**
  * May a Component, `C`, to its corresponding CDK Construct representation.
  */
-type CDKComponent<S extends BoundedContext, C extends Component> = C extends Aggregate
-  ? AggregateConstruct<S, C>
+type CDKComponent<S extends BoundedContext, C extends Component> = C extends Store
+  ? StoreConstruct<S, C>
   : C extends Command
   ? CommandConstruct<S, C>
   : cdk.Construct
@@ -44,8 +47,6 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
   extends cdk.Construct
   implements IBoundedContextConstruct
 {
-  emitScope: cdk.Construct
-  receiveScope: cdk.Construct
   public static fromArn(eventBridgeArn: string): IBoundedContextConstruct {
     // TODO: base construct for BoundedContext, following pattern of CDK
     // https://github.com/aws/aws-cdk/blob/master/packages/%40aws-cdk/aws-lambda/lib/function.ts#L403
@@ -71,8 +72,15 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
 
   public readonly eventBridgeArn: string
 
+  public readonly emitScope: cdk.Construct
   public readonly emitEvents: EmitEventBinding<CreatedEvents<Context["components"]>>[]
+
+  public readonly receiveScope: cdk.Construct
   public readonly receiveEvents: RecieveEventBinding<Context["emits"][number]>[]
+
+  readonly config: {
+    [configName in BoundedContextConfig<Context["components"]>["name"]]: ConfigBinding
+  }
 
   constructor(
     scope: cdk.Construct,
@@ -84,12 +92,15 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
       }
       emitEvents?: EmitEventBinding<Context["emits"][number]>[]
       receiveEvents?: RecieveEventBinding<ConsumedEvents<Context["components"]>>[]
-      dependencies: {
-        [dependencyName in BoundedContextDependencies<Context["components"]>["name"]]: DependencyConstruct
+      config: {
+        [configName in BoundedContextConfig<Context["components"]>["name"]]: ConfigBinding<
+          Shape.Value<BoundedContextConfig<Context["components"]>["shape"]>
+        >
       }
     }
   ) {
     super(scope, id)
+    this.config = props.config
     const boundedContext = (this.boundedContext = props.boundedContext)
     this.emitEvents = props.emitEvents ?? []
     this.receiveEvents = props.receiveEvents ?? []
@@ -104,16 +115,17 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
     )
     this.receiveEvents.map(binding => binding.bind(this.receiveScope, this.eventStore.topic))
 
-    const commandConstructs: Map<string, CommandConstruct> = new Map()
+    const commandConstructs = new Map<string, CommandConstruct>()
 
     for (const [componentName, component] of Object.entries(boundedContext.components).sort(
       ([nameA, componentA], [nameB, componentB]) => (componentA.kind === "Command" ? -1 : 1)
     )) {
       const componentProps = (props.components as any)?.[componentName] as ComponentProps<Component>
-      let con: AggregateConstruct | CommandConstruct | PolicyConstruct | EventHandlerConstruct | undefined
-      if (component.kind === "Aggregate") {
-        con = new AggregateConstruct(this as any, componentName, {
-          ...(componentProps as ComponentProps<Aggregate>),
+      let con: StoreConstruct | CommandConstruct | PolicyConstruct | EventHandlerConstruct | QueryConstruct | undefined
+
+      if (component.kind === "Store") {
+        con = new StoreConstruct(this as any, componentName, {
+          ...(componentProps as ComponentProps<Store>),
           component,
           boundedContext,
           name: componentName
@@ -148,7 +160,16 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
           ...(componentProps as ComponentProps<ReadModel>),
           component,
           boundedContext,
-          name: componentName
+          name: componentName,
+          dependencies: props.config
+        })
+      } else if (component.kind === "Query") {
+        con = new QueryConstruct(this as any, componentName, {
+          ...(componentProps as ComponentProps<Query>),
+          component,
+          boundedContext,
+          name: componentName,
+          dependencies: props.config
         })
       }
       if (con) {

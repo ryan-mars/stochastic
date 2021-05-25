@@ -1,9 +1,8 @@
-import { Aggregate, BoundedContext, Command, Dependency, DomainEvent, Policy, ReadModel, Shape } from "stochastic"
+import { Store, BoundedContext, Command, Config, DomainEvent, Policy, ReadModel, Shape, TableConfig } from "stochastic"
 import { array, object, string } from "superstruct"
 import { FlightCancelled } from "operations"
 
 import dynamodb from "@aws-sdk/client-dynamodb"
-import dynamodbUtil from "@aws-sdk/util-dynamodb"
 
 const reservationShape = {
   reservationNo: string(),
@@ -43,7 +42,7 @@ export class FlightReservationsChanged extends DomainEvent("FlightReservationsCh
 
 export class CustomerReservation extends Shape("CustomerReservation", reservationShape) {}
 
-export const CustomerReservationAggregate = new Aggregate({
+export const customerReservationStore = new Store({
   __filename,
   stateShape: CustomerReservation,
   stateKey: "reservationNo",
@@ -75,15 +74,24 @@ export const CustomerReservationAggregate = new Aggregate({
 })
 
 export class BookReservationIntent extends Shape("BookReservationIntent", reservationShape) {}
-export const BookReservation = new Command(
+export class BookReservationConfirmation extends Shape("BookReservationIntent", {
+  receiptNo: string()
+}) {}
+export const bookReservation = new Command(
   {
     __filename,
     events: [ReservationBooked],
     intent: BookReservationIntent,
-    aggregate: CustomerReservationAggregate
+    confirmation: BookReservationConfirmation,
+    store: customerReservationStore
   },
-  async (command, aggregate) => {
-    return [new ReservationBooked(command)]
+  context => async (command, store) => {
+    return {
+      confirmation: new BookReservationConfirmation({
+        receiptNo: "booking-123"
+      }),
+      events: [new ReservationBooked(command)]
+    }
   }
 )
 
@@ -101,77 +109,136 @@ export class ModifyReservationFlightsIntent extends Shape("ModifyReservationFlig
   )
 }) {}
 
-export const ModifyReservationFlights = new Command(
+export const modifyReservationFlights = new Command(
   {
     __filename,
     intent: ModifyReservationFlightsIntent,
+    confirmation: undefined,
     events: [FlightReservationsChanged],
-    aggregate: CustomerReservationAggregate
+    store: customerReservationStore
   },
-  async (command, aggregate) => {
-    return [
-      new FlightReservationsChanged({
-        reservationNo: "",
-        flights: [
-          {
-            day: "",
-            flightNo: "",
-            origin: "",
-            destination: "",
-            departureTime: "",
-            arrivalTime: ""
-          }
-        ]
-      })
-    ]
-  }
-)
-
-const dynamoTable = new Dependency("SeatsTable")
-
-export const AvailableSeats = new ReadModel(
-  {
-    __filename,
-    events: [ReservationBooked],
-    dependencies: [dynamoTable]
-  },
-  ({ SeatsTable }) => {
-    const ddb = new dynamodb.DynamoDBClient({})
-
-    return async event => {
-      await ddb.send(
-        new dynamodb.PutItemCommand({
-          Item: dynamodbUtil.marshall(event),
-          TableName: SeatsTable
+  context => {
+    return async (command, store) => {
+      return [
+        new FlightReservationsChanged({
+          reservationNo: "",
+          flights: [
+            {
+              day: "",
+              flightNo: "",
+              origin: "",
+              destination: "",
+              departureTime: "",
+              arrivalTime: ""
+            }
+          ]
         })
-      )
+      ]
     }
   }
 )
 
-export const RebookingPolicy = new Policy(
+const seatsTable = new Config("SeatsTable", TableConfig)
+
+export const availableSeats = new ReadModel({
+  __filename,
+  events: [ReservationBooked],
+  config: [seatsTable],
+  /**
+   * Projection function that stores events to prepare the read model.
+   */
+  projection: ({ SeatsTable }) => {
+    const ddb = new dynamodb.DynamoDBClient({})
+
+    return async (event, context) => {
+      await ddb.send(
+        new dynamodb.UpdateItemCommand({
+          TableName: SeatsTable.tableName,
+          Key: {
+            reservationNo: {
+              S: event.payload.reservationNo
+            }
+          },
+          UpdateExpression: "ADD availableSeats :q",
+          ExpressionAttributeValues: {
+            ":q": {
+              N: "1"
+            }
+          }
+        })
+      )
+    }
+  },
+  /**
+   * Returns an object that encapsulates the data access logic.
+   */
+  client: ({ SeatsTable }) => {
+    const ddb = new dynamodb.DynamoDBClient({})
+
+    return async (reservationNo: string) => {
+      const item = await ddb.send(
+        new dynamodb.GetItemCommand({
+          TableName: SeatsTable.tableName,
+          Key: {
+            reservationNo: {
+              S: reservationNo
+            }
+          }
+        })
+      )
+
+      if (item.Item?.availableSeats.N !== undefined) {
+        return parseInt(item.Item.availableSeats.N, 10)
+      } else {
+        return null
+      }
+    }
+  }
+})
+
+export const rebookingPolicy = new Policy(
   {
     __filename,
     events: [FlightCancelled],
-    commands: [ModifyReservationFlights]
+    commands: {
+      modifyReservationFlights
+    },
+    reads: {
+      availableSeats
+    }
   },
-  async (event, commands) => {
-    console.log(JSON.stringify(event, null, 2))
-    console.log({ commands })
+  context => {
+    // happens once when the container starts
 
-    // TODO: get the passengers for this flight (booking read model)
-    // TODO: sort passengers by status
-    // TODO: find flights leaving in no less than one hour from the same origin to the same destination (scheduling read model)
-    // TODO: Check seat availability (booking read model)
-    // TODO: Change reservation to the next available flight
-    // TODO: Handle failures gracefully
+    return async (event, { modifyReservationFlights }, { availableSeats }, context) => {
+      const seats = await availableSeats(event.flightNo)
 
-    /**
-     * CAVEATS:
-     * Usually operations takes over ownership of the manifest for a flight 1 hour before departure and booking cannot modify it. In this case we're going to pretend Reservations always owns the manifest.
-     * Customer service will want to be able to "lock" a reservation so no other procesess modify it while they're on the phone with a customer
-     *
-     */
+      await modifyReservationFlights(
+        new ModifyReservationFlightsIntent({
+          flights: [],
+          reservationNo: ""
+        })
+      )
+
+      // return new GetSeatAvailabilityResponse({
+      //   reservationNo: request.reservationNo,
+      //   availableSeats: (await availableSeats(request.reservationNo)) ?? 0
+      // })
+      // console.log(JSON.stringify(event, null, 2))
+      // console.log({ commands })
+      // TODO: get the passengers for this flight (booking read model)
+      // TODO: sort passengers by status
+      // TODO: find flights leaving in no less than one hour from the same origin to the same destination (scheduling read model)
+      // TODO: Check seat availability (booking read model)
+      // TODO: Change reservation to the next available flight
+      // TODO: Handle failures gracefully
+      /**
+       * CAVEATS:
+       * Usually operations takes over ownership of the manifest for a flight 1 hour before departure and booking cannot modify it. In this case we're going to pretend Reservations always owns the manifest.
+       * Customer service will want to be able to "lock" a reservation so no other procesess modify it while they're on the phone with a customer
+       *
+       */
+    }
   }
 )
 
@@ -179,11 +246,44 @@ export const reservations = new BoundedContext({
   handler: "reservations",
   name: "Reservations",
   components: {
-    CustomerReservationAggregate,
-    BookReservation,
-    ModifyReservationFlights,
-    RebookingPolicy,
-    AvailableSeats
+    customerReservationStore,
+    bookReservation,
+    modifyReservationFlights,
+    rebookingPolicy,
+    availableSeats
+    // AvailabilityQuery
   },
   emits: [FlightReservationsChanged]
 })
+
+// OUTSIDE WORLD
+
+// export class GetSeatAvailabilityRequest extends Shape("GetSeatAvailabilityRequest", {
+//   reservationNo: string()
+// }) {}
+
+// export class GetSeatAvailabilityResponse extends Shape("GetSeatAvailabilityResponse", {
+//   reservationNo: string(),
+//   availableSeats: number()
+// }) {}
+
+// export const AvailabilityQuery = new Query(
+//   {
+//     __filename,
+//     /**
+//      * We take a dependency on one or mode read models
+//      */
+//     reads: [AvailableSeats],
+//     question: GetSeatAvailabilityRequest,
+//     answer: GetSeatAvailabilityResponse
+//   },
+//   availableSeats => async request => {
+//     /**
+//      * Then, implement a function to implement the Query's request/response contract
+//      */
+// return new GetSeatAvailabilityResponse({
+//   reservationNo: request.reservationNo,
+//   availableSeats: (await availableSeats(request.reservationNo)) ?? 0
+// })
+//   }
+// )

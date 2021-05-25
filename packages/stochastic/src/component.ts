@@ -1,4 +1,4 @@
-import { Aggregate } from "./aggregate"
+import { Store } from "./store"
 import { Command } from "./command"
 import { Policy } from "./policy"
 import { ReadModel } from "./read-model"
@@ -6,7 +6,7 @@ import { DomainEvent } from "./event"
 import { Query } from "./query"
 import { EventHandler } from "./event-handler"
 
-export type Component = Aggregate | Command | DomainEvent<string, any, any> | EventHandler | Query | Policy | ReadModel
+export type Component = Store | Command | DomainEvent<string, any, any> | EventHandler | Query | Policy | ReadModel
 
 export interface BaseComponentProps {
   /**
@@ -23,13 +23,7 @@ export abstract class BaseComponent {
    */
   readonly filename: string
 
-  constructor(
-    props: BaseComponentProps,
-    /**
-     * Name of the entrypoint in the file.
-     */
-    readonly handler?: string
-  ) {
+  constructor(props: BaseComponentProps) {
     this.filename = props.__filename
   }
 }

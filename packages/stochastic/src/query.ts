@@ -1,37 +1,46 @@
 import { BaseComponent, BaseComponentProps } from "./component"
 import { Shape } from "./shape"
-import { ReadModel } from "./read-model"
+import { ReadModel, ReadModelInterface } from "./read-model"
+import { Init } from "./init"
 
+/**
+ * A query answers a question using one or more readModels
+ */
 export interface QueryProps<
-  Request extends Shape = Shape,
-  Results extends Shape = Shape,
-  Models extends ReadModel[] = ReadModel[]
+  Question extends Shape = Shape,
+  Answer extends Shape = Shape,
+  ReadModels extends Record<string, ReadModel> = Record<string, ReadModel>
 > extends BaseComponentProps {
-  readonly request: Request
-  readonly results: Results
-  readonly models: Models
+  readonly question: Question
+  readonly answer: Answer
+  readonly reads: ReadModels
 }
 
 export class Query<
-  Request extends Shape = Shape,
-  Results extends Shape = Shape,
-  Models extends ReadModel[] = ReadModel[]
+  Question extends Shape = Shape,
+  Answer extends Shape = Shape,
+  ReadModels extends Record<string, ReadModel> = Record<string, ReadModel>
 > extends BaseComponent {
   readonly kind: "Query" = "Query"
-  readonly request: Request
-  readonly results: Results
-  readonly models: Models
-  constructor(props: QueryProps<Request, Results, Models>, readonly query: Query.Handler<Request, Results, Models>) {
+  readonly question: Question
+  readonly response: Answer
+  readonly readModels: ReadModels
+  constructor(
+    props: QueryProps<Question, Answer, ReadModels>,
+    readonly init: Query.Handler<Question, Answer, ReadModels>
+  ) {
     super(props)
-    this.request = props.request
-    this.results = props.results
-    this.models = props.models
+    this.question = props.question
+    this.response = props.answer
+    this.readModels = props.reads
   }
 }
 
 export namespace Query {
-  export type Handler<Request extends Shape, Results extends Shape, Models extends ReadModel[]> = (
-    request: Shape.Value<Request>
-    // ...models: ReadModel.Runtime<Models>
-  ) => Promise<Shape.Value<Results>>
+  export type Handler<Request extends Shape, Results extends Shape, Models extends Record<string, ReadModel>> = (
+    models: {
+      [m in keyof Models]: ReadModelInterface<Models[m]>
+    },
+    context: any
+  ) => (request: Shape.Value<Request>, context: any) => Promise<Shape.Value<Results>>
 }

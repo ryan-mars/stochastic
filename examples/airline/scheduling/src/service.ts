@@ -1,5 +1,5 @@
-import { Aggregate, Command, BoundedContext, Shape, Policy, DomainEvent } from "stochastic"
-import { array, map, object, record, set, string } from "superstruct"
+import { BoundedContext, Command, DomainEvent, Shape, Store } from "stochastic"
+import { array, object, string } from "superstruct"
 
 export class AddRoute extends Shape("AddRoute", { route: string() }) {}
 export class RouteAdded extends DomainEvent("RouteAdded", "route", {
@@ -46,7 +46,7 @@ export class RouteSchedule extends Shape("RouteSchedule", {
   flights: array(object(flightDetail))
 }) {}
 
-export const RouteScheduleAggregate = new Aggregate({
+export const RouteScheduleStore = new Store({
   __filename,
   stateKey: "route",
   stateShape: RouteSchedule,
@@ -75,21 +75,27 @@ export const RouteScheduleAggregate = new Aggregate({
   initialState: () => new RouteSchedule({ route: "", flights: [] })
 })
 
+class AddRouteConfirmation extends Shape("AddRouteConfirmation", {}) {}
+
 export const AddRouteCommand = new Command(
   {
     __filename,
     events: [RouteAdded],
     intent: AddRoute,
-    aggregate: RouteScheduleAggregate
+    confirmation: AddRouteConfirmation,
+    store: RouteScheduleStore
   },
-  async (command, aggregate) => {
+  context => async (command, store) => {
     const { route } = command
-    const { state, events } = await aggregate.get(route)
+    const { state, events } = await store.get(route)
     if (events.length > 0) {
       throw new Error(`Route ${route} already exists`)
     }
 
-    return [new RouteAdded({ route })]
+    return {
+      events: [new RouteAdded({ route })],
+      confirmation: new AddRouteConfirmation({})
+    }
   }
 )
 
@@ -98,9 +104,10 @@ export const AddFlightsCommand = new Command(
     __filename,
     events: [ScheduledFlightsAdded],
     intent: AddFlights,
-    aggregate: RouteScheduleAggregate
+    confirmation: undefined,
+    store: RouteScheduleStore
   },
-  async (command, aggregate) => {
+  context => async (command, store) => {
     return [new ScheduledFlightsAdded(command)]
   }
 )
@@ -110,9 +117,10 @@ export const RemoveFlightsCommand = new Command(
     __filename,
     events: [FlightsRemoved],
     intent: RemoveFlights,
-    aggregate: RouteScheduleAggregate
+    confirmation: undefined,
+    store: RouteScheduleStore
   },
-  async (command, aggregate) => {
+  context => async (command, store) => {
     return [new FlightsRemoved(command)]
   }
 )
@@ -121,7 +129,7 @@ export const scheduling = new BoundedContext({
   handler: "scheduling",
   name: "Scheduling",
   components: {
-    RouteScheduleAggregate,
+    RouteScheduleStore,
     AddFlightsCommand,
     AddRouteCommand,
     RemoveFlightsCommand
