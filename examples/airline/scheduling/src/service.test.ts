@@ -32,37 +32,43 @@ describe("Scheduling service", () => {
           day: "2021-06-11",
           flightNo: "PA576",
           arrivalTime: "928p",
-          departureTime: "1210p"
+          departureTime: "1210p",
+          aircraft: "787-10"
         },
         {
           day: "2021-06-11",
           flightNo: "PA872",
           arrivalTime: "502p",
-          departureTime: "700a"
+          departureTime: "700a",
+          aircraft: "787-10"
         },
         {
           day: "2021-06-11",
           flightNo: "PA738",
           arrivalTime: "513p",
-          departureTime: "700a"
+          departureTime: "700a",
+          aircraft: "787-10"
         },
         {
           day: "2021-06-12",
           flightNo: "PA576",
           arrivalTime: "928p",
-          departureTime: "1210p"
+          departureTime: "1210p",
+          aircraft: "787-10"
         },
         {
           day: "2021-06-12",
           flightNo: "PA872",
           arrivalTime: "502p",
-          departureTime: "700a"
+          departureTime: "700a",
+          aircraft: "787-10"
         },
         {
           day: "2021-06-12",
           flightNo: "PA738",
           arrivalTime: "513p",
-          departureTime: "700a"
+          departureTime: "700a",
+          aircraft: "787-10"
         }
       ]
     })
@@ -100,13 +106,15 @@ describe("Scheduling service", () => {
               day: "2021-06-11",
               flightNo: "PA576",
               arrivalTime: "928p",
-              departureTime: "1210p"
+              departureTime: "1210p",
+              aircraft: "787-10"
             },
             {
               day: "2021-06-11",
               flightNo: "PA872",
               arrivalTime: "502p",
-              departureTime: "700a"
+              departureTime: "700a",
+              aircraft: "787-10"
             }
           ]
         })

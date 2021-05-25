@@ -6,12 +6,14 @@ Array [
     "__typename": "ScheduledFlightsAdded",
     "flights": Array [
       Object {
+        "aircraft": "787-10",
         "arrivalTime": "928p",
         "day": "2021-06-11",
         "departureTime": "1210p",
         "flightNo": "PA576",
       },
       Object {
+        "aircraft": "787-10",
         "arrivalTime": "502p",
         "day": "2021-06-11",
         "departureTime": "700a",
@@ -42,36 +44,42 @@ RouteSchedule {
   "__typename": "RouteSchedule",
   "flights": Array [
     Object {
+      "aircraft": "787-10",
       "arrivalTime": "928p",
       "day": "2021-06-11",
       "departureTime": "1210p",
       "flightNo": "PA576",
     },
     Object {
+      "aircraft": "787-10",
       "arrivalTime": "502p",
       "day": "2021-06-11",
       "departureTime": "700a",
       "flightNo": "PA872",
     },
     Object {
+      "aircraft": "787-10",
       "arrivalTime": "513p",
       "day": "2021-06-11",
       "departureTime": "700a",
       "flightNo": "PA738",
     },
     Object {
+      "aircraft": "787-10",
       "arrivalTime": "928p",
       "day": "2021-06-12",
       "departureTime": "1210p",
       "flightNo": "PA576",
     },
     Object {
+      "aircraft": "787-10",
       "arrivalTime": "502p",
       "day": "2021-06-12",
       "departureTime": "700a",
       "flightNo": "PA872",
     },
     Object {
+      "aircraft": "787-10",
       "arrivalTime": "513p",
       "day": "2021-06-12",
       "departureTime": "700a",
