@@ -2,17 +2,10 @@ import { Store, BoundedContext } from "stochastic"
 import { BoundedContextConstruct } from "./bounded-context-construct"
 import { ComponentConstruct, ComponentConstructProps, ComponentProps } from "./component-construct"
 
-export interface StoreConstructProps<S extends Store = Store> {
-  /**
-   * DynamoDB Table to use.
-   *
-   * @default one will be created for you
-   */
-  //table?: dynamodb.Table;
-}
+export interface StoreConstructProps<S extends Store = Store> {}
 
 /**
- * Construct for a Store - it creates s DynamoDB Table for storing backing data.
+ * Construct for a Store. Currently does nothing
  */
 export class StoreConstruct<
   B extends BoundedContext = BoundedContext,
