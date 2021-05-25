@@ -1,4 +1,4 @@
-export * from "./aggregate"
+export * from "./store"
 export * from "./bounded-context"
 export * from "./command"
 export * from "./component"

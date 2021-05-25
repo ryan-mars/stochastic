@@ -2,7 +2,7 @@ import { DomainEventEnvelope } from "stochastic"
 import {
   RouteAdded,
   ScheduledFlightsAdded,
-  RouteScheduleAggregate,
+  RouteScheduleStore,
   AddRouteCommand,
   AddRoute,
   AddFlightsCommand,
@@ -23,7 +23,7 @@ describe("Scheduling service", () => {
   const scheduledFlightsAdded = new DomainEventEnvelope({
     id: "1sC539ZsfhN9bHV4K8jZqtSz9bN",
     time: new Date("2021-05-07T04:58:48.459Z"),
-    source: "FlightScheduleAggregate",
+    source: "FlightScheduleStore",
     source_id: "PA576",
     payload: new ScheduledFlightsAdded({
       route: "SFO-MIA",
@@ -70,8 +70,8 @@ describe("Scheduling service", () => {
 
   it("reduces state from events", () => {
     let state = [routeAdded.payload, scheduledFlightsAdded.payload].reduce(
-      RouteScheduleAggregate.reducer,
-      RouteScheduleAggregate.initialState()
+      RouteScheduleStore.reducer,
+      RouteScheduleStore.initialState()
     )
     expect(state).toMatchSnapshot()
   })

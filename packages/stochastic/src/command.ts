@@ -1,4 +1,4 @@
-import { Aggregate, AggregateInterface } from "./aggregate"
+import { Store, StoreInterface } from "./store"
 import { BaseComponent, BaseComponentProps } from "./component"
 import { DomainEvent } from "./event"
 import { Init } from "./init"
@@ -6,22 +6,22 @@ import { Shape } from "./shape"
 
 /**
  * A command accepts a message with the business intent, ensures
- * transactional consistency with the aggregate and emits domain events.
+ * transactional consistency with the store and emits domain events.
  */
 export interface CommandProps<
-  State extends Aggregate,
+  State extends Store,
   Intent extends Shape,
   Confirmation extends Shape | undefined,
   Events extends readonly DomainEvent[]
 > extends BaseComponentProps {
   readonly intent: Intent
   readonly confirmation: Confirmation
-  readonly state: State
+  readonly store: State
   readonly events: Events
 }
 
 export class Command<
-  State extends Aggregate = Aggregate,
+  State extends Store = Store,
   Intent extends Shape = Shape,
   Confirmation extends Shape | undefined = Shape | undefined,
   Events extends readonly DomainEvent[] = readonly DomainEvent[]
@@ -29,21 +29,18 @@ export class Command<
   readonly kind: "Command" = "Command"
   readonly intent: Intent
   readonly confirmation: Confirmation
-  readonly aggregate: State
+  readonly store: State
   readonly events: Events
   constructor(
     props: CommandProps<State, Intent, Confirmation, Events>,
     readonly init: Init<
-      (
-        intent: Shape.Value<Intent>,
-        aggregate: AggregateInterface<State>
-      ) => Promise<CommandResponse<Confirmation, Events>>
+      (intent: Shape.Value<Intent>, store: StoreInterface<State>) => Promise<CommandResponse<Confirmation, Events>>
     >
   ) {
     super(props)
     this.intent = props.intent
     this.confirmation = props.confirmation!
-    this.aggregate = props.state
+    this.store = props.store
     this.events = props.events
   }
 }
@@ -59,11 +56,11 @@ export type CommandResponse<Confirmation extends Shape | undefined, Events exten
 export type CommandHandler<
   Intent extends Shape,
   Confirmation extends Shape | undefined,
-  State extends Aggregate,
+  State extends Store,
   Events extends readonly DomainEvent[]
 > = (
   intent: Intent,
-  state: AggregateInterface<State>
+  store: StoreInterface<State>
 ) => Promise<CommandResponse<Confirmation, Shape.Value<Events[number]>[]>>
 
 /**

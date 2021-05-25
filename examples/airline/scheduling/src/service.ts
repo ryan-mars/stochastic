@@ -1,5 +1,5 @@
-import { Aggregate, Command, BoundedContext, Shape, Policy, DomainEvent } from "stochastic"
-import { array, map, object, record, set, string } from "superstruct"
+import { BoundedContext, Command, DomainEvent, Shape, Store } from "stochastic"
+import { array, object, string } from "superstruct"
 
 export class AddRoute extends Shape("AddRoute", { route: string() }) {}
 export class RouteAdded extends DomainEvent("RouteAdded", "route", {
@@ -46,7 +46,7 @@ export class RouteSchedule extends Shape("RouteSchedule", {
   flights: array(object(flightDetail))
 }) {}
 
-export const RouteScheduleAggregate = new Aggregate({
+export const RouteScheduleStore = new Store({
   __filename,
   stateKey: "route",
   stateShape: RouteSchedule,
@@ -83,11 +83,11 @@ export const AddRouteCommand = new Command(
     events: [RouteAdded],
     intent: AddRoute,
     confirmation: AddRouteConfirmation,
-    state: RouteScheduleAggregate
+    store: RouteScheduleStore
   },
-  context => async (command, aggregate) => {
+  context => async (command, store) => {
     const { route } = command
-    const { state, events } = await aggregate.get(route)
+    const { state, events } = await store.get(route)
     if (events.length > 0) {
       throw new Error(`Route ${route} already exists`)
     }
@@ -105,9 +105,9 @@ export const AddFlightsCommand = new Command(
     events: [ScheduledFlightsAdded],
     intent: AddFlights,
     confirmation: undefined,
-    state: RouteScheduleAggregate
+    store: RouteScheduleStore
   },
-  context => async (command, aggregate) => {
+  context => async (command, store) => {
     return [new ScheduledFlightsAdded(command)]
   }
 )
@@ -118,9 +118,9 @@ export const RemoveFlightsCommand = new Command(
     events: [FlightsRemoved],
     intent: RemoveFlights,
     confirmation: undefined,
-    state: RouteScheduleAggregate
+    store: RouteScheduleStore
   },
-  context => async (command, aggregate) => {
+  context => async (command, store) => {
     return [new FlightsRemoved(command)]
   }
 )
@@ -129,7 +129,7 @@ export const scheduling = new BoundedContext({
   handler: "scheduling",
   name: "Scheduling",
   components: {
-    RouteScheduleAggregate,
+    RouteScheduleStore,
     AddFlightsCommand,
     AddRouteCommand,
     RemoveFlightsCommand

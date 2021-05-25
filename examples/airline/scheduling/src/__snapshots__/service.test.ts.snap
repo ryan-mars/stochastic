@@ -24,12 +24,17 @@ Array [
 `;
 
 exports[`Scheduling service adds routes 1`] = `
-Array [
-  RouteAdded {
-    "__typename": "RouteAdded",
-    "route": "SFO-MIA",
+Object {
+  "confirmation": AddRouteConfirmation {
+    "__typename": "AddRouteConfirmation",
   },
-]
+  "events": Array [
+    RouteAdded {
+      "__typename": "RouteAdded",
+      "route": "SFO-MIA",
+    },
+  ],
+}
 `;
 
 exports[`Scheduling service reduces state from events 1`] = `

@@ -1,6 +1,6 @@
 import * as cdk from "@aws-cdk/core"
 import {
-  Aggregate,
+  Store,
   BoundedContext,
   BoundedContextConfig,
   CreatedEvents,
@@ -16,7 +16,7 @@ import {
 import { EmitEventBinding, RecieveEventBinding } from "./event-binding"
 import { ConfigBinding } from "./config-binding"
 import { EventStore } from "./event-store-construct"
-import { AggregateConstruct } from "./aggregate-construct"
+import { StoreConstruct } from "./store-construct"
 import { CommandConstruct } from "./command-construct"
 import { ComponentProps } from "./component-construct"
 import { PolicyConstruct } from "./policy-construct"
@@ -33,8 +33,8 @@ type CDKComponents<S extends BoundedContext> = {
 /**
  * May a Component, `C`, to its corresponding CDK Construct representation.
  */
-type CDKComponent<S extends BoundedContext, C extends Component> = C extends Aggregate
-  ? AggregateConstruct<S, C>
+type CDKComponent<S extends BoundedContext, C extends Component> = C extends Store
+  ? StoreConstruct<S, C>
   : C extends Command
   ? CommandConstruct<S, C>
   : cdk.Construct
@@ -121,17 +121,11 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
       ([nameA, componentA], [nameB, componentB]) => (componentA.kind === "Command" ? -1 : 1)
     )) {
       const componentProps = (props.components as any)?.[componentName] as ComponentProps<Component>
-      let con:
-        | AggregateConstruct
-        | CommandConstruct
-        | PolicyConstruct
-        | EventHandlerConstruct
-        | QueryConstruct
-        | undefined
+      let con: StoreConstruct | CommandConstruct | PolicyConstruct | EventHandlerConstruct | QueryConstruct | undefined
 
-      if (component.kind === "Aggregate") {
-        con = new AggregateConstruct(this as any, componentName, {
-          ...(componentProps as ComponentProps<Aggregate>),
+      if (component.kind === "Store") {
+        con = new StoreConstruct(this as any, componentName, {
+          ...(componentProps as ComponentProps<Store>),
           component,
           boundedContext,
           name: componentName

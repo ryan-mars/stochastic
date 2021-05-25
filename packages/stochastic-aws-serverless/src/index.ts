@@ -1,4 +1,4 @@
-export * from "./aggregate-construct"
+export * from "./store-construct"
 export * from "./bounded-context-construct"
 export * from "./command-construct"
 export * from "./component-construct"

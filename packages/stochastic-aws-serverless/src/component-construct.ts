@@ -1,7 +1,7 @@
 import * as cdk from "@aws-cdk/core"
 
-import { Aggregate, BoundedContext, Command, Component, EventHandler, Policy, Query, ReadModel } from "stochastic"
-import { AggregateConstructProps } from "./aggregate-construct"
+import { Store, BoundedContext, Command, Component, EventHandler, Policy, Query, ReadModel } from "stochastic"
+import { StoreConstructProps } from "./store-construct"
 import { CommandConstructProps } from "./command-construct"
 import { EventHandlerConstructProps } from "./event-handler-construct"
 import { PolicyConstructProps } from "./policy-construct"
@@ -10,8 +10,8 @@ import { QueryConstructProps } from "./query-construct"
 /**
  * Computes the properties for a component's corresponding CDK Construct.
  */
-export type ComponentProps<C extends Component> = C extends Aggregate
-  ? AggregateConstructProps<C>
+export type ComponentProps<C extends Component> = C extends Store
+  ? StoreConstructProps<C>
   : C extends Command
   ? CommandConstructProps<C>
   : C extends Policy

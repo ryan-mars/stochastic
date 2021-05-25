@@ -1,4 +1,5 @@
-import { Aggregate, Command, DomainEvent, Shape } from "stochastic"
+import { strictEqual } from "assert"
+import { Store, Command, DomainEvent, Shape } from "stochastic"
 import { number, string } from "superstruct"
 
 export class WorldPassMilesAwarded extends DomainEvent("WorldPassMilesAwarded", "worldPassAccountNo", {
@@ -12,7 +13,7 @@ export class WorldPassAccount extends Shape("WorldPassAccount", {
   miles: number()
 }) {}
 
-export const WorldPassAccountAggregate = new Aggregate({
+export const WorldPassAccountStore = new Store({
   __filename,
   stateShape: WorldPassAccount,
   stateKey: "worldPassAccountNo",
@@ -35,11 +36,13 @@ export const AddMiles = new Command(
   {
     __filename,
     intent: AddMilesIntent,
-    state: WorldPassAccountAggregate,
+    store: WorldPassAccountStore,
     events: [WorldPassMilesAwarded],
     confirmation: undefined
   },
-  context => async (command, aggregate) => {
+  context => async (command, store) => {
+    const { state } = await store.get(command.worldPassAccountNo)
+    // .. check state before ...
     return [
       new WorldPassMilesAwarded({ worldPassAccountNo: command.worldPassAccountNo, milesAdded: command.milesToAdd })
     ]

@@ -1,14 +1,4 @@
-import {
-  Aggregate,
-  BoundedContext,
-  Command,
-  Config,
-  DomainEvent,
-  Policy,
-  ReadModel,
-  Shape,
-  TableConfig
-} from "stochastic"
+import { Store, BoundedContext, Command, Config, DomainEvent, Policy, ReadModel, Shape, TableConfig } from "stochastic"
 import { array, object, string } from "superstruct"
 import { FlightCancelled } from "operations"
 
@@ -52,7 +42,7 @@ export class FlightReservationsChanged extends DomainEvent("FlightReservationsCh
 
 export class CustomerReservation extends Shape("CustomerReservation", reservationShape) {}
 
-export const customerReservationAggregate = new Aggregate({
+export const customerReservationStore = new Store({
   __filename,
   stateShape: CustomerReservation,
   stateKey: "reservationNo",
@@ -93,9 +83,9 @@ export const bookReservation = new Command(
     events: [ReservationBooked],
     intent: BookReservationIntent,
     confirmation: BookReservationConfirmation,
-    state: customerReservationAggregate
+    store: customerReservationStore
   },
-  context => async (command, aggregate) => {
+  context => async (command, store) => {
     return {
       confirmation: new BookReservationConfirmation({
         receiptNo: "booking-123"
@@ -125,10 +115,10 @@ export const modifyReservationFlights = new Command(
     intent: ModifyReservationFlightsIntent,
     confirmation: undefined,
     events: [FlightReservationsChanged],
-    state: customerReservationAggregate
+    store: customerReservationStore
   },
   context => {
-    return async (command, aggregate) => {
+    return async (command, store) => {
       return [
         new FlightReservationsChanged({
           reservationNo: "",
@@ -155,7 +145,7 @@ export const availableSeats = new ReadModel({
   events: [ReservationBooked],
   config: [seatsTable],
   /**
-   * Projection function that aggregates events to prepare the read model.
+   * Projection function that stores events to prepare the read model.
    */
   projection: ({ SeatsTable }) => {
     const ddb = new dynamodb.DynamoDBClient({})
@@ -256,7 +246,7 @@ export const reservations = new BoundedContext({
   handler: "reservations",
   name: "Reservations",
   components: {
-    customerReservationAggregate,
+    customerReservationStore,
     bookReservation,
     modifyReservationFlights,
     rebookingPolicy,

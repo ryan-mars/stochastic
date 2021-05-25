@@ -5,7 +5,7 @@ import { InvokeCommand, LambdaClient } from "@aws-sdk/client-lambda"
 import { Command, Config, DomainEventEnvelope, Init, ReadModel } from "stochastic"
 import { Context, SQSEvent } from "aws-lambda"
 import { Component } from "stochastic"
-import { connectAggregateInterface, storeEvent } from "./event-store"
+import { connectStoreInterface, storeEvent } from "./event-store"
 import { TextEncoder } from "util"
 
 export interface RuntimeOptions {
@@ -49,8 +49,8 @@ export class LambdaRuntime implements Runtime {
       if (tableName === undefined) {
         throw new Error("missing environment variable: EVENT_STORE_TABLE")
       }
-      const { initialState, reducer } = component.aggregate
-      const source = component.aggregate.stateShape.name
+      const { initialState, reducer } = component.store
+      const source = component.store.stateShape.name
 
       this.handler = memoize(context => {
         const command = component.init(context)
@@ -58,12 +58,12 @@ export class LambdaRuntime implements Runtime {
         return async event => {
           console.log({ event })
           console.log(JSON.stringify({ component }, null, 2))
-          console.log({ aggregate: component.aggregate })
+          console.log({ store: component.store })
 
           // TODO: command response type is too vague to work with
           const commandResponse = await command(
             event,
-            connectAggregateInterface({
+            connectStoreInterface({
               eventStore: tableName,
               source,
               initialState,
