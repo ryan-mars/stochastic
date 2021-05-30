@@ -31,12 +31,12 @@ export class ReceiveEventBridgeEventBinding<E extends DomainEvent = DomainEvent>
   }
 
   public bind(scope: cdk.Construct, topic: ITopic) {
-    const receivedEventsQueue = new Queue(scope, `ReceivedEventsQueue`)
-    const publicEventsReceiver = new NodejsFunction(scope, "PublicEventsReceiver", {
+    const receivedEventsQueue = new Queue(scope, `${this.otherBoundedContext.name}ReceivedEventsQueue`)
+    const publicEventsReceiver = new NodejsFunction(scope, `${this.otherBoundedContext.name}PublicEventsReceiver`, {
       entry: join(__dirname, "event-bridge-receiver.js"),
       environment: {
-        EVENT_STREAM_TOPIC_ARN: topic.topicArn
-      }
+        EVENT_STREAM_TOPIC_ARN: topic.topicArn,
+      },
     })
     topic.grantPublish(publicEventsReceiver)
     publicEventsReceiver.addEventSource(new SqsEventSource(receivedEventsQueue))
@@ -45,9 +45,9 @@ export class ReceiveEventBridgeEventBinding<E extends DomainEvent = DomainEvent>
       targets: [new SqsQueue(receivedEventsQueue)],
       eventPattern: {
         source: [this.otherBoundedContext.name],
-        detailType: this.events.map(e => e.__typename)
+        detailType: this.events.map(e => e.__typename),
       },
-      eventBus: this.eventBus
+      eventBus: this.eventBus,
     })
   }
 }
@@ -69,8 +69,8 @@ export class EmitEventBridgeBinding<E extends DomainEvent = DomainEvent> impleme
       entry: join(__dirname, "event-bridge-forwarder.js"),
       environment: {
         EVENT_BUS_ARN: this.eventBus.eventBusArn,
-        BOUNDED_CONTEXT_NAME: boundedContextName
-      }
+        BOUNDED_CONTEXT_NAME: boundedContextName,
+      },
     })
     this.eventBus.grantPutEventsTo(publicEventsForwarder)
     publicEventsForwarder.addEventSource(new SqsEventSource(emittedEventsQueue))
@@ -78,9 +78,9 @@ export class EmitEventBridgeBinding<E extends DomainEvent = DomainEvent> impleme
       rawMessageDelivery: true,
       filterPolicy: {
         event_type: SubscriptionFilter.stringFilter({
-          whitelist: this.events.map(e => e.__typename)
-        })
-      }
+          whitelist: this.events.map(e => e.__typename),
+        }),
+      },
     })
   }
 }

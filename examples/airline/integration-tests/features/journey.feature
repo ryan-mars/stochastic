@@ -9,16 +9,15 @@ Feature: Journey through the system
     And the "787-10" has 318 seats 
 
 Rule: Passengers on cancelled flights should be rebooked evenly on the earliest available flight(s)    
-  Scenario: No more flights same day, two early the next morning
+  Example: No flights left today, two tomorrow morning same time
    Given the flights have 200 passengers each
-    When flight "576" is cancelled on "2021-06-11"
+    When flight "576" "SFO-MIA" is cancelled on "2021-06-11"
     Then the passengers should be rebooked accordingly: 
-      | Date       | Flight No. | Passengers Added |
-      | 2021-06-12 | 872        | 59               |
-      | 2021-06-12 | 738        | 59               |
-      | 2021-06-12 | 576        | 0                |
+      | Date       | Flight No. | Passengers |
+      | 2021-06-12 | 872        | 259        |
+      | 2021-06-12 | 738        | 259        |
+      | 2021-06-12 | 576        | 200        |
       
-
 # Rule: Higher status passengers should be rebooked first
 #   Scenario: 
 

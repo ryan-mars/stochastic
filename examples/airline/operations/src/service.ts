@@ -9,7 +9,7 @@ const flightScheduleDetail = {
   aircraftType: string(),
   tailNo: string(),
   departureTime: string(),
-  arrivalTime: string()
+  arrivalTime: string(),
 }
 
 export class AddFlightIntent extends Shape("AddFlight", flightScheduleDetail) {}
@@ -17,11 +17,12 @@ export class AddFlightIntent extends Shape("AddFlight", flightScheduleDetail) {}
 export class FlightAddedEvent extends DomainEvent("FlightAdded", "flightNo", flightScheduleDetail) {}
 export class FlightCancelled extends DomainEvent("FlightCancelled", "flightNo", {
   flightNo: string(),
-  day: string()
+  day: string(),
+  route: string(),
 }) {}
 
 export class OperatedFlight extends Shape("OperatedFlight", {
-  flightNo: string()
+  flightNo: string(),
 }) {}
 
 const FlightStore = new Store({
@@ -37,7 +38,7 @@ const FlightStore = new Store({
       default:
         return state
     }
-  }
+  },
 })
 
 export const AddFlight = new Command(
@@ -46,7 +47,7 @@ export const AddFlight = new Command(
     store: FlightStore,
     intent: AddFlightIntent,
     confirmation: undefined,
-    events: [FlightAddedEvent]
+    events: [FlightAddedEvent],
   },
   context => async (command, store) => {
     const { state, events } = await store.get(command.flightNo)
@@ -57,15 +58,16 @@ export const AddFlight = new Command(
 
     return [
       new FlightAddedEvent({
-        ...command
-      })
+        ...command,
+      }),
     ]
-  }
+  },
 )
 
 export class CancelFlightIntent extends Shape("CancelFlightIntent", {
   flightNo: string(),
-  day: string()
+  day: string(),
+  route: string(),
 }) {}
 
 export const CancelFlight = new Command(
@@ -74,11 +76,11 @@ export const CancelFlight = new Command(
     store: FlightStore,
     intent: CancelFlightIntent,
     confirmation: undefined,
-    events: [FlightCancelled]
+    events: [FlightCancelled],
   },
   context => async (command, store) => {
     return [new FlightCancelled(command)]
-  }
+  },
 )
 
 export const MyPolicy = new Policy(
@@ -86,11 +88,11 @@ export const MyPolicy = new Policy(
     __filename,
     events: [ScheduledFlightsAdded, FlightCancelled],
     commands: {},
-    reads: {}
+    reads: {},
   },
   context => async event => {
     console.log(JSON.stringify(event, null, 2))
-  }
+  },
 )
 
 export const operations = new BoundedContext({
@@ -99,8 +101,8 @@ export const operations = new BoundedContext({
   components: {
     AddFlight,
     CancelFlight,
-    FlightCancelled,
     MyPolicy,
-    FlightStore
-  }
+    FlightStore,
+  },
+  emits: [FlightCancelled],
 })

@@ -1,4 +1,4 @@
-import { AddRoute, AddFlights, ScheduledFlightsAdded } from "../scheduling/lib/service"
+import { AddRoute, AddFlights } from "../scheduling/lib/service"
 import { InvokeCommand, LambdaClient } from "@aws-sdk/client-lambda"
 import { TextEncoder } from "util"
 
@@ -6,13 +6,13 @@ const lambda = new LambdaClient({})
 
 ;(async () => {
   const addRoute = new AddRoute({ route: "SFO-MIA" })
-  const result1 = await lambda.send(
+  const addRouteResult = await lambda.send(
     new InvokeCommand({
-      FunctionName: "Scheduling-SchedulingBoundedContextAddRouteCommand-1REE7CYH6X172",
-      Payload: new TextEncoder().encode(JSON.stringify(addRoute))
-    })
+      FunctionName: "Scheduling-AddRouteCommand",
+      Payload: new TextEncoder().encode(JSON.stringify(addRoute)),
+    }),
   )
-  console.log(result1)
+  console.log(JSON.stringify({ addRouteResult }, null, 2))
 
   const addFlights = new AddFlights({
     route: "SFO-MIA",
@@ -21,24 +21,28 @@ const lambda = new LambdaClient({})
         day: "2021-06-11",
         flightNo: "PA576",
         arrivalTime: "928p",
-        departureTime: "1210p"
+        departureTime: "1210p",
+        aircraft: "787-10",
+        seats: 318,
       },
       {
         day: "2021-06-11",
         flightNo: "PA872",
         arrivalTime: "502p",
-        departureTime: "700a"
-      }
-    ]
+        departureTime: "700a",
+        aircraft: "787-10",
+        seats: 318,
+      },
+    ],
   })
 
-  const result2 = await lambda.send(
+  const addFlightsResult = await lambda.send(
     new InvokeCommand({
-      FunctionName: "Scheduling-SchedulingBoundedContextAddFlightsComma-18JN8IVHPK4EN",
-      Payload: new TextEncoder().encode(JSON.stringify(addFlights))
-    })
+      FunctionName: "Scheduling-AddFlightsCommand",
+      Payload: new TextEncoder().encode(JSON.stringify(addFlights)),
+    }),
   )
-  console.log(result2)
+  console.log(JSON.stringify({ addFlightsResult }, null, 2))
 })().then(() => {
   console.log("done")
 })

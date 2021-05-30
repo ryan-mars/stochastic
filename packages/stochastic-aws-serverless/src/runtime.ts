@@ -24,7 +24,7 @@ export class LambdaRuntime implements Runtime {
     readonly component: Component,
     readonly componentName: string,
     readonly names: Map<Component, string>,
-    options?: RuntimeOptions
+    options?: RuntimeOptions,
   ) {
     this.lambda = new LambdaClient({ credentials: options?.credentials })
 
@@ -41,7 +41,7 @@ export class LambdaRuntime implements Runtime {
       //lookup table to map `__typename` to the static `DomainEvent` class.
       const domainEventLookupTable = component.events
         .map(eventType => ({
-          [eventType.__typename]: eventType // sorry I meant __key doesn't exist. Yes it does?
+          [eventType.__typename]: eventType, // sorry I meant __key doesn't exist. Yes it does?
         }))
         .reduce((a, b) => ({ ...a, ...b }), {})
 
@@ -67,8 +67,8 @@ export class LambdaRuntime implements Runtime {
               eventStore: tableName,
               source,
               initialState,
-              reducer
-            })
+              reducer,
+            }),
           )
           console.log(JSON.stringify({ commandResponse }, null, 2))
 
@@ -79,14 +79,14 @@ export class LambdaRuntime implements Runtime {
                 throw new Error("FUCK")
               }
               return new DomainEventEnvelope({ source, source_id: eventInstance[event.__key], payload: eventInstance })
-            }
+            },
           )
           const confirmation = Array.isArray(commandResponse) ? undefined : commandResponse.confirmation ?? events
 
           await Promise.all(
             events.map(async evt => {
               await storeEvent(tableName, evt)
-            })
+            }),
           )
           console.log(JSON.stringify({ events }, null, 2))
           console.log(JSON.stringify({ confirmation }, null, 2))
@@ -95,7 +95,12 @@ export class LambdaRuntime implements Runtime {
       })
     } else if (component.kind === "EventHandler") {
     } else if (component.kind === "ReadModel") {
-      this.handler = memoize(context => component.init(getConfiguration(component.config) as any, context))
+      this.handler = memoize(context => {
+        const projection = component.init(getConfiguration(component.config) as any, context)
+        return async (event: SQSEvent, context: Context) => {
+          Promise.all(event.Records.map(record => projection(JSON.parse(record.body), context)))
+        }
+      })
     } else if (component.kind === "Policy") {
       this.handler = memoize(context => {
         const commands = initCommands(component.commands, names, this.lambda)
@@ -142,9 +147,9 @@ function initCommands(commands: Record<string, Command>, names: Map<Component, s
           lambda.send(
             new InvokeCommand({
               FunctionName: lambdaArn,
-              Payload: new TextEncoder().encode(JSON.stringify(input))
-            })
-          )
+              Payload: new TextEncoder().encode(JSON.stringify(input)),
+            }),
+          ),
       }
     })
     .reduce((a, b) => ({ ...a, ...b }), {})
@@ -154,7 +159,7 @@ function initReadModels(readModels: Record<string, ReadModel>, context: any) {
   return Object.entries(readModels)
     .map(([key, readModel]) => {
       return {
-        [key]: readModel.client(getConfiguration(readModel.config), context)
+        [key]: readModel.client(getConfiguration(readModel.config), context),
       }
     })
     .reduce((a, b) => ({ ...a, ...b }), {})
@@ -162,8 +167,14 @@ function initReadModels(readModels: Record<string, ReadModel>, context: any) {
 
 function getConfiguration(dependencies: Config[]) {
   return dependencies
-    .map(dependency => ({
-      [dependency.name]: process.env[`DEPENDENCY_${dependency.name}`]
-    }))
+    .map(dependency => {
+      const dep = process.env[`DEPENDENCY_${dependency.name}`]
+      if (!dep) {
+        throw new Error(`The dependency DEPENDENCY_${dependency.name} is missing.`)
+      }
+      return {
+        [dependency.name]: JSON.parse(dep),
+      }
+    })
     .reduce((a, b) => ({ ...a, ...b }), {}) as any
 }

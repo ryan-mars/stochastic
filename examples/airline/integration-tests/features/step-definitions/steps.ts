@@ -17,7 +17,7 @@ const commands = {
   AddRoute: `Scheduling-AddRouteCommand`,
   AddFlights: "Scheduling-AddFlightsCommand",
   BookReservation: "Reservation-BookReservation",
-  CancelFlight: "Operations-CancelFlight"
+  CancelFlight: "Operations-CancelFlight",
 }
 const lambda = new LambdaClient({})
 
@@ -25,8 +25,8 @@ const invoke = (name: string, payload: Object) => {
   return lambda.send(
     new InvokeCommand({
       FunctionName: name,
-      Payload: new TextEncoder().encode(JSON.stringify(payload))
-    })
+      Payload: new TextEncoder().encode(JSON.stringify(payload)),
+    }),
   )
 }
 
@@ -40,78 +40,101 @@ Given(
     this.schedule = schedule
     this.days = [day1, day2]
     // TODO: Save pk's in world so we can clean up after this test
-    await invoke(commands.AddRoute, new AddRoute({ route }))
 
-    const flights = schedule.hashes().map(async row => {
-      if (row.Frequency !== "Daily") {
-        throw 'Only written for "Daily" at the moment'
-      }
-      const addFlights = new AddFlights({
-        route,
-        flights: [day1, day2].map(day => {
-          return {
-            departureTime: Temporal.PlainTime.from(row.Departure).toString(),
-            arrivalTime: Temporal.PlainTime.from(row.Arrival).toString(),
-            day: Temporal.PlainDate.from(day).toString(),
-            flightNo: row["Flight No."],
-            aircraft: row.Aircraft
-          }
+    try {
+      await invoke(commands.AddRoute, new AddRoute({ route }))
+    } catch (error) {
+      console.error(error)
+      throw new Error(error)
+    }
+
+    try {
+      const flights = schedule.hashes().map(async row => {
+        if (row.Frequency !== "Daily") {
+          throw 'Only written for "Daily" at the moment'
+        }
+        const addFlights = new AddFlights({
+          route,
+          flights: [day1, day2].map(day => {
+            return {
+              departureTime: Temporal.PlainTime.from(row.Departure).toString(),
+              arrivalTime: Temporal.PlainTime.from(row.Arrival).toString(),
+              day: Temporal.PlainDate.from(day).toString(),
+              flightNo: row["Flight No."],
+              aircraft: row.Aircraft,
+              seats: 318,
+            }
+          }),
         })
+        return invoke(commands.AddFlights, addFlights)
       })
-      return invoke(commands.AddFlights, addFlights)
-    })
-    await Promise.all(flights)
-  }
+      await Promise.all(flights)
+    } catch (error) {
+      console.error(error)
+      throw new Error(error)
+    }
+  },
 )
 
 Given("the {string} has {int} seats", function (aircraftType: string, seats: number) {
   // Given('the {string} has {float} seats', function (string, float) {
   // Write code here that turns the phrase above into concrete actions
-  return "pending"
+  // return "pending"
 })
 
 Given("the flights have {int} passengers each", async function (this: typeof World, passengerCount: number) {
   const days = this.days as string[]
   const schedule = this.schedule as DataTable
-  await Promise.all(
-    days.map(day => {
-      return schedule.hashes().map(flight => {
-        return Array.from(Array(passengerCount).keys()).map(i => {
-          const intent = new BookReservationIntent({
-            reservationNo: nanoid(),
-            flights: [
-              {
-                day: Temporal.PlainDate.from(day).toString(),
-                flightNo: flight["Flight No."],
-                origin: "SFO",
-                destination: "MIA",
-                departureTime: Temporal.PlainTime.from(flight.Departure).toString(),
-                arrivalTime: Temporal.PlainTime.from(flight.Arrival).toString()
-              }
-            ],
-            traveler: {
-              firstName: faker.name.firstName(),
-              lastName: faker.name.lastName(),
-              dob: Intl.DateTimeFormat("en-US").format(
-                faker.date.past(50, new Date("Sat Sep 20 1992 21:35:02 GMT+0200 (CEST)"))
-              ),
-              loyaltyId: nanoid(),
-              loyaltyStatus: sample(["Silver", "Gold", "Platinum", "Diamond"])
-            }
+  try {
+    await Promise.all(
+      days.map(day => {
+        return schedule.hashes().map(flight => {
+          return Array.from(Array(passengerCount).keys()).map(i => {
+            const intent = new BookReservationIntent({
+              reservationNo: nanoid(),
+              flights: [
+                {
+                  day: Temporal.PlainDate.from(day).toString(),
+                  flightNo: flight["Flight No."],
+                  origin: "SFO",
+                  destination: "MIA",
+                  departureTime: Temporal.PlainTime.from(flight.Departure).toString(),
+                  arrivalTime: Temporal.PlainTime.from(flight.Arrival).toString(),
+                },
+              ],
+              traveler: {
+                firstName: faker.name.firstName(),
+                lastName: faker.name.lastName(),
+                dob: Intl.DateTimeFormat("en-US").format(
+                  faker.date.past(50, new Date("Sat Sep 20 1992 21:35:02 GMT+0200 (CEST)")),
+                ),
+                loyaltyId: nanoid(),
+                loyaltyStatus: sample(["Silver", "Gold", "Platinum", "Diamond"]),
+              },
+            })
+
+            return invoke(commands.BookReservation, intent)
           })
-
-          return invoke(commands.BookReservation, intent)
         })
-      })
-    })
-  )
+      }),
+    )
+  } catch (error) {
+    console.error(error)
+    throw new Error(error)
+  }
 })
 
-When("flight {string} is cancelled on {string}", async function (flightNo: string, day: string) {
-  await invoke(commands.CancelFlight, new CancelFlightIntent({ flightNo, day }))
-})
+When(
+  "flight {string} {string} is cancelled on {string}",
+  async function (flightNo: string, route: string, day: string) {
+    try {
+      await invoke(commands.CancelFlight, new CancelFlightIntent({ flightNo, day, route }))
+    } catch (error) {
+      throw new Error(error)
+    }
+  },
+)
 
 Then("the passengers should be rebooked accordingly:", function (table: DataTable) {
-  // Write code here that turns the phrase above into concrete actions
   return "pending"
 })
