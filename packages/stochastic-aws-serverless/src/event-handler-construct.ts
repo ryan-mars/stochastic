@@ -19,8 +19,8 @@ import { ConfigBindings, ConfigBinding } from "./config-binding"
  * object which contains a reference to its path.
  */
 export interface EventHandlerConstructProps<P extends EventHandler | ReadModel = EventHandler | ReadModel>
-  extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {
-  dependencies: Record<string, ConfigBinding>
+  extends Omit<nodeLambda.NodejsFunctionProps, "code" | "runtime" | "handler"> {
+  dependencies?: Record<string, ConfigBinding>
 }
 
 export class EventHandlerConstruct<
@@ -36,16 +36,20 @@ export class EventHandlerConstruct<
     super(scope, id, props)
 
     this.handler = new nodeLambda.NodejsFunction(this, "Function", {
+      // TODO: Properly deep-merge props
       functionName: `${props.boundedContext.name}-${this.name}`,
       ...generateHandler(this.name, props.component, props.boundedContext.componentNames),
       ...props,
       runtime: lambda.Runtime.NODEJS_14_X,
+      ...props,
       environment: {
         COMPONENT_NAME: this.name,
+        ...props.environment,
       },
       bundling: {
         sourceMap: true,
         metafile: true,
+        ...props.bundling,
       },
     })
 
