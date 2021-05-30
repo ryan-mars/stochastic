@@ -5,12 +5,14 @@ import { DomainEvent, DomainEventEnvelope } from "stochastic"
 const client = new EventBridgeClient({})
 const EventBusName = process.env["EVENT_BUS_ARN"]
 const Source = process.env["BOUNDED_CONTEXT_NAME"]
+const log_level = (process.env["LOG_LEVEL"] ?? "info").toLowerCase()
 
 export const handler: SQSHandler = async event => {
-  console.log(JSON.stringify(event, null, 2))
-  console.log("YOU SHOULD PUT THIS ON THE EVENT BUS")
-  console.log(`EVENT_BUS_ARN ${process.env["EVENT_BUS_ARN"]}`)
-  console.log(`BOUNDED_CONTEXT_NAME ${process.env["BOUNDED_CONTEXT_NAME"]}`)
+  if (log_level === "debug") {
+    console.log(JSON.stringify({ event }, null, 2))
+    console.log(JSON.stringify({ EVENT_BUS_ARN: `${process.env["EVENT_BUS_ARN"] ?? ""}` }, null, 2))
+    console.log(JSON.stringify({ BOUNDED_CONTEXT_NAME: `${process.env["BOUNDED_CONTEXT_NAME"] ?? ""}` }, null, 2))
+  }
 
   const entries = event.Records.map(({ body }) => ({
     body,

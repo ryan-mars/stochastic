@@ -26,6 +26,7 @@ export function connectStoreInterface<
   T extends Shape = Shape,
   Events extends readonly DomainEvent[] = readonly DomainEvent[],
 >(props: ConnectStoreInterfaceProps<T, Events>) {
+  const log_level = (process.env["LOG_LEVEL"] ?? "info").toLowerCase()
   return {
     get: async (key: string) => {
       let state = props.initialState()
@@ -34,7 +35,9 @@ export function connectStoreInterface<
         events.push(event as DomainEventEnvelope<Shape.Value<Events[number]>>)
         state = props.reducer(state, event.payload as Shape.Value<Events[number]>)
       }
-      console.log(JSON.stringify({ state, events }, null, 2))
+      if (log_level === "debug") {
+        console.log(JSON.stringify({ state, events }, null, 2))
+      }
       return {
         state,
         events,

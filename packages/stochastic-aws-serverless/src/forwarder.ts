@@ -5,13 +5,20 @@ import * as env from "env-var"
 
 const sns = new SNSClient({})
 
+const log_level = (process.env["LOG_LEVEL"] ?? "info").toLowerCase()
+
 export const handler: DynamoDBStreamHandler = async event => {
   const EVENT_STREAM_TOPIC_ARN: string = env.get("EVENT_STREAM_TOPIC_ARN").required().asString()
-  console.log(JSON.stringify(event, null, 2))
+  if (log_level === "debug") {
+    console.log(JSON.stringify({ event }, null, 2))
+  }
   for (const record of event.Records) {
     try {
       if (record.eventName !== "INSERT") {
-        console.log(`Skipping ${record.eventName}`)
+        if (log_level === "debug") {
+          console.log(JSON.stringify({ message: `Skipping ${record.eventName}` }, null, 2))
+        }
+
         continue
       }
 
@@ -37,10 +44,18 @@ export const handler: DynamoDBStreamHandler = async event => {
           },
         }),
       )
-      console.log({
-        DynamoDBSequenceNumber: SequenceNumber,
-        SNSMessageId: data.MessageId,
-      })
+      if (log_level === "debug") {
+        console.log(
+          JSON.stringify(
+            {
+              DynamoDBSequenceNumber: SequenceNumber,
+              SNSMessageId: data.MessageId,
+            },
+            null,
+            2,
+          ),
+        )
+      }
     } catch (err) {
       console.error(err, err.stack)
       throw new Error(err)

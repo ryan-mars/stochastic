@@ -18,15 +18,21 @@ interface EventBridgeEvent {
   detail: DomainEventEnvelope<DomainEvent<string, any, string>>
 }
 
+const log_level = (process.env["LOG_LEVEL"] ?? "info").toLowerCase()
+
 export const handler: SQSHandler = async sqsEvent => {
-  console.log(JSON.stringify(sqsEvent, null, 2))
+  if (log_level === "debug") {
+    console.log(JSON.stringify({ sqsEvent }, null, 2))
+    console.log(JSON.stringify({ EVENT_STREAM_TOPIC_ARN: `${process.env["EVENT_STREAM_TOPIC_ARN"] ?? ""}` }, null, 2))
+  }
+
   const EVENT_STREAM_TOPIC_ARN: string = env.get("EVENT_STREAM_TOPIC_ARN").required().asString()
 
   const events = sqsEvent.Records.map(({ body }) => JSON.parse(body) as EventBridgeEvent)
 
   const publishCommands = events.map(event => {
     if (event["detail-type"] !== event.detail.type) {
-      console.log(
+      console.error(
         `EventBridge detail-type '${event["detail-type"]}' does not match stochastic event type ${event.detail.type}`,
       )
     }
@@ -50,7 +56,13 @@ export const handler: SQSHandler = async sqsEvent => {
       },
     })
   })
-  console.log(JSON.stringify(publishCommands, null, 2))
-  const output = await Promise.all(publishCommands.map(cmd => sns.send(cmd)))
-  console.log(JSON.stringify(output, null, 2))
+  if (log_level === "debug") {
+    console.log(JSON.stringify({ publishCommands }, null, 2))
+  }
+
+  const snsResult = await Promise.all(publishCommands.map(cmd => sns.send(cmd)))
+
+  if (log_level === "debug") {
+    console.log(JSON.stringify({ snsResult }, null, 2))
+  }
 }

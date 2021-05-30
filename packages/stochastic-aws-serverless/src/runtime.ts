@@ -53,14 +53,14 @@ export class LambdaRuntime implements Runtime {
       const source = component.store.stateShape.name
 
       this.handler = memoize(context => {
+        const log_level = (process.env["LOG_LEVEL"] ?? "info").toLowerCase()
         const command = component.init(context)
 
         return async event => {
-          console.log({ event })
-          console.log(JSON.stringify({ component }, null, 2))
-          console.log({ store: component.store })
+          if (log_level === "debug") {
+            console.log(JSON.stringify({ event }, null, 2))
+          }
 
-          // TODO: command response type is too vague to work with
           const commandResponse = await command(
             event,
             connectStoreInterface({
@@ -70,7 +70,10 @@ export class LambdaRuntime implements Runtime {
               reducer,
             }),
           )
-          console.log(JSON.stringify({ commandResponse }, null, 2))
+
+          if (log_level === "debug") {
+            console.log(JSON.stringify({ commandResponse }, null, 2))
+          }
 
           const events = (Array.isArray(commandResponse) ? commandResponse : commandResponse.events).map(
             eventInstance => {
@@ -88,8 +91,10 @@ export class LambdaRuntime implements Runtime {
               await storeEvent(tableName, evt)
             }),
           )
-          console.log(JSON.stringify({ events }, null, 2))
-          console.log(JSON.stringify({ confirmation }, null, 2))
+          if (log_level === "debug") {
+            console.log(JSON.stringify({ events }, null, 2))
+            console.log(JSON.stringify({ confirmation }, null, 2))
+          }
           return confirmation
         }
       })
@@ -98,6 +103,10 @@ export class LambdaRuntime implements Runtime {
       this.handler = memoize(context => {
         const projection = component.init(getConfiguration(component.config) as any, context)
         return async (event: SQSEvent, context: Context) => {
+          const log_level = (process.env["LOG_LEVEL"] ?? "info").toLowerCase()
+          if (log_level === "debug") {
+            console.log(JSON.stringify({ event }, null, 2))
+          }
           Promise.all(event.Records.map(record => projection(JSON.parse(record.body), context)))
         }
       })
