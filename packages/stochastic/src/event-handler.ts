@@ -11,7 +11,7 @@ export interface EventHandlerProps<E extends readonly DomainEvent[], C extends r
 
 export abstract class BaseEventHandler<
   E extends readonly DomainEvent[],
-  C extends readonly Config[]
+  C extends readonly Config[],
 > extends BaseComponent {
   readonly events: E
   readonly config: C
@@ -20,8 +20,8 @@ export abstract class BaseEventHandler<
     props: EventHandlerProps<E, C>,
     readonly init: (
       config: ConfigRuntime<C>,
-      context: any
-    ) => (event: Shape.Value<E[number]>, context: any) => Promise<void>
+      context: any,
+    ) => (event: Shape.Value<E[number]>, context: any) => Promise<void>,
   ) {
     super(props)
     this.events = props.events
@@ -31,7 +31,7 @@ export abstract class BaseEventHandler<
 
 export class EventHandler<
   E extends readonly DomainEvent[] = DomainEvent[],
-  D extends readonly Config[] = Config[]
+  D extends readonly Config[] = Config[],
 > extends BaseEventHandler<E, D> {
   readonly kind: "EventHandler" = "EventHandler"
 }

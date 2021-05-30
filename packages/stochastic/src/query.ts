@@ -9,7 +9,7 @@ import { Init } from "./init"
 export interface QueryProps<
   Question extends Shape = Shape,
   Answer extends Shape = Shape,
-  ReadModels extends Record<string, ReadModel> = Record<string, ReadModel>
+  ReadModels extends Record<string, ReadModel> = Record<string, ReadModel>,
 > extends BaseComponentProps {
   readonly question: Question
   readonly answer: Answer
@@ -19,7 +19,7 @@ export interface QueryProps<
 export class Query<
   Question extends Shape = Shape,
   Answer extends Shape = Shape,
-  ReadModels extends Record<string, ReadModel> = Record<string, ReadModel>
+  ReadModels extends Record<string, ReadModel> = Record<string, ReadModel>,
 > extends BaseComponent {
   readonly kind: "Query" = "Query"
   readonly question: Question
@@ -27,7 +27,7 @@ export class Query<
   readonly readModels: ReadModels
   constructor(
     props: QueryProps<Question, Answer, ReadModels>,
-    readonly init: Query.Handler<Question, Answer, ReadModels>
+    readonly init: Query.Handler<Question, Answer, ReadModels>,
   ) {
     super(props)
     this.question = props.question
@@ -41,6 +41,6 @@ export namespace Query {
     models: {
       [m in keyof Models]: ReadModelInterface<Models[m]>
     },
-    context: any
+    context: any,
   ) => (request: Shape.Value<Request>, context: any) => Promise<Shape.Value<Results>>
 }

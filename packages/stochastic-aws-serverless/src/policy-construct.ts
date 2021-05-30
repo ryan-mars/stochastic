@@ -27,7 +27,7 @@ export interface PolicyConstructProps<P extends Policy = Policy>
 
 export class PolicyConstruct<
   S extends BoundedContext = BoundedContext,
-  C extends Policy = Policy
+  C extends Policy = Policy,
 > extends ComponentConstruct<S, C> {
   readonly handler: lambda.Function
   constructor(scope: BoundedContextConstruct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
@@ -39,12 +39,12 @@ export class PolicyConstruct<
       ...props,
       runtime: lambda.Runtime.NODEJS_14_X,
       environment: {
-        COMPONENT_NAME: this.name
+        COMPONENT_NAME: this.name,
       },
       bundling: {
         sourceMap: true,
-        metafile: true
-      }
+        metafile: true,
+      },
     })
 
     for (const command of Object.values(props.component.commands as Record<string, Command>)) {
@@ -53,7 +53,7 @@ export class PolicyConstruct<
 
       this.handler.addEnvironment(
         `${props.boundedContext.componentNames.get(command)!}_LAMBDA_ARN`,
-        commandConstruct?.handler.functionArn!
+        commandConstruct?.handler.functionArn!,
       )
       commandConstruct.handler.grantInvoke(this.handler)
     }
@@ -61,7 +61,7 @@ export class PolicyConstruct<
     new ReadModelBindings(this, "ReadModel", {
       context: scope,
       handler: this.handler,
-      readModels: props.component.reads
+      readModels: props.component.reads,
     })
 
     const queue = new sqs.Queue(this, `Queue`)
@@ -71,10 +71,10 @@ export class PolicyConstruct<
         rawMessageDelivery: true,
         filterPolicy: {
           event_type: sns.SubscriptionFilter.stringFilter({
-            whitelist: this.component.events.map(e => e.name)
-          })
-        }
-      })
+            whitelist: this.component.events.map(e => e.name),
+          }),
+        },
+      }),
     )
     scope.eventStore.table.grantWriteData(this.handler)
     /**

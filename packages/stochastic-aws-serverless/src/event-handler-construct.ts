@@ -25,13 +25,13 @@ export interface EventHandlerConstructProps<P extends EventHandler | ReadModel =
 
 export class EventHandlerConstruct<
   S extends BoundedContext = BoundedContext,
-  C extends EventHandler | ReadModel = EventHandler | ReadModel
+  C extends EventHandler | ReadModel = EventHandler | ReadModel,
 > extends ComponentConstruct<S, C> {
   readonly handler: lambda.Function
   constructor(
     scope: BoundedContextConstruct,
     id: string,
-    props: EventHandlerConstructProps<C> & ComponentConstructProps<S, C>
+    props: EventHandlerConstructProps<C> & ComponentConstructProps<S, C>,
   ) {
     super(scope, id, props)
 
@@ -41,18 +41,18 @@ export class EventHandlerConstruct<
       ...props,
       runtime: lambda.Runtime.NODEJS_14_X,
       environment: {
-        COMPONENT_NAME: this.name
+        COMPONENT_NAME: this.name,
       },
       bundling: {
         sourceMap: true,
-        metafile: true
-      }
+        metafile: true,
+      },
     })
 
     new ConfigBindings(this, "ConfigBindings", {
       context: scope,
       config: props.component.config,
-      handler: this.handler
+      handler: this.handler,
     })
 
     const queue = new sqs.Queue(this, `Queue`)
@@ -62,10 +62,10 @@ export class EventHandlerConstruct<
         rawMessageDelivery: true,
         filterPolicy: {
           event_type: sns.SubscriptionFilter.stringFilter({
-            whitelist: this.component.events.map(e => e.name)
-          })
-        }
-      })
+            whitelist: this.component.events.map(e => e.name),
+          }),
+        },
+      }),
     )
   }
 }

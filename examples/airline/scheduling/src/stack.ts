@@ -7,7 +7,7 @@ import {
   ScheduledFlightsRemoved,
   ScheduledFlightsUpdated,
   ScheduledRouteAdded,
-  scheduling
+  scheduling,
 } from "./service"
 
 export class SchedulingStack extends cdk.Stack {
@@ -23,8 +23,8 @@ export class SchedulingStack extends cdk.Stack {
         service: "events",
         resource: "event-bus",
         sep: "/",
-        resourceName: "default"
-      })
+        resourceName: "default",
+      }),
     )
 
     this.scheduling = new BoundedContextConstruct(this, "Scheduling", {
@@ -32,10 +32,10 @@ export class SchedulingStack extends cdk.Stack {
       emitEvents: [
         new EmitEventBridgeBinding({
           events: [ScheduledFlightsAdded, ScheduledFlightsRemoved, ScheduledRouteAdded],
-          eventBus
-        })
+          eventBus,
+        }),
       ],
-      config: {}
+      config: {},
     })
     // Destroy this table when the stack is destroyed since this is just an example app.
     this.scheduling.eventStore.table.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY)

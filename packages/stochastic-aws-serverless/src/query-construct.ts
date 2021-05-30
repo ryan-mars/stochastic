@@ -23,13 +23,13 @@ export interface QueryConstructProps<Q extends Query = Query>
 
 export class QueryConstruct<
   S extends BoundedContext = BoundedContext,
-  Q extends Query = Query
+  Q extends Query = Query,
 > extends ComponentConstruct<S, Q> {
   readonly handler: lambda.Function
   constructor(
     scope: BoundedContextConstruct,
     id: string,
-    props: QueryConstructProps<Q> & ComponentConstructProps<S, Q>
+    props: QueryConstructProps<Q> & ComponentConstructProps<S, Q>,
   ) {
     super(scope, id, props)
 
@@ -39,18 +39,18 @@ export class QueryConstruct<
       ...props,
       runtime: lambda.Runtime.NODEJS_14_X,
       environment: {
-        COMPONENT_NAME: this.name
+        COMPONENT_NAME: this.name,
       },
       bundling: {
         sourceMap: true,
-        metafile: true
-      }
+        metafile: true,
+      },
     })
 
     new ReadModelBindings(this, "ReadModelBindings", {
       context: scope,
       handler: this.handler,
-      readModels: props.component.readModels
+      readModels: props.component.readModels,
     })
   }
 }

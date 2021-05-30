@@ -3,7 +3,7 @@ import * as cdk from "@aws-cdk/core"
 import {
   BoundedContextConstruct,
   EmitEventBridgeBinding,
-  ReceiveEventBridgeEventBinding
+  ReceiveEventBridgeEventBinding,
 } from "stochastic-aws-serverless"
 import { FlightCancelled, operations } from "./service"
 import { scheduling, ScheduledFlightsAdded } from "scheduling"
@@ -22,8 +22,8 @@ export class OperationsStack extends cdk.Stack {
         service: "events",
         resource: "event-bus",
         sep: "/",
-        resourceName: "default"
-      })
+        resourceName: "default",
+      }),
     )
 
     this.operations = new BoundedContextConstruct(this, "OperationsBoundedContext", {
@@ -32,11 +32,11 @@ export class OperationsStack extends cdk.Stack {
         new ReceiveEventBridgeEventBinding({
           otherBoundedContext: scheduling,
           events: [ScheduledFlightsAdded],
-          eventBus
-        })
+          eventBus,
+        }),
       ],
       emitEvents: [new EmitEventBridgeBinding({ events: [FlightCancelled], eventBus })],
-      config: {}
+      config: {},
     })
     // Destroy this table when the stack is destroyed since this is just an example app.
     this.operations.eventStore.table.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY)

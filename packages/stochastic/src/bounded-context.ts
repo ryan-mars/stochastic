@@ -7,7 +7,7 @@ import { ReadModel } from "./read-model"
 export interface BoundedContextProps<
   Name extends string,
   Components extends BoundedContextComponents,
-  Emits extends CreatedEvents<Components>[]
+  Emits extends CreatedEvents<Components>[],
 > {
   name: Name
   components: Components
@@ -23,7 +23,7 @@ export interface BoundedContextComponents {
 export class BoundedContext<
   Name extends string = string,
   Components extends BoundedContextComponents = BoundedContextComponents,
-  Emits extends CreatedEvents<Components>[] = any
+  Emits extends CreatedEvents<Components>[] = any,
 > {
   readonly handler: string
   readonly name: Name

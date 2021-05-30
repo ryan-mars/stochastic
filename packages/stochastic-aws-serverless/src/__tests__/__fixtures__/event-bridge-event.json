@@ -11,12 +11,7 @@
     "payload": {
       "route": "SFO-MIA",
       "__typename": "ScheduledFlightsAdded",
-      "flights": [
-        1,
-        2,
-        3,
-        4
-      ]
+      "flights": [1, 2, 3, 4]
     },
     "sk": "EVENT#1skAZNDpE7WsoWNTCSvepXpafBF",
     "id": "1skAZNDpE7WsoWNTCSvepXpafBF",

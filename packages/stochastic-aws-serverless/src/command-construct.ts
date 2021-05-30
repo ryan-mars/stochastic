@@ -16,7 +16,7 @@ export interface CommandConstructProps<C extends Command = Command>
 
 export class CommandConstruct<
   S extends BoundedContext = BoundedContext,
-  C extends Command = Command
+  C extends Command = Command,
 > extends ComponentConstruct<S, C> {
   readonly handler: lambda.Function
   constructor(scope: BoundedContextConstruct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
@@ -30,12 +30,12 @@ export class CommandConstruct<
       environment: {
         COMPONENT_NAME: this.name,
         // TODO: use SSM instead of environment variables
-        EVENT_STORE_TABLE: scope.eventStore.table.tableName
+        EVENT_STORE_TABLE: scope.eventStore.table.tableName,
       },
       bundling: {
         sourceMap: true,
-        metafile: true
-      }
+        metafile: true,
+      },
     })
     scope.eventStore.table.grant(
       this.handler,
@@ -46,7 +46,7 @@ export class CommandConstruct<
       "dynamodb:GetRecords",
       "dynamodb:PutItem",
       "dynamodb:Query",
-      "dynamodb:Scan"
+      "dynamodb:Scan",
     )
   }
 }

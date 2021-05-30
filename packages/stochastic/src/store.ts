@@ -5,7 +5,7 @@ import { Shape } from "./shape"
 export interface StoreProps<
   T extends Shape = Shape,
   Key extends keyof Shape.Value<T> = any,
-  Events extends readonly DomainEvent[] = readonly DomainEvent[]
+  Events extends readonly DomainEvent[] = readonly DomainEvent[],
 > extends BaseComponentProps {
   readonly stateShape: T
   readonly stateKey: Key
@@ -17,7 +17,7 @@ export interface StoreProps<
 export class Store<
   T extends Shape = Shape,
   Key extends keyof Shape.Value<T> = any,
-  Events extends readonly DomainEvent[] = readonly DomainEvent[]
+  Events extends readonly DomainEvent[] = readonly DomainEvent[],
 > extends BaseComponent {
   readonly events: Events
   readonly kind: "Store" = "Store"
@@ -37,6 +37,6 @@ export class Store<
 
 export type StoreInterface<A extends Store> = {
   get: (
-    key: Shape.Value<A["stateShape"]>[A["stateKey"]]
+    key: Shape.Value<A["stateShape"]>[A["stateKey"]],
   ) => Promise<{ state: Shape.Value<A["stateShape"]>; events: DomainEventEnvelope<Shape.Value<A["events"][number]>>[] }>
 }

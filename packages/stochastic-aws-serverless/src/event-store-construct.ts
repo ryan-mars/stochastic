@@ -24,14 +24,14 @@ export class EventStore extends cdk.Construct {
     this.table = new dynamodb.Table(this, "Table", {
       partitionKey: {
         name: "pk",
-        type: dynamodb.AttributeType.STRING
+        type: dynamodb.AttributeType.STRING,
       },
       sortKey: {
         name: "sk",
-        type: dynamodb.AttributeType.STRING
+        type: dynamodb.AttributeType.STRING,
       },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-      stream: dynamodb.StreamViewType.NEW_IMAGE
+      stream: dynamodb.StreamViewType.NEW_IMAGE,
       // ...props.tableProps // TODO: Necessary?
     })
 
@@ -42,8 +42,8 @@ export class EventStore extends cdk.Construct {
       memorySize: 512,
       timeout: cdk.Duration.minutes(1),
       environment: {
-        EVENT_STREAM_TOPIC_ARN: topic.topicArn // TODO: Move to SSM
-      }
+        EVENT_STREAM_TOPIC_ARN: topic.topicArn, // TODO: Move to SSM
+      },
     })
     topic.grantPublish(forwarder)
     forwarder.addEventSource(
@@ -52,8 +52,8 @@ export class EventStore extends cdk.Construct {
         batchSize: 10,
         bisectBatchOnError: true,
         onFailure: new lambdaEventSources.SqsDlq(dlq),
-        retryAttempts: 10
-      })
+        retryAttempts: 10,
+      }),
     )
   }
 }

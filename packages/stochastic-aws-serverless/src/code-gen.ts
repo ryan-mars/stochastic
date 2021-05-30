@@ -5,7 +5,7 @@ import { Command, Component, EventHandler, Policy, Query, ReadModel } from "stoc
 export function generateHandler(
   componentName: string,
   component: Policy | Command | ReadModel | Query | EventHandler,
-  componentNames: Map<Component, string>
+  componentNames: Map<Component, string>,
 ): {
   entry: string
   handler: string
@@ -40,11 +40,11 @@ export const handler = async (event: any, context: any) => {
   }
   return _handler(event, context)
 }
-`
+`,
   )
   return {
     entry,
-    handler: "handler"
+    handler: "handler",
   }
 
   function requirePath(component: Policy | Command | ReadModel | Query | EventHandler): string {

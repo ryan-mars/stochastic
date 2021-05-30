@@ -9,7 +9,7 @@ export interface StoreConstructProps<S extends Store = Store> {}
  */
 export class StoreConstruct<
   B extends BoundedContext = BoundedContext,
-  S extends Store = Store
+  S extends Store = Store,
 > extends ComponentConstruct<B, S> {
   constructor(scope: BoundedContextConstruct, id: string, props: ComponentProps<S> & ComponentConstructProps<B, S>) {
     super(scope, id, props)

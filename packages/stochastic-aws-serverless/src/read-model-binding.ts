@@ -18,7 +18,7 @@ export class ReadModelBindings<ReadModels extends Record<string, ReadModel>> ext
       new ConfigBindings(this, key, {
         config: model.config,
         context: props.context,
-        handler: props.handler
+        handler: props.handler,
       })
     }
   }
