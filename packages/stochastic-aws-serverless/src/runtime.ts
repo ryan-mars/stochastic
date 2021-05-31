@@ -107,7 +107,7 @@ export class LambdaRuntime implements Runtime {
           if (log_level === "debug") {
             console.log(JSON.stringify({ event }, null, 2))
           }
-          Promise.all(event.Records.map(record => projection(JSON.parse(record.body), context)))
+          await Promise.all(event.Records.map(record => projection(JSON.parse(record.body), context)))
         }
       })
     } else if (component.kind === "Policy") {
@@ -117,7 +117,7 @@ export class LambdaRuntime implements Runtime {
         const policy = component.init(context)
 
         return async (event: SQSEvent, context: Context) => {
-          Promise.all(event.Records.map(record => policy(JSON.parse(record.body), commands, readModels, context)))
+          await Promise.all(event.Records.map(record => policy(JSON.parse(record.body), commands, readModels, context)))
         }
       })
     } else if (component.kind === "Query") {
