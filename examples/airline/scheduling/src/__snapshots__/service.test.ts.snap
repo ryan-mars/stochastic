@@ -4,6 +4,7 @@ exports[`Scheduling service adds a scheduled flight 1`] = `
 Array [
   ScheduledFlightsAdded {
     "__typename": "ScheduledFlightsAdded",
+    "destination": "MIA",
     "flights": Array [
       Object {
         "aircraft": "787-10",
@@ -22,6 +23,7 @@ Array [
         "seats": 318,
       },
     ],
+    "origin": "SFO",
     "route": "SFO-MIA",
   },
 ]

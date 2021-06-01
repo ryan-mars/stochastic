@@ -88,7 +88,7 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
     props: {
       boundedContext: Context
       components?: {
-        [name in keyof Context["components"]]?: ComponentProps<Context["components"][name]>
+        [name in keyof Context["components"]]?: Partial<ComponentProps<Context["components"][name]>>
       }
       emitEvents?: EmitEventBinding<Context["emits"][number]>[]
       receiveEvents?: RecieveEventBinding<ConsumedEvents<Context["components"]>>[]

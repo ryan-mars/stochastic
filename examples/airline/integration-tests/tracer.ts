@@ -16,6 +16,8 @@ const lambda = new LambdaClient({})
 
   const addFlights = new AddFlights({
     route: "SFO-MIA",
+    origin: "SFO",
+    destination: "MIA",
     flights: [
       {
         day: "2021-06-11",

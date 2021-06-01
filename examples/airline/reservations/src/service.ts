@@ -1,28 +1,18 @@
-import { Store, BoundedContext, Command, Config, DomainEvent, Policy, ReadModel, Shape, TableConfig } from "stochastic"
-import { array, number, object, string, assert, create, is, Infer } from "superstruct"
-import { FlightCancelled } from "operations"
-
 import {
-  BatchWriteItemInput,
   DynamoDBClient,
-  GetItemCommand,
   PutItemCommand,
   PutItemCommandInput,
-  PutRequest,
   QueryCommand,
   QueryCommandInput,
   UpdateItemCommand,
   UpdateItemCommandInput,
 } from "@aws-sdk/client-dynamodb"
-import { AttributePath, FunctionExpression, UpdateExpression } from "@aws/dynamodb-expressions"
-import {
-  ScheduledFlightsRemoved,
-  ScheduledFlightsAdded,
-  ScheduledRouteAdded,
-  ScheduledFlightsUpdated,
-} from "scheduling"
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb"
+import { FlightCancelled } from "operations"
 import { Temporal } from "proposal-temporal"
+import { ScheduledFlightsAdded, ScheduledFlightsRemoved, AirportTZ, AirportCode } from "scheduling"
+import { BoundedContext, Command, Config, DomainEvent, Policy, ReadModel, Shape, Store, TableConfig } from "stochastic"
+import { array, create, number, object, string } from "superstruct"
 
 const reservationShape = {
   reservationNo: string(),
@@ -160,13 +150,6 @@ export const modifyReservationFlights = new Command(
 
 const singleTableConfig = new Config("SingleTable", TableConfig)
 
-const Item = {
-  pk: "ROUTE#SFO-MIA",
-  sk: "DEPARTURE#2021-05-27T07:10:09",
-  flight_no: "103",
-  seats_avail: "118",
-}
-
 class FlightOption extends Shape("FlightOption", {
   flightNo: string(),
   route: string(),
@@ -181,9 +164,9 @@ class FlightOption extends Shape("FlightOption", {
 export const rebookingOptionsReadModel = new ReadModel({
   __filename,
   events: [
-    ScheduledFlightsAdded,
+    ScheduledFlightsAdded, // TODO: Handle reservation cancelled/udpated, flights updated, etc...
     ScheduledFlightsRemoved,
-    //    ScheduledFlightsUpdated,
+    // ScheduledFlightsUpdated,
     ReservationBooked,
     ReservationFlightChanged,
   ],
@@ -192,39 +175,67 @@ export const rebookingOptionsReadModel = new ReadModel({
    * Projection function that stores events to prepare the read model.
    *
    * pk: ROUTE#<route>#DATE#<YYYY-MM-DD>
-   * sk: DEPARTURE#<departureTime>
+   * sk: FLIGHT
+   * gsi1pk: ROUTE#<route>
+   * gsi1sk: DEPARTURE#<departure time>
    */
   projection: config => {
     console.log(JSON.stringify({ config }, null, 2))
-    const dynamodb = new DynamoDBClient({})
+
     return async event => {
+      const dynamodb = new DynamoDBClient({})
+      console.log(JSON.stringify({ message: "###############################" }, null, 2))
       console.log(JSON.stringify({ event }, null, 2))
       // TODO: Handle out of order events
       switch (event.payload.__typename) {
         case "ScheduledFlightsAdded":
           const { route } = event.payload
 
-          const flightsToAdd: PutItemCommandInput[] = event.payload.flights.map(flight => ({
-            TableName: config.SingleTable.tableName,
-            Item: marshall({
-              pk: `FLIGHT#${flight.flightNo}#DATE#${flight.day}`,
-              sk: `FLIGHT`,
-              gsi1pk: `ROUTE#${route}`,
-              gsi1sk: `DEPARTURE#${flight.departureTime}`,
-              ...new FlightOption({ route, ...flight, seatsBooked: 0 }),
-            }),
-            ConditionExpression: `attribute_not_exists(pk)`,
-          }))
+          await Promise.all(
+            event.payload.flights
+              .map<PutItemCommandInput>(flight => ({
+                TableName: config.SingleTable.tableName,
+                Item: marshall({
+                  pk: `FLIGHT#${flight.flightNo}#DATE#${flight.day}`,
+                  sk: `FLIGHT`,
+                  gsi1pk: `ROUTE#${route}`,
+                  gsi1sk: `DEPARTURE#${flight.departureTime}`,
+                  ...new FlightOption({ route, ...flight, seatsBooked: 0 }),
+                }),
+              }))
+              .map(p => new PutItemCommand(p))
+              .map(c => dynamodb.send(c)),
+          )
 
-          await Promise.all(flightsToAdd.map(u => new PutItemCommand(u)).map(c => dynamodb.send(c)))
           break
         case "ScheduledFlightsRemoved":
-          throw new Error(`${event.payload.__typename} Not implemented yet`)
+          await Promise.all(
+            event.payload.flights
+              .map<UpdateItemCommandInput>(flight => ({
+                TableName: config.SingleTable.tableName,
+                Key: marshall({ pk: `FLIGHT#${flight.flightNo}#DATE#${flight.day}`, sk: `FLIGHT` }),
+                UpdateExpression: "SET removed = :bool",
+                ExpressionAttributeValues: marshall({ ":removed": true }),
+              }))
+              .map(u => new UpdateItemCommand(u))
+              .map(c => dynamodb.send(c)),
+          )
           break
         // case "ScheduledFlightsUpdated":
         //   throw new Error(`${event.payload.__typename} Not implemented yet`)
         //   break
         case "ReservationBooked":
+          await Promise.all(
+            event.payload.flights
+              .map<UpdateItemCommandInput>(flight => ({
+                TableName: config.SingleTable.tableName,
+                Key: marshall({ pk: `FLIGHT#${flight.flightNo}#DATE#${flight.day}`, sk: `FLIGHT` }),
+                UpdateExpression: "SET seatsBooked = seatsBooked + :seatsBooked",
+                ExpressionAttributeValues: marshall({ ":seatsBooked": 1 }),
+              }))
+              .map(u => new UpdateItemCommand(u))
+              .map(c => dynamodb.send(c)),
+          )
           break
         default:
           break
@@ -233,18 +244,25 @@ export const rebookingOptionsReadModel = new ReadModel({
   },
   client: config => {
     const dynamodb = new DynamoDBClient({})
-    return async (props: { route: string; departingFrom: string; departingTo: string }) => {
+    return async (props: {
+      route: string
+      departingFromLocalTime: Temporal.ZonedDateTime
+      departingTillLocalTime: Temporal.ZonedDateTime
+    }) => {
       const queryCommandInput: QueryCommandInput = {
         TableName: config.SingleTable.tableName,
         IndexName: "gsi1",
-        KeyConditionExpression: "gsi1pk = :pk AND gsi1sk BETWEEN :from AND :to",
+        KeyConditionExpression: "gsi1pk = :pk AND gsi1sk BETWEEN :till AND :from",
         ExpressionAttributeValues: {
+          // TODO: Fix time format
           ":pk": { S: `ROUTE#${props.route}` },
-          ":from": { S: `DEPARTURE#${props.departingFrom}` },
-          ":to": { S: `DEPARTURE#${props.departingTo}` },
+          ":till": { S: `DEPARTURE#${props.departingTillLocalTime.toInstant().toString()}` },
+          ":from": { S: `DEPARTURE#${props.departingFromLocalTime.toInstant().toString()}` },
         },
       }
+      console.log(JSON.stringify({ queryCommandInput }, null, 2))
       const output = await dynamodb.send(new QueryCommand(queryCommandInput))
+      console.log(JSON.stringify({ output }, null, 2))
       if (output.Items) {
         return create(
           output.Items.map(i => unmarshall(i)),
@@ -272,7 +290,7 @@ class Passenger extends Shape("Passenger", {
 
 export const passengersByFlightReadModel = new ReadModel({
   __filename,
-  events: [ReservationBooked],
+  events: [ReservationBooked], // TODO: Handle reservation updated/cancelled
   config: [singleTableConfig],
   /**
    * Projection function that stores events to prepare the read model.
@@ -300,10 +318,11 @@ export const passengersByFlightReadModel = new ReadModel({
               reservationNo: event.payload.reservationNo,
               route: `${flight.origin}-${flight.destination}`,
             }),
+            { convertClassInstanceToMap: true },
           ),
         },
       }))
-      Promise.all(resFlights.map(i => new PutItemCommand(i)).map(c => ddb.send(c)))
+      await Promise.all(resFlights.map(i => new PutItemCommand(i)).map(c => ddb.send(c)))
     }
   },
   /**
@@ -362,12 +381,13 @@ export const rebookingPolicy = new Policy(
       }
 
       console.log(JSON.stringify({ passengers }, null, 2))
+      const origin = event.origin as keyof typeof AirportCode
 
       // get rebooking options for the next 48 hours departing no less than 30 minutes from now
       const options = await rebookingOptionsReadModel({
         route: event.route,
-        departingFrom: Temporal.now.instant().add({ minutes: 30 }).toString(),
-        departingTo: Temporal.now.instant().add({ hours: 48 }).toString(),
+        departingFromLocalTime: Temporal.now.zonedDateTimeISO(AirportTZ[origin]).add({ minutes: 30 }),
+        departingTillLocalTime: Temporal.now.zonedDateTimeISO(AirportTZ[origin]).add({ hours: 48 }),
       })
 
       console.log(JSON.stringify({ options }, null, 2))

@@ -1,10 +1,21 @@
 import { BoundedContext, Command, DomainEvent, Shape, Store } from "stochastic"
 import { array, number, object, string } from "superstruct"
+import { Temporal } from "proposal-temporal"
 
 export class AddRoute extends Shape("AddRoute", { route: string() }) {}
 export class ScheduledRouteAdded extends DomainEvent("ScheduledRouteAdded", "route", {
   route: string(),
 }) {}
+
+export const AirportCode = {
+  SFO: "SFO",
+  MIA: "MIA",
+} as const
+
+export const AirportTZ = {
+  SFO: Temporal.TimeZone.from("America/Los_Angeles"),
+  MIA: Temporal.TimeZone.from("America/New_York"),
+} as const
 
 const flightMeta = {
   day: string(),
@@ -20,6 +31,8 @@ const flightDetail = {
 }
 export class AddFlights extends Shape("AddFlights", {
   route: string(),
+  origin: string(),
+  destination: string(),
   flights: array(object(flightDetail)),
 }) {}
 export class ScheduledFlightsAdded extends DomainEvent("ScheduledFlightsAdded", "route", {

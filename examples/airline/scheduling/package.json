@@ -16,6 +16,7 @@
     "@aws-cdk/aws-events": "^1.105.0",
     "@aws-cdk/core": "^1.105.0",
     "aws-cdk": "^1.105.0",
+    "proposal-temporal": "^0.8.0",
     "stochastic": "^0.1.0",
     "stochastic-aws-serverless": "^0.1.0",
     "superstruct": "0.14.2",

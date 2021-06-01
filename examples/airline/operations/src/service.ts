@@ -1,6 +1,7 @@
 import { Store, BoundedContext, Command, DomainEvent, Policy, Shape } from "stochastic"
 import { ScheduledFlightsAdded } from "scheduling"
 import { string } from "superstruct"
+import { Temporal } from "proposal-temporal"
 
 const flightScheduleDetail = {
   flightNo: string(),
@@ -19,6 +20,9 @@ export class FlightCancelled extends DomainEvent("FlightCancelled", "flightNo", 
   flightNo: string(),
   day: string(),
   route: string(),
+  origin: string(),
+  destination: string(),
+  cancelledAt: string(),
 }) {}
 
 export class OperatedFlight extends Shape("OperatedFlight", {
@@ -68,6 +72,8 @@ export class CancelFlightIntent extends Shape("CancelFlightIntent", {
   flightNo: string(),
   day: string(),
   route: string(),
+  origin: string(),
+  destination: string(),
 }) {}
 
 export const CancelFlight = new Command(
@@ -79,7 +85,7 @@ export const CancelFlight = new Command(
     events: [FlightCancelled],
   },
   context => async (command, store) => {
-    return [new FlightCancelled(command)]
+    return [new FlightCancelled({ ...command, cancelledAt: Temporal.now.plainDateTimeISO("UTC").toString() })]
   },
 )
 

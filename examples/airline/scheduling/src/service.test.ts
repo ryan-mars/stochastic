@@ -104,29 +104,29 @@ describe("Scheduling service", () => {
   it("adds a scheduled flight", async () => {
     const command = AddFlightsCommand.init({})
     const event = await command(
-      new AddFlights(
-        new ScheduledFlightsAdded({
-          route: "SFO-MIA",
-          flights: [
-            {
-              day: "2021-06-11",
-              flightNo: "PA576",
-              arrivalTime: "928p",
-              departureTime: "1210p",
-              aircraft: "787-10",
-              seats: 318,
-            },
-            {
-              day: "2021-06-11",
-              flightNo: "PA872",
-              arrivalTime: "502p",
-              departureTime: "700a",
-              aircraft: "787-10",
-              seats: 318,
-            },
-          ],
-        }),
-      ),
+      new AddFlights({
+        route: "SFO-MIA",
+        origin: "SFO",
+        destination: "MIA",
+        flights: [
+          {
+            day: "2021-06-11",
+            flightNo: "PA576",
+            arrivalTime: "928p",
+            departureTime: "1210p",
+            aircraft: "787-10",
+            seats: 318,
+          },
+          {
+            day: "2021-06-11",
+            flightNo: "PA872",
+            arrivalTime: "502p",
+            departureTime: "700a",
+            aircraft: "787-10",
+            seats: 318,
+          },
+        ],
+      }),
       {
         get: async (key: string) => ({
           state: new RouteSchedule({

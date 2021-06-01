@@ -10,6 +10,7 @@ import {
   DynamoDBConfigBinding,
 } from "stochastic-aws-serverless"
 import { ScheduledFlightsAdded, ScheduledFlightsRemoved, ScheduledRouteAdded, scheduling } from "scheduling"
+import { Duration } from "@aws-cdk/core"
 
 export class ReservationStack extends cdk.Stack {
   readonly operations: BoundedContextConstruct<typeof operations>
@@ -38,6 +39,7 @@ export class ReservationStack extends cdk.Stack {
         name: "sk",
         type: ddb.AttributeType.STRING,
       },
+      billingMode: ddb.BillingMode.PAY_PER_REQUEST,
     })
     table.addGlobalSecondaryIndex({
       indexName: "gsi1",
@@ -53,6 +55,20 @@ export class ReservationStack extends cdk.Stack {
 
     this.reservations = new BoundedContextConstruct(this, "BoundedContext", {
       boundedContext: reservations,
+      components: {
+        rebookingOptionsReadModel: {
+          timeout: Duration.seconds(30),
+          environment: {
+            LOG_LEVEL: "debug",
+          },
+        },
+        rebookingPolicy: {
+          timeout: Duration.seconds(30),
+          environment: {
+            LOG_LEVEL: "debug",
+          },
+        },
+      },
       receiveEvents: [
         new ReceiveEventBridgeEventBinding({
           otherBoundedContext: scheduling,
@@ -70,8 +86,12 @@ export class ReservationStack extends cdk.Stack {
       },
     })
 
-    // Destroy this table when the stack is destroyed since this is just an example app.
+    // TODO Fix types so you can access resources on the node
+    // this.reservations.components.rebookingPolicy.node
+
+    // Clean up when the stack is deleted since this is just an example app.
     this.reservations.eventStore.table.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY)
+    table.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY)
   }
 }
 

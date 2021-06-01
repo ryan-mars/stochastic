@@ -23,7 +23,7 @@ export interface PolicyConstructProps {
  * object which contains a reference to its path.
  */
 export interface PolicyConstructProps<P extends Policy = Policy>
-  extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {}
+  extends Omit<nodeLambda.NodejsFunctionProps, "code" | "runtime" | "handler"> {}
 
 export class PolicyConstruct<
   S extends BoundedContext = BoundedContext,
@@ -40,10 +40,12 @@ export class PolicyConstruct<
       runtime: lambda.Runtime.NODEJS_14_X,
       environment: {
         COMPONENT_NAME: this.name,
+        ...props.environment,
       },
       bundling: {
         sourceMap: true,
         metafile: true,
+        ...props.bundling,
       },
     })
 
