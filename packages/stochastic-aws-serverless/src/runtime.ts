@@ -27,7 +27,7 @@ export class LambdaRuntime implements Runtime {
     options?: RuntimeOptions,
   ) {
     this.lambda = new LambdaClient({ credentials: options?.credentials })
-
+    const log_level = (process.env["LOG_LEVEL"] ?? "info").toLowerCase()
     const handlerName = process.env.COMPONENT_NAME
     if (handlerName === undefined) {
       throw new Error(`environment variable not set: 'COMPONENT_NAME'`)
@@ -53,7 +53,6 @@ export class LambdaRuntime implements Runtime {
       const source = component.store.stateShape.name
 
       this.handler = memoize(context => {
-        const log_level = (process.env["LOG_LEVEL"] ?? "info").toLowerCase()
         const command = component.init(context)
 
         return async event => {
@@ -103,7 +102,6 @@ export class LambdaRuntime implements Runtime {
       this.handler = memoize(context => {
         const projection = component.init(getConfiguration(component.config) as any, context)
         return async (event: SQSEvent, context: Context) => {
-          const log_level = (process.env["LOG_LEVEL"] ?? "info").toLowerCase()
           if (log_level === "debug") {
             console.log(JSON.stringify({ event }, null, 2))
           }
@@ -117,6 +115,9 @@ export class LambdaRuntime implements Runtime {
         const policy = component.init(context)
 
         return async (event: SQSEvent, context: Context) => {
+          if (log_level === "debug") {
+            console.log(JSON.stringify({ event }, null, 2))
+          }
           await Promise.all(event.Records.map(record => policy(JSON.parse(record.body), commands, readModels, context)))
         }
       })

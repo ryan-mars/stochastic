@@ -1,0 +1,28 @@
+{
+  "Records": [
+    {
+      "messageId": "aa8d7c96-4518-46bb-bc9d-b8d28e0fc555",
+      "receiptHandle": "AQEB+MNpQlZ+flh+Wtp9SAtldGRNV7oucFLXsIDSd1uTJp+yn+Yi98CCriUObZf0Mj5PUTSqAPsW0Sxyd/dI0blxCiGVrpNJxwIGu/ZNp5uyAORjI/FULypw/tHM23IDd/GFMVNYzWI9z78tOMyE8+6+BwwyB0scbws63VvRjb/f0K21yhwCnXqqNcp5NsVAWOPL4IKV+3ANkU/h5A9pus3aPe/qcEg7nDE9AFlltYAibe80IElkY1NpksM+6NL0cLbf3A875HqkEoMWxzA8lBY3t+2ybNVwbYvWglaYf/bOJoFP1gn+aoVM4DEK1w/Evl8nlimJr1uW0TI/kVayignfZTxfM0alMPQ4dOG1BOahss1KJBAkAMQHV9k/R3hR6AwqTtiOzDFVEaDCCG/Lnytl0vXBcvolGZdAUjw5QdTyejt5veIyrzbW9CExQtLLlswu7rihjce1CPyiITVu1ihK1A==",
+      "body": "{\"payload\":{\"flightNo\":\"576\",\"route\":\"SFO-MIA\",\"__typename\":\"FlightCancelled\",\"origin\":\"SFO\",\"cancelledAt\":\"2021-06-11T14:01:00Z\",\"destination\":\"MIA\",\"day\":\"2021-06-11\"},\"sk\":\"EVENT#1tRzX8vwhtQmzs5TSiKEjyHGX18\",\"id\":\"1tRzX8vwhtQmzs5TSiKEjyHGX18\",\"pk\":\"OperatedFlight#576\",\"source\":\"OperatedFlight\",\"source_id\":\"576\",\"time\":\"2021-06-03T18:58:46.509Z\",\"type\":\"FlightCancelled\",\"SequenceNumber\":\"22546900000000010409684634\",\"event-bridge-envelope\":{\"version\":\"0\",\"id\":\"1ed5ab2c-6d0a-855c-3419-30b248e2cc84\",\"detail-type\":\"FlightCancelled\",\"source\":\"Operations\",\"account\":\"611181767269\",\"time\":\"2021-06-03T18:58:49Z\",\"region\":\"us-east-2\",\"resources\":[]}}",
+      "attributes": {
+        "ApproximateReceiveCount": "28",
+        "SentTimestamp": "1622746730762",
+        "SenderId": "AIDAJQR6QDGQ7PATMSYEY",
+        "ApproximateFirstReceiveTimestamp": "1622746730762"
+      },
+      "messageAttributes": {
+        "event_type": {
+          "stringValue": "FlightCancelled",
+          "stringListValues": [],
+          "binaryListValues": [],
+          "dataType": "String"
+        }
+      },
+      "md5OfMessageAttributes": "7cef5efed6281c6318f7f418a12a3f03",
+      "md5OfBody": "59a7151d3b39c5861cfbafc9bb6a4b24",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-2:611181767269:Reservations-BoundedContextrebookingPolicyQueue5AF32FDC-Y6LPWMHG4N1O",
+      "awsRegion": "us-east-2"
+    }
+  ]
+}

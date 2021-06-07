@@ -10,7 +10,7 @@ import {
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb"
 import { FlightCancelled } from "operations"
 import { Temporal } from "proposal-temporal"
-import { ScheduledFlightsAdded, ScheduledFlightsRemoved, AirportTZ, AirportCode } from "scheduling"
+import { ScheduledFlightsAdded, ScheduledFlightsRemoved } from "scheduling"
 import { BoundedContext, Command, Config, DomainEvent, Policy, ReadModel, Shape, Store, TableConfig } from "stochastic"
 import { array, create, number, object, string } from "superstruct"
 
@@ -184,7 +184,7 @@ export const rebookingOptionsReadModel = new ReadModel({
 
     return async event => {
       const dynamodb = new DynamoDBClient({})
-      console.log(JSON.stringify({ message: "###############################" }, null, 2))
+      console.log(JSON.stringify({ eventType: event.type }, null, 2))
       console.log(JSON.stringify({ event }, null, 2))
       // TODO: Handle out of order events
       switch (event.payload.__typename) {
@@ -193,16 +193,21 @@ export const rebookingOptionsReadModel = new ReadModel({
 
           await Promise.all(
             event.payload.flights
-              .map<PutItemCommandInput>(flight => ({
-                TableName: config.SingleTable.tableName,
-                Item: marshall({
-                  pk: `FLIGHT#${flight.flightNo}#DATE#${flight.day}`,
-                  sk: `FLIGHT`,
-                  gsi1pk: `ROUTE#${route}`,
-                  gsi1sk: `DEPARTURE#${flight.departureTime}`,
-                  ...new FlightOption({ route, ...flight, seatsBooked: 0 }),
-                }),
-              }))
+              .map<PutItemCommandInput>(flight => {
+                console.log(JSON.stringify({ flight }, null, 2))
+                const putItemCommandInput = {
+                  TableName: config.SingleTable.tableName,
+                  Item: marshall({
+                    pk: `FLIGHT#${flight.flightNo}#DATE#${flight.day}`,
+                    sk: `FLIGHT`,
+                    gsi1pk: `ROUTE#${route}`,
+                    gsi1sk: `DEPARTURE#${flight.departureTime}`,
+                    ...new FlightOption({ route, ...flight, seatsBooked: 0 }),
+                  }),
+                }
+                console.log(JSON.stringify({ putItemCommandInput }, null, 2))
+                return putItemCommandInput
+              })
               .map(p => new PutItemCommand(p))
               .map(c => dynamodb.send(c)),
           )
@@ -230,7 +235,7 @@ export const rebookingOptionsReadModel = new ReadModel({
               .map<UpdateItemCommandInput>(flight => ({
                 TableName: config.SingleTable.tableName,
                 Key: marshall({ pk: `FLIGHT#${flight.flightNo}#DATE#${flight.day}`, sk: `FLIGHT` }),
-                UpdateExpression: "SET seatsBooked = seatsBooked + :seatsBooked",
+                UpdateExpression: "ADD seatsBooked :seatsBooked",
                 ExpressionAttributeValues: marshall({ ":seatsBooked": 1 }),
               }))
               .map(u => new UpdateItemCommand(u))
@@ -246,18 +251,18 @@ export const rebookingOptionsReadModel = new ReadModel({
     const dynamodb = new DynamoDBClient({})
     return async (props: {
       route: string
-      departingFromLocalTime: Temporal.ZonedDateTime
-      departingTillLocalTime: Temporal.ZonedDateTime
+      departingFromLocalTime: Temporal.Instant
+      departingTillLocalTime: Temporal.Instant
     }) => {
       const queryCommandInput: QueryCommandInput = {
         TableName: config.SingleTable.tableName,
         IndexName: "gsi1",
-        KeyConditionExpression: "gsi1pk = :pk AND gsi1sk BETWEEN :till AND :from",
+        KeyConditionExpression: "gsi1pk = :pk AND gsi1sk BETWEEN :from AND :till",
         ExpressionAttributeValues: {
           // TODO: Fix time format
           ":pk": { S: `ROUTE#${props.route}` },
-          ":till": { S: `DEPARTURE#${props.departingTillLocalTime.toInstant().toString()}` },
-          ":from": { S: `DEPARTURE#${props.departingFromLocalTime.toInstant().toString()}` },
+          ":till": { S: `DEPARTURE#${props.departingTillLocalTime.toString()}` },
+          ":from": { S: `DEPARTURE#${props.departingFromLocalTime.toString()}` },
         },
       }
       console.log(JSON.stringify({ queryCommandInput }, null, 2))
@@ -373,33 +378,33 @@ export const rebookingPolicy = new Policy(
       { passengersByFlightReadModel, rebookingOptionsReadModel },
       context,
     ) => {
-      const { flightNo, day } = event
+      // TODO: NEXT fix types change to event envelope
+      const { flightNo, day, route, cancelledAt } = event.payload
       // get the passengers for this flight (reservations read model)
-      const passengers = await passengersByFlightReadModel(event.flightNo, event.day)
-      if (!passengers) {
+      const passengers = await passengersByFlightReadModel(flightNo, day)
+      if (!passengers || passengers.length === 0) {
         throw new Error(`No passengers found for flightNo: ${flightNo} day: ${day}`)
       }
 
       console.log(JSON.stringify({ passengers }, null, 2))
-      const origin = event.origin as keyof typeof AirportCode
 
-      // get rebooking options for the next 48 hours departing no less than 30 minutes from now
+      // get rebooking options for the next 48 hours departing no less than 30 minutes from cancellation
       const options = await rebookingOptionsReadModel({
-        route: event.route,
-        departingFromLocalTime: Temporal.now.zonedDateTimeISO(AirportTZ[origin]).add({ minutes: 30 }),
-        departingTillLocalTime: Temporal.now.zonedDateTimeISO(AirportTZ[origin]).add({ hours: 48 }),
+        route: route,
+        departingFromLocalTime: Temporal.Instant.from(cancelledAt).add({ minutes: 30 }),
+        departingTillLocalTime: Temporal.Instant.from(cancelledAt).add({ hours: 48 }),
       })
 
       console.log(JSON.stringify({ options }, null, 2))
 
       // TODO: Change reservation to the next available flight
       // TODO: Handle failures gracefully
-      await modifyReservationFlights(
-        new ModifyReservationFlightsIntent({
-          flights: [],
-          reservationNo: "",
-        }),
-      )
+      // await modifyReservationFlights(
+      //   new ModifyReservationFlightsIntent({
+      //     flights: [],
+      //     reservationNo: "",
+      //   }),
+      // )
     }
   },
 )

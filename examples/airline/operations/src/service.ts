@@ -74,6 +74,7 @@ export class CancelFlightIntent extends Shape("CancelFlightIntent", {
   route: string(),
   origin: string(),
   destination: string(),
+  cancelledAt: string(),
 }) {}
 
 export const CancelFlight = new Command(
@@ -85,7 +86,7 @@ export const CancelFlight = new Command(
     events: [FlightCancelled],
   },
   context => async (command, store) => {
-    return [new FlightCancelled({ ...command, cancelledAt: Temporal.now.plainDateTimeISO("UTC").toString() })]
+    return [new FlightCancelled({ ...command })]
   },
 )
 

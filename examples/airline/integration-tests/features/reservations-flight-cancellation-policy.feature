@@ -11,7 +11,7 @@ Feature: Reservations Flight Cancellation Policy
     Rule: Passengers on cancelled flights should be rebooked evenly on the earliest available flight(s)
         Example: No flights left today, two tomorrow morning same time
             Given the flights have 200 passengers each
-             When flight "576" "SFO-MIA" is cancelled on "2021-06-11"
+             When flight "576" on "2021-06-11" from "SFO" to "MIA" is cancelled at "1250" local time
              Then the passengers should be rebooked accordingly:
                   | Date       | Flight No. | Passengers |
                   | 2021-06-12 | 872        | 259        |

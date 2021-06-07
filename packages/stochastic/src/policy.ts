@@ -1,6 +1,6 @@
 import { Command } from "./command"
 import { BaseComponent, BaseComponentProps } from "./component"
-import { DomainEvent } from "./event"
+import { DomainEvent, DomainEventEnvelope } from "./event"
 import { Init } from "./init"
 import { ReadModel, ReadModelInterface } from "./read-model"
 import { Shape } from "./shape"
@@ -43,7 +43,7 @@ export namespace Policy {
     C extends Record<string, Command>,
     R extends Record<string, ReadModel>,
   > = (
-    event: Shape.Value<E[number]>,
+    event: DomainEventEnvelope<Shape.Value<E[number]>>,
     commands: {
       [i in keyof C]: C[i] extends Command
         ? (

@@ -1,0 +1,28 @@
+{
+  "Records": [
+    {
+      "messageId": "6bc81dfa-5567-4dd0-85b1-726624ad302f",
+      "receiptHandle": "AQEBmMlyKbP1ROGK9toqhiSJnfCoN9tVCehIZXckH9DQNaBpNv9HcQZFq7ICnWRKj+TtuVFR37RjcA4P7AgJDI1Jxi32MEyun0qViLfTQwdfYkM91kl9xiZfiPD5hBl+R3Z+TcZWg1jE1hxaaq9YL+DW/pyadtNvlU4hK4ZELtQBEXvycXpF19Najgni6GkH4GeOesicbru4IMjxto9wRmdT2Tcb8jlxp0ct5DjSPqhuMR23AJBy4SZO8AwJHVWtW0hr9Ex1Q0VR5ju7BDhlIjUyXoNIUqz5D6Og2TrD6uD6bZ7fX6949X3f6/G9itwgqoi4Bvji2PwpdPZhvA52NKSf/XGIxS2uJDFqWb3yRh3I7IN3QTziP50JJLEHCrtgGwdfYV4/HGZEAL8RLjdW2cDPeOFAahqtjgiVRHdHpmjvnt+3BW3X8ysgdPDkppXq1lsGfJmHKncJKTJKjDcPf8S6nQWJCBJYDddL2PbR3+vvvwI=",
+      "body": "{\"payload\":{\"route\":\"SFO-MIA\",\"__typename\":\"ScheduledFlightsAdded\",\"flights\":[{\"departureTime\":\"07:00:00\",\"flightNo\":\"738\",\"arrivalTime\":\"17:13:00\",\"aircraft\":\"787-10\",\"day\":\"2021-06-11\",\"seats\":318},{\"departureTime\":\"07:00:00\",\"flightNo\":\"738\",\"arrivalTime\":\"17:13:00\",\"aircraft\":\"787-10\",\"day\":\"2021-06-12\",\"seats\":318}]},\"sk\":\"EVENT#1tEJ5ckPAk63u4eX5iZrcTHJltK\",\"id\":\"1tEJ5ckPAk63u4eX5iZrcTHJltK\",\"pk\":\"RouteSchedule#SFO-MIA\",\"source\":\"RouteSchedule\",\"source_id\":\"SFO-MIA\",\"time\":\"2021-05-29T22:42:12.169Z\",\"type\":\"ScheduledFlightsAdded\",\"SequenceNumber\":\"1500000000009302054138\",\"event-bridge-envelope\":{\"version\":\"0\",\"id\":\"14fec6c5-8292-7fcc-02cc-73537219b567\",\"detail-type\":\"ScheduledFlightsAdded\",\"source\":\"Scheduling\",\"account\":\"611181767269\",\"time\":\"2021-05-29T22:42:14Z\",\"region\":\"us-east-2\",\"resources\":[]}}",
+      "attributes": {
+        "ApproximateReceiveCount": "595",
+        "SentTimestamp": "1622328135796",
+        "SenderId": "AIDAJQR6QDGQ7PATMSYEY",
+        "ApproximateFirstReceiveTimestamp": "1622328135796"
+      },
+      "messageAttributes": {
+        "event_type": {
+          "stringValue": "ScheduledFlightsAdded",
+          "stringListValues": [],
+          "binaryListValues": [],
+          "dataType": "String"
+        }
+      },
+      "md5OfMessageAttributes": "371a47d10a60d6569acc35bda7ee910f",
+      "md5OfBody": "11ec28eed0b64e888281d334b5450682",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-2:611181767269:Reservations-BoundedContextrebookingOptionsReadModelQueueE6D95019-X9OA40VWJWT4",
+      "awsRegion": "us-east-2"
+    }
+  ]
+}
