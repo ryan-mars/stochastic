@@ -51,7 +51,7 @@ Given(
       console.error(error)
       throw new Error(error)
     }
-    await wait(10_000)
+    await wait(1_000)
     const addFlightsToRoute = (this.addFlightsToRoute = schedule.hashes().map(row => {
       if (row.Frequency !== "Daily") {
         throw 'Only written for "Daily" at the moment'
@@ -71,14 +71,13 @@ Given(
             day: Temporal.PlainDate.from(day).toString(),
             flightNo: row["Flight No."],
             aircraft: row.Aircraft,
-            seats: 318,
+            seats: parseInt(row["Seats"]),
           }
         }),
       })
     }))
-    await wait(10_000)
     try {
-      await Promise.all(addFlightsToRoute.map(routeFlights => invoke(commands.AddFlights, addFlightsToRoute)))
+      await Promise.all(addFlightsToRoute.map(c => invoke(commands.AddFlights, c)))
     } catch (error) {
       console.error(error)
       throw new Error(error)

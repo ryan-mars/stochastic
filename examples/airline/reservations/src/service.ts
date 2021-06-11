@@ -160,7 +160,6 @@ class FlightOption extends Shape("FlightOption", {
   seats: number(),
 }) {}
 
-// TODO: NEXT FINISH THIS SIMPLE IMPLEMENTATION THEN REFACTOR TO ONE-TABLE
 export const rebookingOptionsReadModel = new ReadModel({
   __filename,
   events: [
@@ -259,7 +258,6 @@ export const rebookingOptionsReadModel = new ReadModel({
         IndexName: "gsi1",
         KeyConditionExpression: "gsi1pk = :pk AND gsi1sk BETWEEN :from AND :till",
         ExpressionAttributeValues: {
-          // TODO: Fix time format
           ":pk": { S: `ROUTE#${props.route}` },
           ":till": { S: `DEPARTURE#${props.departingTillLocalTime.toString()}` },
           ":from": { S: `DEPARTURE#${props.departingFromLocalTime.toString()}` },
@@ -378,7 +376,6 @@ export const rebookingPolicy = new Policy(
       { passengersByFlightReadModel, rebookingOptionsReadModel },
       context,
     ) => {
-      // TODO: NEXT fix types change to event envelope
       const { flightNo, day, route, cancelledAt } = event.payload
       // get the passengers for this flight (reservations read model)
       const passengers = await passengersByFlightReadModel(flightNo, day)

@@ -2,11 +2,11 @@ Feature: Reservations Flight Cancellation Policy
 
         Background:
             Given the following the schedule for "SFO-MIA" on "2021-06-11" and "2021-06-12":
-                  | Frequency | Departure | Arrival | Flight No. | Aircraft |
-                  | Daily     | 0700      | 1702    | 872        | 787-10   |
-                  | Daily     | 0700      | 1713    | 738        | 787-10   |
-                  | Daily     | 1210      | 2128    | 576        | 787-10   |
-              And the "787-10" has 318 seats
+                  | Frequency | Departure | Arrival | Flight No. | Aircraft | Seats |
+                  | Daily     | 0700      | 1702    | 872        | 787-10   | 318   |
+                  | Daily     | 0700      | 1713    | 738        | 787-10   | 318   |
+                  | Daily     | 1210      | 2128    | 576        | 787-10   | 318   |
+              
 
     Rule: Passengers on cancelled flights should be rebooked evenly on the earliest available flight(s)
         Example: No flights left today, two tomorrow morning same time
