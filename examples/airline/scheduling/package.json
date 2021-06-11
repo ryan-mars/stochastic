@@ -19,8 +19,7 @@
     "proposal-temporal": "^0.8.0",
     "stochastic": "^0.1.0",
     "stochastic-aws-serverless": "^0.1.0",
-    "superstruct": "0.14.2",
-    "ts-node": "^9.1.1"
+    "superstruct": "0.14.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
