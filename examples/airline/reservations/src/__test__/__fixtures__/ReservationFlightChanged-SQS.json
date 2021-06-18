@@ -1,0 +1,94 @@
+{
+  "Records": [
+    {
+      "messageId": "363910f6-26cd-49e1-a71d-9525e52b6257",
+      "receiptHandle": "AQEBApZl6KRtH3a5V3QYyPDRdKvgH+ov/MgoiSxB2st0Yb6F67T1JxKBvirn/U0HGSgcNs+Mejb7fxVV0Kw1D5Rn9B7rgxY8HqD2bfxEVCBkJ8GKPMTRQ/E8f3xUqyymGv1DaYJSVF7Izlh2KpRp32gvgoumGiJ9HP3SU6pUMvIlyG61S9EF6rAcAN15irrCWb2GvB8LE820a24tqN/0qAB+13BNRez+4Os6oy5tdyIegCFS3pe1NStLnsfMuEK67PIZWjpBzqLgMCbgqiZziQ6NSOju0eS9V4srohn/QxF7+8Xy7CWelGsliMo6eUlTCPE+OeyfQZwA33dHdL1U6Zxj96+jVtEiiwDX5w+8M6jwZRdWnYbh05xySVoHF565cWz1CccHNDjVesLQnNzvB4LTrVu6z+jj7FyQuOnDOChGFcNoMB9yl3gv00s8G29CSfyZWmUQ6kFfDT4EjGKvWQ06xOpTr43zByqo8xBFY819vMc=",
+      "body": "{\"payload\":{\"oldFlightNo\":\"576\",\"newFlightDay\":\"2021-06-12\",\"__typename\":\"ReservationFlightChanged\",\"newFlightNo\":\"872\",\"oldFlightDay\":\"2021-06-11\",\"reservationNo\":\"FM8PELLX\"},\"sk\":\"EVENT#1u3Pcd3d5JOdnx7MPWQdfEIygFp\",\"id\":\"1u3Pcd3d5JOdnx7MPWQdfEIygFp\",\"pk\":\"CustomerReservation#FM8PELLX\",\"source\":\"CustomerReservation\",\"source_id\":\"FM8PELLX\",\"time\":\"2021-06-17T00:56:19.126Z\",\"type\":\"ReservationFlightChanged\",\"SequenceNumber\":\"81576600000000010262543635\"}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1623891380990",
+        "SenderId": "AIDAJQR6QDGQ7PATMSYEY",
+        "ApproximateFirstReceiveTimestamp": "1623891380993"
+      },
+      "messageAttributes": {
+        "event_type": {
+          "stringValue": "ReservationFlightChanged",
+          "stringListValues": [],
+          "binaryListValues": [],
+          "dataType": "String"
+        },
+        "version": {
+          "stringValue": "0",
+          "stringListValues": [],
+          "binaryListValues": [],
+          "dataType": "String"
+        }
+      },
+      "md5OfMessageAttributes": "30f41fb96f198f8061f729b1cdc7579e",
+      "md5OfBody": "2b4a560e06813ff05a2bc547021e2b6c",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-2:611181767269:Reservations-BoundedContextpassengersByFlightReadModelQueueB45C5A0-2PFEB3VE1S8J",
+      "awsRegion": "us-east-2"
+    },
+    {
+      "messageId": "f7056243-c355-46fa-8bed-f217c1f8a19b",
+      "receiptHandle": "AQEBwL/BsciX9tznt6klJa9jHIGiwi+TnOCi/4a/IwbcW1VSyQ/IiLhWMNTcJ7xskSsJn7NifMaFTMP6HLpAh7EdBOz4zY8xJGC/elunk5ZdsBAs6St1oBKmo4g65LcBlRS8/UAbxt9FJnGGf9o+jSB55DwZIE6kdrSOJ+YIRuMNFXRhww/bvZ5DMYySqotOrq/uhXzKDl8HVi8uqZ9RrVVCaEwdudTZmpZO6om8qN2YkVBWRZ028cVEshCWlLumBXNVlicNgghlmzdBinNxpB5y4L83/nC4FcrI/hQwlhBvCTVAEx1372Ca79YhBTDTrQ2p2U+xXc/sWP6p9c4TqTFIzOXE7eLfqiZLuhsKzWYKeENfNs7N+4ogkZf8cYbJvGuAmpCDUnCPqXgSmufhumM/hU5q7nltk/yfOmhJ+f0VCVyXJVuuVnwsTO8vJOyhdEsAY/QywVrlsNeT8pXmOV8CYJGN7hBtHsO5lctHJ8k8kDo=",
+      "body": "{\"payload\":{\"oldFlightNo\":\"576\",\"newFlightDay\":\"2021-06-12\",\"__typename\":\"ReservationFlightChanged\",\"newFlightNo\":\"872\",\"oldFlightDay\":\"2021-06-11\",\"reservationNo\":\"FRDKTT23\"},\"sk\":\"EVENT#1u3Pcb7T1JNdgkDPJVuj60XMKN7\",\"id\":\"1u3Pcb7T1JNdgkDPJVuj60XMKN7\",\"pk\":\"CustomerReservation#FRDKTT23\",\"source\":\"CustomerReservation\",\"source_id\":\"FRDKTT23\",\"time\":\"2021-06-17T00:56:19.126Z\",\"type\":\"ReservationFlightChanged\",\"SequenceNumber\":\"81576700000000010262543636\"}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1623891381007",
+        "SenderId": "AIDAJQR6QDGQ7PATMSYEY",
+        "ApproximateFirstReceiveTimestamp": "1623891381010"
+      },
+      "messageAttributes": {
+        "event_type": {
+          "stringValue": "ReservationFlightChanged",
+          "stringListValues": [],
+          "binaryListValues": [],
+          "dataType": "String"
+        },
+        "version": {
+          "stringValue": "0",
+          "stringListValues": [],
+          "binaryListValues": [],
+          "dataType": "String"
+        }
+      },
+      "md5OfMessageAttributes": "30f41fb96f198f8061f729b1cdc7579e",
+      "md5OfBody": "bafbf72653d67d494be1d626b9f18a21",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-2:611181767269:Reservations-BoundedContextpassengersByFlightReadModelQueueB45C5A0-2PFEB3VE1S8J",
+      "awsRegion": "us-east-2"
+    },
+    {
+      "messageId": "00e8285a-5f33-4a98-8ae6-e88e47cf4b11",
+      "receiptHandle": "AQEBxKbgLy8fVPWHy/mMBHwrGqYi/9BqC4MCDW2V2oLJBm38XgQjKlxvlGXsxHGybiOY4qPaUhdjgAMPElafzPnICQ+FOsdonfEawT4DTVPL7ypgmsWWXIfuN/iGKmADsDjxQFGgkgs/xB/X8cdMggqRaXpumsRIgSEYTwPQSayAt3OoIuhBif06+cEjtylPgljwSaYKpcaajkPv5PyZqNd4O8kEVvEnmcB4zSWfKjlHeNMMXLOJTepFhHmm7Da5YLOQ6fv71c5JrKuc7ycobtstk5snz6wpYS0W9sHReQHLGW4HJG0NHbmkbqI99RacV/QqHVQ9OP+XgeXQjJeIfLaz98kUeGEYpryp4DFiHkXxvMyCuw92I3e4dwJURUtv/vv8RTB6f+7VusDQlrjyBpQIst4bMMYBw71MNYYQHaVe1/rUuKExSnOAGM/fRtKEbJX7i7i5Iw6M6B+BaM4EGdaiOk90Y1iT2wIammMia8BpWYw=",
+      "body": "{\"payload\":{\"oldFlightNo\":\"576\",\"newFlightDay\":\"2021-06-12\",\"__typename\":\"ReservationFlightChanged\",\"newFlightNo\":\"872\",\"oldFlightDay\":\"2021-06-11\",\"reservationNo\":\"6762EZA7\"},\"sk\":\"EVENT#1u3PcdC3MgMYnXHar8xKfCMMwBl\",\"id\":\"1u3PcdC3MgMYnXHar8xKfCMMwBl\",\"pk\":\"CustomerReservation#6762EZA7\",\"source\":\"CustomerReservation\",\"source_id\":\"6762EZA7\",\"time\":\"2021-06-17T00:56:19.185Z\",\"type\":\"ReservationFlightChanged\",\"SequenceNumber\":\"81191400000000007825655259\"}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1623891381011",
+        "SenderId": "AIDAJQR6QDGQ7PATMSYEY",
+        "ApproximateFirstReceiveTimestamp": "1623891381014"
+      },
+      "messageAttributes": {
+        "event_type": {
+          "stringValue": "ReservationFlightChanged",
+          "stringListValues": [],
+          "binaryListValues": [],
+          "dataType": "String"
+        },
+        "version": {
+          "stringValue": "0",
+          "stringListValues": [],
+          "binaryListValues": [],
+          "dataType": "String"
+        }
+      },
+      "md5OfMessageAttributes": "30f41fb96f198f8061f729b1cdc7579e",
+      "md5OfBody": "bdff6379c443bdd2d2ac34d170f64c7c",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-2:611181767269:Reservations-BoundedContextpassengersByFlightReadModelQueueB45C5A0-2PFEB3VE1S8J",
+      "awsRegion": "us-east-2"
+    }
+  ]
+}

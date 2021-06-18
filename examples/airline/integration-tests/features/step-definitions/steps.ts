@@ -6,6 +6,9 @@ import { Temporal } from "proposal-temporal"
 import { BookReservationIntent } from "reservations/lib/service"
 import { AddFlights, AddRoute, AirportCode, AirportTZ } from "scheduling"
 import { promisify, TextEncoder } from "util"
+import { DynamoDBClient, BatchGetItemCommand } from "@aws-sdk/client-dynamodb"
+import { marshall, unmarshall } from "@aws-sdk/util-dynamodb"
+import * as assert from "assert"
 
 const { customAlphabet } = require("nanoid")
 const alphabet = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -159,6 +162,30 @@ When(
   },
 )
 
-Then("the passengers should be rebooked accordingly:", function (table: DataTable) {
-  return "pending"
+Then("the passengers should be rebooked accordingly:", { timeout: 3_000 }, async function (table: DataTable) {
+  const tableName = "Reservations-SingleTable787355C7-1PL1P5EI4NMZU"
+  const dynamodb = new DynamoDBClient({})
+  const response = await dynamodb.send(
+    new BatchGetItemCommand({
+      RequestItems: {
+        [tableName]: {
+          Keys: table.hashes().map(row =>
+            marshall({
+              pk: `FLIGHT#${row["Flight No."]}#DATE#${row["Date"]}`,
+              sk: `FLIGHT`,
+            }),
+          ),
+        },
+      },
+    }),
+  )
+  if (response.Responses === undefined) {
+    throw new Error(`No Responses in: ${response}`)
+  }
+  const flights = response.Responses[tableName].map(o => unmarshall(o))
+  table
+    .hashes()
+    .map(row =>
+      assert.strictEqual(flights.find(e => e.flightNo === row["Flight No."])?.seatsBooked, parseInt(row["Passengers"])),
+    )
 })

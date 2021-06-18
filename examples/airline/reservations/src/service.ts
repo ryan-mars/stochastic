@@ -1,4 +1,5 @@
 import {
+  DeleteItemCommand,
   DynamoDBClient,
   PutItemCommand,
   PutItemCommandInput,
@@ -38,16 +39,10 @@ const reservationShape = {
 export class ReservationBooked extends DomainEvent("ReservationBooked", "reservationNo", reservationShape) {}
 export class ReservationFlightChanged extends DomainEvent("ReservationFlightChanged", "reservationNo", {
   reservationNo: string(),
-  flights: array(
-    object({
-      day: string(),
-      flightNo: string(),
-      origin: string(),
-      destination: string(),
-      departureTime: string(),
-      arrivalTime: string(),
-    }),
-  ),
+  newFlightNo: string(),
+  newFlightDay: string(),
+  oldFlightNo: string(),
+  oldFlightDay: string(),
 }) {}
 
 export class CustomerReservation extends Shape("CustomerReservation", reservationShape) {}
@@ -105,24 +100,19 @@ export const bookReservation = new Command(
   },
 )
 
-export class ModifyReservationFlightsIntent extends Shape("ModifyReservationFlightsIntent", {
+export class RebookPassengerFlightIntent extends Shape("RebookPassengerFlightIntent", {
   reservationNo: string(),
-  flights: array(
-    object({
-      day: string(),
-      flightNo: string(),
-      origin: string(),
-      destination: string(),
-      departureTime: string(),
-      arrivalTime: string(),
-    }),
-  ),
+  oldFlightNo: string(),
+  oldFlightDay: string(),
+  newFlightNo: string(),
+  newFlightDay: string(),
 }) {}
 
-export const modifyReservationFlights = new Command(
+// TODO: Need optimistic concurrency on this command
+export const rebookPassengerFlight = new Command(
   {
     __filename,
-    intent: ModifyReservationFlightsIntent,
+    intent: RebookPassengerFlightIntent,
     confirmation: undefined,
     events: [ReservationFlightChanged],
     store: customerReservationStore,
@@ -131,17 +121,7 @@ export const modifyReservationFlights = new Command(
     return async (command, store) => {
       return [
         new ReservationFlightChanged({
-          reservationNo: "",
-          flights: [
-            {
-              day: "",
-              flightNo: "",
-              origin: "",
-              destination: "",
-              departureTime: "",
-              arrivalTime: "",
-            },
-          ],
+          ...command,
         }),
       ]
     }
@@ -185,7 +165,7 @@ export const rebookingOptionsReadModel = new ReadModel({
       const dynamodb = new DynamoDBClient({})
       console.log(JSON.stringify({ eventType: event.type }, null, 2))
       console.log(JSON.stringify({ event }, null, 2))
-      // TODO: Handle out of order events
+
       switch (event.payload.__typename) {
         case "ScheduledFlightsAdded":
           const { route } = event.payload
@@ -225,9 +205,32 @@ export const rebookingOptionsReadModel = new ReadModel({
               .map(c => dynamodb.send(c)),
           )
           break
-        // case "ScheduledFlightsUpdated":
-        //   throw new Error(`${event.payload.__typename} Not implemented yet`)
-        //   break
+        case "ReservationFlightChanged":
+          await dynamodb.send(
+            new UpdateItemCommand({
+              TableName: config.SingleTable.tableName,
+              Key: marshall({
+                pk: `FLIGHT#${event.payload.oldFlightNo}#DATE#${event.payload.oldFlightDay}`,
+                sk: `FLIGHT`,
+              }),
+              UpdateExpression: "ADD seatsBooked :seatsBooked",
+              ExpressionAttributeValues: marshall({ ":seatsBooked": -1 }),
+            }),
+          )
+
+          await dynamodb.send(
+            new UpdateItemCommand({
+              TableName: config.SingleTable.tableName,
+              Key: marshall({
+                pk: `FLIGHT#${event.payload.newFlightNo}#DATE#${event.payload.newFlightDay}`,
+                sk: `FLIGHT`,
+              }),
+              UpdateExpression: "ADD seatsBooked :seatsBooked",
+              ExpressionAttributeValues: marshall({ ":seatsBooked": 1 }),
+            }),
+          )
+
+          break
         case "ReservationBooked":
           await Promise.all(
             event.payload.flights
@@ -293,7 +296,7 @@ class Passenger extends Shape("Passenger", {
 
 export const passengersByFlightReadModel = new ReadModel({
   __filename,
-  events: [ReservationBooked], // TODO: Handle reservation updated/cancelled
+  events: [ReservationBooked, ReservationFlightChanged], // TODO: Handle reservation updated/cancelled
   config: [singleTableConfig],
   /**
    * Projection function that stores events to prepare the read model.
@@ -305,27 +308,59 @@ export const passengersByFlightReadModel = new ReadModel({
     const ddb = new DynamoDBClient({})
 
     return async event => {
-      const resFlights: PutItemCommandInput[] = event.payload.flights.map(flight => ({
-        TableName: SingleTable.tableName,
-        Item: {
-          pk: {
-            S: `FLIGHT#${flight.flightNo}#DATE#${flight.day}`,
-          },
-          sk: {
-            S: `RESERVATION#${event.payload.reservationNo}`,
-          },
-          ...marshall(
-            new Passenger({
-              ...event.payload.traveler,
-              ...flight,
-              reservationNo: event.payload.reservationNo,
-              route: `${flight.origin}-${flight.destination}`,
+      const { payload } = event
+
+      switch (payload.__typename) {
+        case "ReservationBooked":
+          const resFlights: PutItemCommandInput[] = payload.flights.map(flight => ({
+            TableName: SingleTable.tableName,
+            Item: {
+              pk: {
+                S: `FLIGHT#${flight.flightNo}#DATE#${flight.day}`,
+              },
+              sk: {
+                S: `RESERVATION#${payload.reservationNo}`,
+              },
+              ...marshall(
+                new Passenger({
+                  ...payload.traveler,
+                  ...flight,
+                  reservationNo: payload.reservationNo,
+                  route: `${flight.origin}-${flight.destination}`,
+                }),
+                { convertClassInstanceToMap: true },
+              ),
+            },
+          }))
+          await Promise.all(resFlights.map(i => new PutItemCommand(i)).map(c => ddb.send(c)))
+          break
+        case "ReservationFlightChanged":
+          await ddb.send(
+            new DeleteItemCommand({
+              TableName: SingleTable.tableName,
+              Key: marshall({
+                pk: `FLIGHT#${payload.oldFlightNo}#DATE#${payload.oldFlightDay}`,
+                sk: `RESERVATION#${payload.reservationNo}`,
+              }),
             }),
-            { convertClassInstanceToMap: true },
-          ),
-        },
-      }))
-      await Promise.all(resFlights.map(i => new PutItemCommand(i)).map(c => ddb.send(c)))
+          )
+          await ddb.send(
+            new PutItemCommand({
+              TableName: SingleTable.tableName,
+              Item: marshall(
+                {
+                  pk: `FLIGHT#${payload.oldFlightNo}#DATE#${payload.oldFlightDay}`,
+                  sk: `RESERVATION#${payload.reservationNo}`,
+                },
+                { convertClassInstanceToMap: true },
+              ),
+            }),
+          )
+          break
+
+        default:
+          break
+      }
     }
   },
   /**
@@ -359,7 +394,7 @@ export const rebookingPolicy = new Policy(
     __filename,
     events: [FlightCancelled],
     commands: {
-      modifyReservationFlights,
+      rebookPassengerFlight,
     },
     reads: {
       passengersByFlightReadModel,
@@ -372,7 +407,7 @@ export const rebookingPolicy = new Policy(
 
     return async (
       event,
-      { modifyReservationFlights },
+      { rebookPassengerFlight },
       { passengersByFlightReadModel, rebookingOptionsReadModel },
       context,
     ) => {
@@ -394,14 +429,54 @@ export const rebookingPolicy = new Policy(
 
       console.log(JSON.stringify({ options }, null, 2))
 
+      if (options === null) {
+        throw Error("No options available")
+      }
       // TODO: Change reservation to the next available flight
       // TODO: Handle failures gracefully
-      // await modifyReservationFlights(
-      //   new ModifyReservationFlightsIntent({
-      //     flights: [],
-      //     reservationNo: "",
-      //   }),
-      // )
+      const sortedOptions = options
+        .filter(a => a.seats > a.seatsBooked)
+        .sort((a, b) => a.departureTime.localeCompare(b.departureTime))
+
+      enum LoyaltyStatus {
+        "Silver",
+        "Gold",
+        "Platinum",
+        "Diamond",
+      }
+
+      const sortedPassengers = passengers.sort(
+        (a, b) =>
+          LoyaltyStatus[b.loyaltyStatus as keyof typeof LoyaltyStatus] -
+          LoyaltyStatus[a.loyaltyStatus as keyof typeof LoyaltyStatus],
+      )
+
+      const p = sortedPassengers.map(passenger => {
+        if (sortedOptions[0].seatsBooked >= sortedOptions[0].seats) {
+          sortedOptions.shift()
+        }
+
+        if (sortedOptions.length > 0) {
+          sortedOptions[0].seatsBooked++
+
+          return rebookPassengerFlight(
+            new RebookPassengerFlightIntent({
+              reservationNo: passenger.reservationNo,
+              oldFlightNo: event.payload.flightNo,
+              oldFlightDay: event.payload.day,
+              newFlightNo: sortedOptions[0].flightNo,
+              newFlightDay: sortedOptions[0].day,
+            }),
+          )
+        } else {
+          const error = { message: "Not rebooking. No options for passenger", passenger }
+          throw new Error(JSON.stringify(error, null, 2))
+        }
+      })
+
+      const settlement = await Promise.allSettled(p)
+
+      console.log(JSON.stringify({ settlement }, null, 2))
     }
   },
 )
@@ -412,7 +487,7 @@ export const reservations = new BoundedContext({
   components: {
     customerReservationStore,
     bookReservation,
-    modifyReservationFlights,
+    rebookPassengerFlight,
     rebookingPolicy,
     passengersByFlightReadModel,
     rebookingOptionsReadModel,

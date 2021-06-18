@@ -33,7 +33,7 @@ Work in progress. Suggestions and criticism welcome.
 - "Software Model" Event Storming
 - Example Mapping
 
-### Software design
+### Approach A
 
 1. Model the events, and flows (Software Model Event Storming)
 2. Create a DAG of the events?
@@ -42,3 +42,12 @@ Work in progress. Suggestions and criticism welcome.
 5. Design read models to satisfy queries, allow data requirements to flow up stream
 6. Allow for eventual consistency
 7. Implement policies and command handlers to pass the tests
+
+### Approach B: Outside In
+
+1. Event storming
+2. Sketch the model with code using as few data fields on shapes as possible
+3. Use example mapping and UX to define scenarios
+4. Use business scanarios to drive out narrow read models
+5. Allow read models to define the shape of events, event fields should be defined last basically
+6. Enforce invariants with policies and command handlers
