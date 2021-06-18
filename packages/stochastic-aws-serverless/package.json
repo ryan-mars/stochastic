@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "clean": "rm -rf lib",
+    "clean": "rm -rf lib tsconfig.tsbuildinfo",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest --passWithNoTests"

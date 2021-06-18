@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "clean": "rm -rf lib cdk.out stochastic.out",
+    "clean": "rm -rf lib cdk.out stochastic.out tsconfig.tsbuildinfo",
     "cdk": "cdk",
     "test": "jest",
     "synth": "cdk synth"
