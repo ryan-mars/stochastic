@@ -17,7 +17,6 @@ const nanoid = customAlphabet(alphabet, 8)
 const { Given, When, Then, World } = require("@cucumber/cucumber")
 const wait = promisify(setTimeout)
 
-// TODO: Move this properly to SSM
 const commands = {
   AddRoute: `Scheduling-AddRouteCommand`,
   AddFlights: "Scheduling-AddFlightsCommand",
@@ -150,7 +149,6 @@ When(
     )
       .toInstant()
       .toString()
-    //TODO: NEXT Fix this date string to be UTC (Z)
     const intent = new CancelFlightIntent({ flightNo, day, route, origin, destination, cancelledAt })
 
     try {
@@ -163,7 +161,7 @@ When(
 )
 
 Then("the passengers should be rebooked accordingly:", { timeout: 3_000 }, async function (table: DataTable) {
-  const tableName = "Reservations-SingleTable787355C7-1PL1P5EI4NMZU"
+  const tableName = process.env["RESERVATIONS_SINGLE_TABLE_NAME"]
   const dynamodb = new DynamoDBClient({})
   const response = await dynamodb.send(
     new BatchGetItemCommand({
