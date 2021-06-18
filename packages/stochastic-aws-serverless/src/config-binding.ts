@@ -15,7 +15,7 @@ export class DynamoDBConfigBinding implements ConfigBinding<TableConfig> {
   constructor(readonly table: dynamodb.Table, readonly access: "read" | "write" | "read-write" = "read-write") {
     this.data = new TableConfig({
       tableArn: table.tableArn,
-      tableName: table.tableName
+      tableName: table.tableName,
     })
   }
   public bind(grantable: iam.IGrantable): void {

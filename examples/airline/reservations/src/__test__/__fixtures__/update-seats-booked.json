@@ -1,0 +1,17 @@
+{
+  "TableName": "Reservations-SingleTable787355C7-1PL1P5EI4NMZU",
+  "Key": {
+    "pk": {
+      "S": "FLIGHT#872#DATE#2021-06-11"
+    },
+    "sk": {
+      "S": "FLIGHT"
+    }
+  },
+  "UpdateExpression": "ADD seatsBooked :seatsBooked",
+  "ExpressionAttributeValues": {
+    ":seatsBooked": {
+      "N": "1"
+    }
+  }
+}

@@ -4,13 +4,13 @@ import { number, string } from "superstruct"
 
 export class WorldPassMilesAwarded extends DomainEvent("WorldPassMilesAwarded", "worldPassAccountNo", {
   worldPassAccountNo: string(),
-  milesAdded: number()
+  milesAdded: number(),
 }) {}
 
 export class WorldPassAccount extends Shape("WorldPassAccount", {
   worldPassAccountNo: string(),
   status: string(),
-  miles: number()
+  miles: number(),
 }) {}
 
 export const WorldPassAccountStore = new Store({
@@ -24,12 +24,12 @@ export const WorldPassAccountStore = new Store({
     }
     return state
   },
-  initialState: () => new WorldPassAccount({ miles: 0, status: "No Status", worldPassAccountNo: "" })
+  initialState: () => new WorldPassAccount({ miles: 0, status: "No Status", worldPassAccountNo: "" }),
 })
 
 export class AddMilesIntent extends Shape("AddMilesIntent", {
   worldPassAccountNo: string(),
-  milesToAdd: number()
+  milesToAdd: number(),
 }) {}
 
 export const AddMiles = new Command(
@@ -38,13 +38,13 @@ export const AddMiles = new Command(
     intent: AddMilesIntent,
     store: WorldPassAccountStore,
     events: [WorldPassMilesAwarded],
-    confirmation: undefined
+    confirmation: undefined,
   },
   context => async (command, store) => {
     const { state } = await store.get(command.worldPassAccountNo)
     // .. check state before ...
     return [
-      new WorldPassMilesAwarded({ worldPassAccountNo: command.worldPassAccountNo, milesAdded: command.milesToAdd })
+      new WorldPassMilesAwarded({ worldPassAccountNo: command.worldPassAccountNo, milesAdded: command.milesToAdd }),
     ]
-  }
+  },
 )

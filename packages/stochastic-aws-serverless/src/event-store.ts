@@ -4,7 +4,7 @@ import {
   PutItemCommand,
   QueryCommand,
   QueryCommandInput,
-  AttributeValue
+  AttributeValue,
 } from "@aws-sdk/client-dynamodb"
 
 import { Shape, DomainEvent, DomainEventEnvelope } from "stochastic"
@@ -13,7 +13,7 @@ const client = new DynamoDBClient({})
 
 export interface ConnectStoreInterfaceProps<
   T extends Shape = Shape,
-  Events extends readonly DomainEvent[] = readonly DomainEvent[]
+  Events extends readonly DomainEvent[] = readonly DomainEvent[],
 > {
   eventStore: string
   source: string
@@ -24,8 +24,9 @@ export interface ConnectStoreInterfaceProps<
 // TODO: tighten up types
 export function connectStoreInterface<
   T extends Shape = Shape,
-  Events extends readonly DomainEvent[] = readonly DomainEvent[]
+  Events extends readonly DomainEvent[] = readonly DomainEvent[],
 >(props: ConnectStoreInterfaceProps<T, Events>) {
+  const log_level = (process.env["LOG_LEVEL"] ?? "info").toLowerCase()
   return {
     get: async (key: string) => {
       let state = props.initialState()
@@ -34,12 +35,14 @@ export function connectStoreInterface<
         events.push(event as DomainEventEnvelope<Shape.Value<Events[number]>>)
         state = props.reducer(state, event.payload as Shape.Value<Events[number]>)
       }
-      console.log(JSON.stringify({ state, events }, null, 2))
+      if (log_level === "debug") {
+        console.log(JSON.stringify({ state, events }, null, 2))
+      }
       return {
         state,
-        events
+        events,
       }
-    }
+    },
   }
 }
 
@@ -65,13 +68,13 @@ export const storeEvent = async (dynamoDBTableName: string, event: DomainEventEn
           {
             pk,
             sk,
-            ...event
+            ...event,
           },
           {
-            convertClassInstanceToMap: true
-          }
-        )
-      })
+            convertClassInstanceToMap: true,
+          },
+        ),
+      }),
     )
     console.log(JSON.stringify(data, null, 2))
   } catch (error) {
@@ -86,7 +89,7 @@ export async function* fetchEvents(dynamoDBTableName: string, source: string, so
     TableName: dynamoDBTableName,
     KeyConditionExpression: "#pk = :pk",
     ExpressionAttributeValues: marshall({ ":pk": pk }),
-    ExpressionAttributeNames: { "#pk": "pk" }
+    ExpressionAttributeNames: { "#pk": "pk" },
   }
 
   try {
@@ -115,13 +118,13 @@ export async function* fetchEvents(dynamoDBTableName: string, source: string, so
 
 async function dynamodDBQueryWithContinuation(
   params: QueryCommandInput,
-  ExclusiveStartKey?: { [key: string]: AttributeValue }
+  ExclusiveStartKey?: { [key: string]: AttributeValue },
 ) {
   return client.send(
     new QueryCommand({
       ...params,
-      ExclusiveStartKey
-    })
+      ExclusiveStartKey,
+    }),
   )
 }
 

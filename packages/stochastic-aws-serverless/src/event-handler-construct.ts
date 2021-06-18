@@ -19,40 +19,44 @@ import { ConfigBindings, ConfigBinding } from "./config-binding"
  * object which contains a reference to its path.
  */
 export interface EventHandlerConstructProps<P extends EventHandler | ReadModel = EventHandler | ReadModel>
-  extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {
-  dependencies: Record<string, ConfigBinding>
+  extends Omit<nodeLambda.NodejsFunctionProps, "code" | "runtime" | "handler"> {
+  dependencies?: Record<string, ConfigBinding>
 }
 
 export class EventHandlerConstruct<
   S extends BoundedContext = BoundedContext,
-  C extends EventHandler | ReadModel = EventHandler | ReadModel
+  C extends EventHandler | ReadModel = EventHandler | ReadModel,
 > extends ComponentConstruct<S, C> {
   readonly handler: lambda.Function
   constructor(
     scope: BoundedContextConstruct,
     id: string,
-    props: EventHandlerConstructProps<C> & ComponentConstructProps<S, C>
+    props: EventHandlerConstructProps<C> & ComponentConstructProps<S, C>,
   ) {
     super(scope, id, props)
 
     this.handler = new nodeLambda.NodejsFunction(this, "Function", {
+      // TODO: Properly deep-merge props
       functionName: `${props.boundedContext.name}-${this.name}`,
       ...generateHandler(this.name, props.component, props.boundedContext.componentNames),
       ...props,
       runtime: lambda.Runtime.NODEJS_14_X,
+      ...props,
       environment: {
-        COMPONENT_NAME: this.name
+        COMPONENT_NAME: this.name,
+        ...props.environment,
       },
       bundling: {
         sourceMap: true,
-        metafile: true
-      }
+        metafile: true,
+        ...props.bundling,
+      },
     })
 
     new ConfigBindings(this, "ConfigBindings", {
       context: scope,
       config: props.component.config,
-      handler: this.handler
+      handler: this.handler,
     })
 
     const queue = new sqs.Queue(this, `Queue`)
@@ -62,10 +66,10 @@ export class EventHandlerConstruct<
         rawMessageDelivery: true,
         filterPolicy: {
           event_type: sns.SubscriptionFilter.stringFilter({
-            whitelist: this.component.events.map(e => e.name)
-          })
-        }
-      })
+            whitelist: this.component.events.map(e => e.name),
+          }),
+        },
+      }),
     )
   }
 }

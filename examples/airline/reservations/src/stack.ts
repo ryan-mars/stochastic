@@ -7,11 +7,15 @@ import { operations, FlightCancelled } from "operations"
 import {
   BoundedContextConstruct,
   ReceiveEventBridgeEventBinding,
-  DynamoDBConfigBinding
+  DynamoDBConfigBinding,
 } from "stochastic-aws-serverless"
+import { ScheduledFlightsAdded, ScheduledFlightsRemoved, ScheduledRouteAdded, scheduling } from "scheduling"
+import { Duration } from "@aws-cdk/core"
 
 export class ReservationStack extends cdk.Stack {
   readonly operations: BoundedContextConstruct<typeof operations>
+  readonly reservations: BoundedContextConstruct<typeof reservations>
+  readonly scheduling: BoundedContextConstruct<typeof scheduling>
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
@@ -22,30 +26,72 @@ export class ReservationStack extends cdk.Stack {
         service: "events",
         resource: "event-bus",
         sep: "/",
-        resourceName: "default"
-      })
+        resourceName: "default",
+      }),
     )
 
-    const table = new ddb.Table(this, "SeatsTable", {
+    const table = new ddb.Table(this, "SingleTable", {
       partitionKey: {
-        name: "id",
-        type: ddb.AttributeType.STRING
-      }
+        name: "pk",
+        type: ddb.AttributeType.STRING,
+      },
+      sortKey: {
+        name: "sk",
+        type: ddb.AttributeType.STRING,
+      },
+      billingMode: ddb.BillingMode.PAY_PER_REQUEST,
+    })
+    table.addGlobalSecondaryIndex({
+      indexName: "gsi1",
+      partitionKey: {
+        name: "gsi1pk",
+        type: ddb.AttributeType.STRING,
+      },
+      sortKey: {
+        name: "gsi1sk",
+        type: ddb.AttributeType.STRING,
+      },
     })
 
-    const context = new BoundedContextConstruct(this, "BoundedContext", {
+    this.reservations = new BoundedContextConstruct(this, "BoundedContext", {
       boundedContext: reservations,
+      components: {
+        rebookingOptionsReadModel: {
+          timeout: Duration.seconds(30),
+          environment: {
+            LOG_LEVEL: "debug",
+          },
+        },
+        rebookingPolicy: {
+          timeout: Duration.seconds(30),
+          environment: {
+            LOG_LEVEL: "debug",
+          },
+        },
+      },
       receiveEvents: [
+        new ReceiveEventBridgeEventBinding({
+          otherBoundedContext: scheduling,
+          events: [ScheduledFlightsAdded, ScheduledFlightsRemoved],
+          eventBus,
+        }),
         new ReceiveEventBridgeEventBinding({
           otherBoundedContext: operations,
           events: [FlightCancelled],
-          eventBus
-        })
+          eventBus,
+        }),
       ],
       config: {
-        SeatsTable: new DynamoDBConfigBinding(table)
-      }
+        SingleTable: new DynamoDBConfigBinding(table),
+      },
     })
+
+    // TODO Fix types so you can access resources on the node
+    // this.reservations.components.rebookingPolicy.node
+
+    // Clean up when the stack is deleted since this is just an example app.
+    this.reservations.eventStore.table.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY)
+    table.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY)
   }
 }
 

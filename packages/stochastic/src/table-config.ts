@@ -9,5 +9,5 @@ export class TableConfig extends Shape("TableConfig", {
   /**
    * Name of the Table.
    */
-  tableName: string()
+  tableName: string(),
 }) {}

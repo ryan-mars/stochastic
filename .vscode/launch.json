@@ -1,23 +1,21 @@
 {
   "configurations": [
     {
-      "name": "Attach to SAM CLI",
-      "type": "node",
+      "name": "Attach by Process ID",
+      "processId": "${command:PickProcess}",
       "request": "attach",
-      "address": "localhost",
-      "port": 9229,
-      "localRoot": "${workspaceRoot}/${input:packagePath}",
-      "remoteRoot": "/var/task",
-      "protocol": "inspector",
-      "stopOnEntry": false
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node"
     },
-  ],
-  "inputs": [
     {
-      "id": "packagePath",
-      "type": "pickString",
-      "options": ["examples/airline/booking", "examples/airline/scheduling"],
-      "description": "Path to package to debug"
+      "name": "Current TS File",
+      "type": "node",
+      "request": "launch",
+      "args": ["${relativeFile}"],
+      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+      "sourceMaps": true,
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector"
     }
   ]
 }

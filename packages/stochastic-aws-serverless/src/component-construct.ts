@@ -30,7 +30,7 @@ export interface ComponentConstructProps<S extends BoundedContext = BoundedConte
 
 export class ComponentConstruct<
   S extends BoundedContext = BoundedContext,
-  C extends Component = Component
+  C extends Component = Component,
 > extends cdk.Construct {
   readonly boundedContext: S
   readonly component: C

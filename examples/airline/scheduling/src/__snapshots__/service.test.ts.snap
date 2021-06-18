@@ -4,37 +4,38 @@ exports[`Scheduling service adds a scheduled flight 1`] = `
 Array [
   ScheduledFlightsAdded {
     "__typename": "ScheduledFlightsAdded",
+    "destination": "MIA",
     "flights": Array [
       Object {
+        "aircraft": "787-10",
         "arrivalTime": "928p",
         "day": "2021-06-11",
         "departureTime": "1210p",
         "flightNo": "PA576",
+        "seats": 318,
       },
       Object {
+        "aircraft": "787-10",
         "arrivalTime": "502p",
         "day": "2021-06-11",
         "departureTime": "700a",
         "flightNo": "PA872",
+        "seats": 318,
       },
     ],
+    "origin": "SFO",
     "route": "SFO-MIA",
   },
 ]
 `;
 
 exports[`Scheduling service adds routes 1`] = `
-Object {
-  "confirmation": AddRouteConfirmation {
-    "__typename": "AddRouteConfirmation",
+Array [
+  ScheduledRouteAdded {
+    "__typename": "ScheduledRouteAdded",
+    "route": "SFO-MIA",
   },
-  "events": Array [
-    RouteAdded {
-      "__typename": "RouteAdded",
-      "route": "SFO-MIA",
-    },
-  ],
-}
+]
 `;
 
 exports[`Scheduling service reduces state from events 1`] = `
@@ -42,40 +43,52 @@ RouteSchedule {
   "__typename": "RouteSchedule",
   "flights": Array [
     Object {
+      "aircraft": "787-10",
       "arrivalTime": "928p",
       "day": "2021-06-11",
       "departureTime": "1210p",
       "flightNo": "PA576",
+      "seats": 318,
     },
     Object {
+      "aircraft": "787-10",
       "arrivalTime": "502p",
       "day": "2021-06-11",
       "departureTime": "700a",
       "flightNo": "PA872",
+      "seats": 318,
     },
     Object {
+      "aircraft": "787-10",
       "arrivalTime": "513p",
       "day": "2021-06-11",
       "departureTime": "700a",
       "flightNo": "PA738",
+      "seats": 318,
     },
     Object {
+      "aircraft": "787-10",
       "arrivalTime": "928p",
       "day": "2021-06-12",
       "departureTime": "1210p",
       "flightNo": "PA576",
+      "seats": 318,
     },
     Object {
+      "aircraft": "787-10",
       "arrivalTime": "502p",
       "day": "2021-06-12",
       "departureTime": "700a",
       "flightNo": "PA872",
+      "seats": 318,
     },
     Object {
+      "aircraft": "787-10",
       "arrivalTime": "513p",
       "day": "2021-06-12",
       "departureTime": "700a",
       "flightNo": "PA738",
+      "seats": 318,
     },
   ],
   "route": "SFO-MIA",

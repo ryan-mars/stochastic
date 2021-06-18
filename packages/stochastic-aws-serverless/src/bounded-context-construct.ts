@@ -11,7 +11,7 @@ import {
   ReadModel,
   EventHandler,
   Query,
-  Shape
+  Shape,
 } from "stochastic"
 import { EmitEventBinding, RecieveEventBinding } from "./event-binding"
 import { ConfigBinding } from "./config-binding"
@@ -51,7 +51,7 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
     // TODO: base construct for BoundedContext, following pattern of CDK
     // https://github.com/aws/aws-cdk/blob/master/packages/%40aws-cdk/aws-lambda/lib/function.ts#L403
     return {
-      eventBridgeArn
+      eventBridgeArn,
     }
   }
 
@@ -88,7 +88,7 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
     props: {
       boundedContext: Context
       components?: {
-        [name in keyof Context["components"]]?: ComponentProps<Context["components"][name]>
+        [name in keyof Context["components"]]?: Partial<ComponentProps<Context["components"][name]>>
       }
       emitEvents?: EmitEventBinding<Context["emits"][number]>[]
       receiveEvents?: RecieveEventBinding<ConsumedEvents<Context["components"]>>[]
@@ -97,7 +97,7 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
           Shape.Value<BoundedContextConfig<Context["components"]>["shape"]>
         >
       }
-    }
+    },
   ) {
     super(scope, id)
     this.config = props.config
@@ -111,14 +111,14 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
     this.receiveScope = new cdk.Construct(this, "Receive")
 
     this.emitEvents.map(binding =>
-      this.eventStore.topic.addSubscription(binding.bind(this.emitScope, this.boundedContext.name))
+      this.eventStore.topic.addSubscription(binding.bind(this.emitScope, this.boundedContext.name)),
     )
     this.receiveEvents.map(binding => binding.bind(this.receiveScope, this.eventStore.topic))
 
     const commandConstructs = new Map<string, CommandConstruct>()
 
     for (const [componentName, component] of Object.entries(boundedContext.components).sort(
-      ([nameA, componentA], [nameB, componentB]) => (componentA.kind === "Command" ? -1 : 1)
+      ([nameA, componentA], [nameB, componentB]) => (componentA.kind === "Command" ? -1 : 1),
     )) {
       const componentProps = (props.components as any)?.[componentName] as ComponentProps<Component>
       let con: StoreConstruct | CommandConstruct | PolicyConstruct | EventHandlerConstruct | QueryConstruct | undefined
@@ -128,14 +128,14 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
           ...(componentProps as ComponentProps<Store>),
           component,
           boundedContext,
-          name: componentName
+          name: componentName,
         })
       } else if (component.kind === "Command") {
         con = new CommandConstruct(this as any, componentName, {
           ...(componentProps as ComponentProps<Command>),
           component,
           boundedContext,
-          name: componentName
+          name: componentName,
         })
         commandConstructs.set(componentName, con)
         // } else if (component.kind === "Event") {
@@ -146,14 +146,14 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
           component,
           boundedContext,
           name: componentName,
-          commands: commandConstructs
+          commands: commandConstructs,
         })
       } else if (component.kind === "EventHandler") {
         con = new EventHandlerConstruct(this as any, componentName, {
           ...(componentProps as ComponentProps<EventHandler>),
           component,
           boundedContext,
-          name: componentName
+          name: componentName,
         })
       } else if (component.kind === "ReadModel") {
         con = new EventHandlerConstruct(this as any, componentName, {
@@ -161,7 +161,7 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
           component,
           boundedContext,
           name: componentName,
-          dependencies: props.config
+          dependencies: props.config,
         })
       } else if (component.kind === "Query") {
         con = new QueryConstruct(this as any, componentName, {
@@ -169,7 +169,7 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
           component,
           boundedContext,
           name: componentName,
-          dependencies: props.config
+          dependencies: props.config,
         })
       }
       if (con) {
