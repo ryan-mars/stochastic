@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "clean": "rm -rf lib cdk.out",
+    "clean": "rm -rf lib cdk.out stochastic.out",
     "cdk": "cdk",
     "test": "jest --passWithNoTests",
     "synth": "cdk synth"
