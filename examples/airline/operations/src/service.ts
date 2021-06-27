@@ -1,7 +1,5 @@
-import { Store, BoundedContext, Command, DomainEvent, Policy, Shape } from "stochastic"
-import { ScheduledFlightsAdded } from "scheduling"
+import { Store, BoundedContext, Command, DomainEvent, Shape } from "stochastic"
 import { string } from "superstruct"
-import { Temporal } from "proposal-temporal"
 
 const flightScheduleDetail = {
   flightNo: string(),
@@ -90,15 +88,29 @@ export const CancelFlight = new Command(
   },
 )
 
-export const MyPolicy = new Policy(
+export class ArriveFlightIntent extends Shape("ArriveFlightIntent", {
+  flightNo: string(),
+  day: string(),
+  arrivedAt: string(),
+  airport: string(),
+}) {}
+
+export class FlightArrived extends DomainEvent("FlightArrived", "flightNo", ArriveFlightIntent.fields) {}
+
+export const ArriveFlight = new Command(
   {
     __filename,
-    events: [ScheduledFlightsAdded, FlightCancelled],
-    commands: {},
-    reads: {},
+    store: FlightStore,
+    intent: ArriveFlightIntent,
+    confirmation: undefined,
+    events: [FlightArrived],
   },
-  context => async event => {
-    console.log(JSON.stringify(event, null, 2))
+  context => async (command, store) => {
+    return [
+      new FlightArrived({
+        ...command,
+      }),
+    ]
   },
 )
 
@@ -108,8 +120,8 @@ export const operations = new BoundedContext({
   components: {
     AddFlight,
     CancelFlight,
-    MyPolicy,
+    ArriveFlight,
     FlightStore,
   },
-  emits: [FlightCancelled],
+  emits: [FlightCancelled, FlightArrived],
 })
