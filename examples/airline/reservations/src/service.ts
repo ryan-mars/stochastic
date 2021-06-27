@@ -118,6 +118,7 @@ export const rebookPassengerFlight = new Command(
     store: customerReservationStore,
   },
   context => {
+    // cold start
     return async (command, store) => {
       return [
         new ReservationFlightChanged({

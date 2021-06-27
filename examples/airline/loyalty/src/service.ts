@@ -1,6 +1,18 @@
-import { strictEqual } from "assert"
-import { Store, Command, DomainEvent, Shape } from "stochastic"
+import {
+  BoundedContext,
+  Command,
+  Config,
+  ConfigRuntime,
+  DomainEvent,
+  DomainEventEnvelope,
+  Policy,
+  ReadModel,
+  Shape,
+  Store,
+} from "stochastic"
 import { number, string } from "superstruct"
+import { FlightArrived } from "operations"
+import { DynamoDBConfigBinding } from "stochastic-aws-serverless"
 
 export class WorldPassMilesAwarded extends DomainEvent("WorldPassMilesAwarded", "worldPassAccountNo", {
   worldPassAccountNo: string(),
@@ -30,6 +42,7 @@ export const WorldPassAccountStore = new Store({
 export class AddMilesIntent extends Shape("AddMilesIntent", {
   worldPassAccountNo: string(),
   milesToAdd: number(),
+  idempotencyToken: string(),
 }) {}
 
 export const AddMiles = new Command(
@@ -48,3 +61,71 @@ export const AddMiles = new Command(
     ]
   },
 )
+
+type Projection = (
+  dependencies: ConfigRuntime<Config<string, Shape<string, any>>[]>,
+  context: any,
+) => (event: DomainEventEnvelope<any>, context: any) => Promise<void>
+
+const milesAwardedReadModelProjection: Projection = (deps, context) => async (event, context) => {
+  // ...
+}
+
+const milesAwardedReadModelClient = async () => {
+  // ...
+}
+
+export const MilesAwardedReadModel = new ReadModel({
+  __filename,
+  events: [WorldPassMilesAwarded],
+  projection: milesAwardedReadModelProjection,
+  client: milesAwardedReadModelClient,
+})
+
+export const PassengerManifest = new ReadModel({
+  __filename,
+  events: [WorldPassMilesAwarded],
+  projection: () => {
+    return async event => {}
+  },
+  client: () => async (props: { flightNo: string; day: string }) =>
+    [{ name: "joe isuzu", worldPassAccountNo: "abc123" }],
+})
+
+export const MilesAwardPolicy = new Policy(
+  {
+    __filename,
+    events: [FlightArrived],
+    commands: {
+      AddMiles,
+    },
+    reads: {
+      PassengerManifest,
+    },
+  },
+  context => async (event, commands, readmodels) => {
+    const { flightNo, day } = event.payload
+    const passengers = await readmodels.PassengerManifest({ flightNo, day })
+    const promises = passengers.map(passenger =>
+      commands.AddMiles(
+        //TODO: Next need an idempotency token (SQS is at-least-once)
+        new AddMilesIntent({
+          worldPassAccountNo: passenger.worldPassAccountNo,
+          milesToAdd: 100,
+          idempotencyToken: event.id,
+        }),
+      ),
+    )
+    await Promise.all(promises)
+  },
+)
+
+export const loyalty = new BoundedContext({
+  handler: "loyalty",
+  name: "Loyalty",
+  components: {
+    WorldPassAccountStore,
+    AddMiles,
+    MilesAwardPolicy,
+  },
+})
