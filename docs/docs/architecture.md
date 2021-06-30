@@ -18,7 +18,7 @@ At the same time, the previously mentioned smart phone revolution fundamentally 
 
 It is uncomfortable but necessary to remind the reader that until the agile transformation >75% of enterprise software projects were considered **failures**. Consequently, to rise in the ranks of management during this period one had to develop a keen sense of risk aversion and deflection of blame. Decisions made at the top regularly reflect this.
 
-While agile increased the responsiveness of enterprise IT departments it did not see a rise in technical proficiency. Indeed software architecture did not keep up with the rise in complexity and pace of features. Many companies are now waking up with a sort of "agile hangover".
+While agile increased the responsiveness of enterprise IT departments it did not see a rise in technical proficiency. Indeed software architecture did not keep up with the rise in complexity and pace of features. Many companies are now waking up with a "tech debt hangover".
 
 The organization did not adapt properly to change either. The department responsible for upkeep of the payroll system and Windows desktop administration, found itself holding the bag on "digital transformation". The two could not be more misaligned. Digital business requires rapid experimentation, fault tolerance, and resiliency at scale. It is also often tied directly to a profit center. Enterprise IT, on the other hand, is a cost center. Regular outages and poor performance go largely unpunished. Orthodoxy and risk aversion seem to be the values.
 
