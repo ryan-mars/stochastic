@@ -30,6 +30,6 @@ We require a first principles approach to digital business. Orthodoxy must be qu
 
 In this journey I believe distributed systems principles, defined in the 1970's, will find a new home. If we look outside, we see evidence of their success for companies operating at scale. Distributed systems has an academic feel to it, with Stochastic we'd like to make it approachable, useful. To quote Alan Kay, _"simple things should be simple; complex things should be possible."_
 
-I believe we will also discover that "serverless" architectures aligns tightly with digital business (and line of business applications). I believe serverless is so well aligned with business that I believe it will become the most popular thing in enterprise software development since object-oriented programming.
+I believe we will also discover that "serverless" aligns with how digital business (and line of business applications) should view technology. Serverless is so well aligned with business fundamentals that I believe it will lead to the biggest change in enterprise software development since object-oriented programming.
 
 I'm willing to be proven wrong, but I think we can all agree that something must change if we are to keep our sanity.
