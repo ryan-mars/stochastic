@@ -26,6 +26,12 @@ Structurally Enterprise IT did not adequately adapt either. The department respo
 
 Whilst _N_-tier architectures living in the corporate data center are perfectly well suited to a fixed set of users with predictable behavior who are paid to use the system, these systems struggle at scale. Sharding _N_-tier systems into microservices has not simplified our problems it has multiplied them. Digital business rewards availability, resiliency, and fault tolerance. We shouldn't lose online orders because a system somewhere in the "stack" had a millisecond hiccup. Our flagship website shouldn't go down because of a flood of mobile traffic from a super bowl commercial. Our international fleet of passenger aircraft shouldn't be grounded because of a broken VPN connection with a single vendor. Worst, we shouldn't suffer massive data breaches because of un-patched application servers.
 
+As technologists we find ourselves in a world of constant problem solving. Issues like those stated above are just another day at the office. The reality is however, we don't have to live like this. Our problems are shared by others like us, and many of them already have solutions.
+
+> The world that we have made as a result of the level of thinking we have done thus far creates problems that we cannot solve at the same level as the level we created them at.
+>
+> — Albert Einstein (as quoted by Ram Dass)
+
 ## Our beliefs
 
 We require a first principles approach to digital business. Orthodoxy must be questioned, difficult truths must be grappled with, new design choices must be made.
