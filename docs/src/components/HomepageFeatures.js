@@ -4,32 +4,32 @@ import styles from './HomepageFeatures.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
+    title: 'Explore and Map the Business Domain',
     Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Business and technical people collaboratively explore and map out 
+        the desired systems events, commands, views, and behavior.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Design a Scalable, Cloud-Native Solution',
     Svg: require('../../static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Technical people dive deeper into design and desired behavior.
+        Stochastic provides framework for a cloud-native, scalable architecture.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Create Infrastracture and Code',
     Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Stochastic creates the cloud infrastracture so developers can focus on
+        application logic.
       </>
     ),
   },

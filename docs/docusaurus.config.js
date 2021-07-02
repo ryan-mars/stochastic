@@ -3,20 +3,20 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
-  url: 'https://your-docusaurus-test-site.com',
+  title: 'Stochastic',
+  tagline: 'Cloud native, scalable, event sourced apps made easy.',
+  url: 'https://stochastic.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  projectName: 'stochastic', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: 'Stochastic',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Stochastic logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -41,7 +41,15 @@ module.exports = {
           title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
+              label: 'Event Storming',
+              to: '/docs/intro',
+            },
+            {
+              label: 'Cloud Native Architecture & Design',
+              to: '/docs/intro',
+            },
+            {
+              label: '',
               to: '/docs/intro',
             },
           ],
@@ -77,7 +85,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Stochastic, Inc. Built with Docusaurus.`,
     },
     prism: {
       theme: lightCodeTheme,
