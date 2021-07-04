@@ -112,4 +112,5 @@ module.exports = {
       },
     ],
   ],
+  plugins: ["@docusaurus-terminology/parser"],
 }
