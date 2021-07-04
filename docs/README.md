@@ -48,6 +48,18 @@ Normal markdown explanation here...
 
 The deploy scripts will automatically generate a glossary and hyperlink terms to their explanation. You hyperlink a term to its definition like so: `%%term text|term_name%%` ex. %%Domain Driven Design|domain_driven_design%%%.
 
+Say you want to reference a term that exists under the `./docs/terms/` directory, e.g., `./docs/terms/party.md`. You can use the following syntax to reference this term in your documentation page:
+
+```
+Some content that wants to reference the %%Party|party%% term
+```
+
+The deploy scripts will replace it as follows:
+
+```jsx
+Some content that wants to reference the <Term reference="party" popup="Popup text">Party</Term> term
+```
+
 ## Glossary
 
 To preview the updated the Glossary run:
