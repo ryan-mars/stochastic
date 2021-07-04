@@ -1,25 +1,59 @@
-AWS - 
+# Glossary
 
+## Amazon Web Services (AWS)
 
-CDK - 
-Cloud Native -
-CRDT - 
+TODO
 
-DAG - Directed Acyclic Graph
-DDD - Domain Driven Design
-DX - Developer Experience
+## Cloud Development Kit (CDK)
 
-Event Storming - 
-Event Modeling - 
+TODO
 
-kinesis
-KSUID -
+## Cloud Native
 
-fifo sqs - 
+TODO
 
+## Conflict-free Replicated Data Type (CRDT)
 
+TODO
 
-Serverless - 
+## Directed Acyclic Graph (DAG)
 
-stochastic - 
+TODO
 
+## Domain Driven Design (DDD)
+
+TODO
+
+## Developer Experience (DX)
+
+TODO
+
+## Event Storming
+
+TODO
+
+## Event Sourcing
+
+TODO
+
+## Event Modeling
+
+TODO
+
+## Kinesis
+
+TODO
+
+## K-Sortable Unique Identifier (KSUID)
+
+TODO
+
+## Simple Queue Service (SQS)
+
+TODO
+
+## Serverless
+
+TODO
+
+## Stochastic

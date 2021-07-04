@@ -1,3 +1,7 @@
+---
+sidebar_position: 2
+---
+
 # A Treatise on Enterprise Software Architecture
 
 > “all experience hath shewn, that mankind are more disposed to suffer, while evils are sufferable, than to right themselves by abolishing the forms to which they are accustomed.”
