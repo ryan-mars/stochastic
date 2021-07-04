@@ -36,7 +36,7 @@ npm run check-terms
 
 Each terms gets it's own file under `docs/terms` with the following structure
 
-```md
+```
 ---
 id: term_name
 title: This Is The Page Title
