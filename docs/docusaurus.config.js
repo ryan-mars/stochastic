@@ -5,7 +5,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula")
 module.exports = {
   title: "Stochastic",
   tagline: "Cloud native, scalable, event-driven services made easy.",
-  url: "https://stochastic.dev",
+  url: "https://www.stochastic.dev",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -87,12 +87,12 @@ module.exports = {
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
-          editUrl: "https://github.com/facebook/docusaurus/edit/master/website/",
+          editUrl: "https://github.com/stochastic/stochastic/edit/master/website/",
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl: "https://github.com/facebook/docusaurus/edit/master/website/blog/",
+          editUrl: "https://github.com/stochastic/stochastic/edit/master/website/blog/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
