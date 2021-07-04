@@ -24,7 +24,7 @@ module.exports = {
           type: "doc",
           docId: "welcome",
           position: "left",
-          label: "Tutorial",
+          label: "Docs",
         },
         { to: "/blog", label: "Blog", position: "left" },
         {
@@ -42,15 +42,7 @@ module.exports = {
           items: [
             {
               label: "Event Storming",
-              to: "/docs/event-storming/overview",
-            },
-            {
-              label: "???",
-              to: "/docs/welcome",
-            },
-            {
-              label: "???",
-              to: "/docs/welcome",
+              to: "/docs/event-storming",
             },
           ],
         },
