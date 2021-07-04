@@ -4,7 +4,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula")
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: "Stochastic",
-  tagline: "Cloud native, scalable, event sourced apps made easy.",
+  tagline: "Cloud native, scalable, event-driven services made easy.",
   url: "https://stochastic.dev",
   baseUrl: "/",
   onBrokenLinks: "throw",
@@ -22,7 +22,7 @@ module.exports = {
       items: [
         {
           type: "doc",
-          docId: "intro",
+          docId: "welcome",
           position: "left",
           label: "Tutorial",
         },
@@ -46,11 +46,11 @@ module.exports = {
             },
             {
               label: "???",
-              to: "/docs/intro",
+              to: "/docs/welcome",
             },
             {
               label: "???",
-              to: "/docs/intro",
+              to: "/docs/welcome",
             },
           ],
         },

@@ -1,43 +1,38 @@
-import React from 'react';
-import clsx from 'clsx';
-import styles from './HomepageFeatures.module.css';
+import React from "react"
+import clsx from "clsx"
+import styles from "./HomepageFeatures.module.css"
 
 const FeatureList = [
   {
-    title: 'Explore and Map the Business Domain',
-    Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
+    title: "Explore and Map the Business Domain",
+    Svg: require("../../static/img/undraw_development.svg").default,
     description: (
       <>
-        Business and technical people collaboratively explore and map out 
-        the desired systems events, commands, views, and behavior.
+        Business and technical people collaboratively explore and map out the desired systems events, commands, views,
+        and behavior.
       </>
     ),
   },
   {
-    title: 'Design a Scalable, Cloud-Native Solution',
-    Svg: require('../../static/img/undraw_docusaurus_tree.svg').default,
+    title: "Design a Scalable, Cloud-Native Solution",
+    Svg: require("../../static/img/undraw_software_engineer.svg").default,
     description: (
       <>
-        Technical people dive deeper into design and desired behavior.
-        Stochastic provides framework for a cloud-native, scalable architecture.
+        Technical people dive deeper into design and desired behavior. Stochastic provides framework for a cloud-native,
+        scalable architecture.
       </>
     ),
   },
   {
-    title: 'Create Infrastracture and Code',
-    Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
-    description: (
-      <>
-        Stochastic creates the cloud infrastracture so developers can focus on
-        application logic.
-      </>
-    ),
+    title: "Create Infrastructure and Code",
+    Svg: require("../../static/img/undraw_dev_productivity.svg").default,
+    description: <>Stochastic creates the cloud infrastructure so developers can focus on application logic.</>,
   },
-];
+]
 
-function Feature({Svg, title, description}) {
+function Feature({ Svg, title, description }) {
   return (
-    <div className={clsx('col col--4')}>
+    <div className={clsx("col col--4")}>
       <div className="text--center">
         <Svg className={styles.featureSvg} alt={title} />
       </div>
@@ -46,7 +41,7 @@ function Feature({Svg, title, description}) {
         <p>{description}</p>
       </div>
     </div>
-  );
+  )
 }
 
 export default function HomepageFeatures() {
@@ -60,5 +55,5 @@ export default function HomepageFeatures() {
         </div>
       </div>
     </section>
-  );
+  )
 }
