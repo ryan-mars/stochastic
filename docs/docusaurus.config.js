@@ -5,12 +5,12 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula")
 module.exports = {
   title: "Stochastic",
   tagline: "Cloud native, scalable, event sourced apps made easy.",
-  url: "https://stochastic.com",
+  url: "https://stochastic.dev",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
-  organizationName: "facebook", // Usually your GitHub org/user name.
+  organizationName: "stochastic", // Usually your GitHub org/user name.
   projectName: "stochastic", // Usually your repo name.
   themeConfig: {
     navbar: {
@@ -28,7 +28,7 @@ module.exports = {
         },
         { to: "/blog", label: "Blog", position: "left" },
         {
-          href: "https://github.com/facebook/docusaurus",
+          href: "https://github.com/stochastic/stochastic",
           label: "GitHub",
           position: "right",
         },
@@ -42,14 +42,14 @@ module.exports = {
           items: [
             {
               label: "Event Storming",
+              to: "/docs/event-storming/overview",
+            },
+            {
+              label: "???",
               to: "/docs/intro",
             },
             {
-              label: "Cloud Native Architecture & Design",
-              to: "/docs/intro",
-            },
-            {
-              label: "Intro",
+              label: "???",
               to: "/docs/intro",
             },
           ],
@@ -59,11 +59,7 @@ module.exports = {
           items: [
             {
               label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
-            },
-            {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
+              href: "https://stackoverflow.com/questions/tagged/stochastic",
             },
             {
               label: "Twitter",
@@ -80,12 +76,12 @@ module.exports = {
             },
             {
               label: "GitHub",
-              href: "https://github.com/facebook/docusaurus",
+              href: "https://github.com/stochastic/stochastic",
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Stochastic, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Ryan Marsh. Built with Docusaurus.`,
     },
     prism: {
       theme: lightCodeTheme,
