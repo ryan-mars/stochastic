@@ -32,6 +32,22 @@ To verify that there are no mistakes with terminology references run:
 npm run check-terms
 ```
 
+## Terms
+
+Each terms gets it's own file under `docs/terms` with the following structure
+
+```md
+---
+id: term_name
+title: This Is The Page Title
+hoverText: This hover text will appear in the documentation page that you reference this term
+---
+
+Normal markdown explanation here...
+```
+
+The deploy scripts will automatically generate a glossary and hyperlink terms to their explanation. You hyperlink a term to its definition like so: `%%term text|term_name%%` ex. %%Domain Driven Design|domain_driven_design%%%.
+
 ## Glossary
 
 To preview the updated the Glossary run:
