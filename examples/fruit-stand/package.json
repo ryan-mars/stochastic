@@ -6,7 +6,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "clean": "rm -rf lib cdk.out stochastic.out tsconfig.tsbuildinfo",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "keywords": [],
   "license": "MIT",
