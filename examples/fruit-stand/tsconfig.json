@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "outDir": "lib",
+    "composite": true,
+    "rootDir": "src"
+  },
+  "include": ["src"],
+  "extends": "../../tsconfig.base.json",
+  "references": [
+    {
+      "path": "../../packages/stochastic"
+    },
+    {
+      "path": "../../packages/stochastic-local"
+    }
+  ]
+}
