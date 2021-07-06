@@ -1,6 +1,6 @@
 import * as lambda from "@aws-cdk/aws-lambda"
 import * as nodeLambda from "@aws-cdk/aws-lambda-nodejs"
-import { BoundedContext, Command } from "stochastic"
+import { BoundedContext, Command, EnvironmentVariables } from "stochastic"
 import { BoundedContextConstruct } from "./bounded-context-construct"
 import { generateHandler } from "./code-gen"
 import { ComponentConstruct, ComponentConstructProps, ComponentProps } from "./component-construct"
@@ -28,9 +28,10 @@ export class CommandConstruct<
       runtime: lambda.Runtime.NODEJS_14_X,
       ...props,
       environment: {
-        COMPONENT_NAME: this.name,
+        [EnvironmentVariables.BoundedContextName]: scope.boundedContext.name,
+        [EnvironmentVariables.ComponentName]: this.name,
         // TODO: use SSM instead of environment variables
-        EVENT_STORE_TABLE: scope.eventStore.table.tableName,
+        [EnvironmentVariables.EventStoreTableName]: scope.eventStore.table.tableName,
       },
       bundling: {
         sourceMap: true,

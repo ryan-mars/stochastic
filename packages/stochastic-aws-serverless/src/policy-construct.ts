@@ -5,7 +5,7 @@ import * as nodeLambda from "@aws-cdk/aws-lambda-nodejs"
 import * as sns from "@aws-cdk/aws-sns"
 import * as snsSubscriptions from "@aws-cdk/aws-sns-subscriptions"
 import * as sqs from "@aws-cdk/aws-sqs"
-import { BoundedContext, Command, Policy, ReadModel } from "stochastic"
+import { BoundedContext, Command, EnvironmentVariables, Policy, ReadModel } from "stochastic"
 import { BoundedContextConstruct } from "./bounded-context-construct"
 import { generateHandler } from "./code-gen"
 import { CommandConstruct } from "./command-construct"
@@ -39,7 +39,8 @@ export class PolicyConstruct<
       ...props,
       runtime: lambda.Runtime.NODEJS_14_X,
       environment: {
-        COMPONENT_NAME: this.name,
+        [EnvironmentVariables.BoundedContextName]: scope.boundedContext.name,
+        [EnvironmentVariables.ComponentName]: this.name,
         ...props.environment,
       },
       bundling: {

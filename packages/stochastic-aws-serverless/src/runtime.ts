@@ -2,13 +2,23 @@ import * as lambda from "aws-lambda"
 
 import { Credentials } from "@aws-sdk/types"
 import { InvokeCommand, LambdaClient } from "@aws-sdk/client-lambda"
-import { Command, Config, DomainEventEnvelope, Init, ReadModel } from "stochastic"
+import {
+  Command,
+  Config,
+  DomainEventEnvelope,
+  EnvironmentVariables,
+  getEnv,
+  getLogLevel,
+  Init,
+  LogLevel,
+  ReadModel,
+} from "stochastic"
 import { Context, SQSEvent } from "aws-lambda"
 import { Component } from "stochastic"
 import { connectStoreInterface, storeEvent } from "./event-store"
 import { TextEncoder } from "util"
 
-import { createMetricsLogger, metricScope, MetricsLogger, Unit } from "aws-embedded-metrics"
+import { Configuration, metricScope, MetricsLogger, Unit } from "aws-embedded-metrics"
 
 export interface RuntimeOptions {
   credentials?: Credentials
@@ -29,11 +39,12 @@ export class LambdaRuntime implements Runtime {
     options?: RuntimeOptions,
   ) {
     this.lambda = new LambdaClient({ credentials: options?.credentials })
-    const log_level = (process.env["LOG_LEVEL"] ?? "info").toLowerCase()
-    const handlerName = process.env.COMPONENT_NAME
-    if (handlerName === undefined) {
-      throw new Error(`environment variable not set: 'COMPONENT_NAME'`)
-    }
+    const logLevel = getLogLevel() ?? LogLevel.Debug
+    const boundedContextName = getEnv(EnvironmentVariables.BoundedContextName)
+    const handlerName = getEnv(EnvironmentVariables.ComponentName) // TODO: is this ever different than the passed in `componentName`?
+
+    // set the metrics logger's service name to the name of the bounded context.
+    Configuration.serviceName = boundedContextName
 
     if (component === undefined) {
       throw new Error(`no such handler: '${handlerName}'`)
@@ -57,7 +68,7 @@ export class LambdaRuntime implements Runtime {
         const command = component.init(context)
 
         return createHandler(async event => {
-          if (log_level === "debug") {
+          if (logLevel === LogLevel.Debug) {
             console.log(JSON.stringify({ event }, null, 2))
           }
 
@@ -71,7 +82,7 @@ export class LambdaRuntime implements Runtime {
             }),
           )
 
-          if (log_level === "debug") {
+          if (logLevel === LogLevel.Debug) {
             console.log(JSON.stringify({ commandResponse }, null, 2))
           }
 
@@ -95,11 +106,11 @@ export class LambdaRuntime implements Runtime {
               await storeEvent(tableName, evt)
             }),
           )
-          if (log_level === "debug") {
+          if (logLevel === LogLevel.Debug) {
             console.log(JSON.stringify({ events }, null, 2))
             console.log(JSON.stringify({ confirmation }, null, 2))
           }
-          return undefined
+          return confirmation
         })
       })
     } else if (component.kind === "EventHandler") {
@@ -107,7 +118,7 @@ export class LambdaRuntime implements Runtime {
       this.handler = memoize(context => {
         const projection = component.init(getConfiguration(component.config) as any, context)
         return createHandler(async (event: SQSEvent, context: Context) => {
-          if (log_level === "debug") {
+          if (logLevel === LogLevel.Debug) {
             console.log(JSON.stringify({ event }, null, 2))
           }
           await Promise.all(event.Records.map(record => projection(JSON.parse(record.body), context)))
@@ -120,7 +131,7 @@ export class LambdaRuntime implements Runtime {
         const policy = component.init(context)
 
         return createHandler(async (event: SQSEvent, context: Context) => {
-          if (log_level === "debug") {
+          if (logLevel === LogLevel.Debug) {
             console.log(JSON.stringify({ event }, null, 2))
           }
           await Promise.all(event.Records.map(record => policy(JSON.parse(record.body), commands, readModels, context)))
