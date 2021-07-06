@@ -9,7 +9,8 @@
     "test": "jest"
   },
   "keywords": [],
-  "author": "Ryan Marsh",
+  "license": "MIT",
+  "author": "",
   "dependencies": {
     "stochastic": "^0.1.0",
     "stochastic-local": "^0.1.0",

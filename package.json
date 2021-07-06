@@ -1,6 +1,8 @@
 {
   "name": "root",
   "private": true,
+  "license": "MIT",
+  "author": "Stochastic Maintainers",
   "scripts": {
     "postinstall": "lerna bootstrap",
     "clean": "lerna run clean --parallel && lerna clean -y",

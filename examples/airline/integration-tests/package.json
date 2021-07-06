@@ -9,8 +9,8 @@
     "clean": "rm -rf lib"
   },
   "keywords": [],
+  "license": "MIT",
   "author": "",
-  "private": true,
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.18.0",
     "@aws-sdk/client-lambda": "^3.16.0",

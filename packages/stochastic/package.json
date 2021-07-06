@@ -12,7 +12,8 @@
     "test": "jest --passWithNoTests"
   },
   "keywords": [],
-  "author": "Ryan Marsh",
+  "license": "MIT",
+  "author": "",
   "devDependencies": {
     "@types/jest": "^26.0.23",
     "@types/node": "^14.14.35",

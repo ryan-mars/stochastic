@@ -11,7 +11,8 @@
     "synth": "cdk synth"
   },
   "keywords": [],
-  "author": "Ryan Marsh",
+  "license": "MIT",
+  "author": "",
   "dependencies": {
     "@aws-cdk/aws-events": "^1.105.0",
     "@aws-cdk/core": "^1.105.0",
