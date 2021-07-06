@@ -1,7 +1,7 @@
 import * as cdk from "@aws-cdk/core"
 import * as lambda from "@aws-cdk/aws-lambda"
 import * as nodeLambda from "@aws-cdk/aws-lambda-nodejs"
-import { BoundedContext, Query, ReadModel } from "stochastic"
+import { BoundedContext, EnvironmentVariables, Query, ReadModel } from "stochastic"
 import { BoundedContextConstruct } from "./bounded-context-construct"
 import { generateHandler } from "./code-gen"
 import { ComponentConstruct, ComponentConstructProps } from "./component-construct"
@@ -39,7 +39,8 @@ export class QueryConstruct<
       ...props,
       runtime: lambda.Runtime.NODEJS_14_X,
       environment: {
-        COMPONENT_NAME: this.name,
+        [EnvironmentVariables.BoundedContextName]: scope.boundedContext.name,
+        [EnvironmentVariables.ComponentName]: this.name,
       },
       bundling: {
         sourceMap: true,
