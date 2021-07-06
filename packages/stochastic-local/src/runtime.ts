@@ -31,17 +31,14 @@ export class LocalRuntime<Context extends BoundedContext = BoundedContext> {
 
   constructor(props: { boundedContext: Context }) {
     const { boundedContext } = props
-    const { components } = boundedContext
-    //@ts-ignore
-    this.commands = {} // must initialize
+
+    ;(this.commands as any) = {}
 
     for (const [componentName, component] of Object.entries(boundedContext.components).sort(
       ([nameA, componentA], [nameB, componentB]) => (componentA.kind === "Command" ? -1 : 1),
     )) {
       if (component.kind === "Command") {
-        // No index signature with a parameter of type 'string' was found on type 'CommandsFromContext<Context>'
-        // @ts-ignore
-        this.commands[componentName] = async (intent: any) => {
+        ;(this.commands as any)[componentName] = async (intent: any) => {
           console.log({ componentName })
           console.log({ intent })
           const store = {
