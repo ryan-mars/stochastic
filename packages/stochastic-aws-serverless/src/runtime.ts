@@ -43,8 +43,8 @@ export class LambdaRuntime implements Runtime {
     const boundedContextName = getEnv(EnvironmentVariables.BoundedContextName)
     const handlerName = getEnv(EnvironmentVariables.ComponentName) // TODO: is this ever different than the passed in `componentName`?
 
-    // set the metrics logger's service name to the name of the bounded context.
-    Configuration.serviceName = boundedContextName
+    // Configuration.serviceName = boundedContextName // what is this used for?
+    Configuration.namespace = boundedContextName
 
     if (component === undefined) {
       throw new Error(`no such handler: '${handlerName}'`)
@@ -58,16 +58,13 @@ export class LambdaRuntime implements Runtime {
         }))
         .reduce((a, b) => ({ ...a, ...b }), {})
 
-      const tableName = process.env["EVENT_STORE_TABLE"]
-      if (tableName === undefined) {
-        throw new Error("missing environment variable: EVENT_STORE_TABLE")
-      }
+      const tableName = getEnv(EnvironmentVariables.EventStoreTableName)
       const source = component.store.stateShape.name
 
       this.handler = memoize(context => {
         const command = component.init(context)
 
-        return createHandler(async event => {
+        return createHandler(metrics => async event => {
           if (logLevel === LogLevel.Debug) {
             console.log(JSON.stringify({ event }, null, 2))
           }
@@ -89,6 +86,7 @@ export class LambdaRuntime implements Runtime {
           const events = (Array.isArray(commandResponse) ? commandResponse : commandResponse.events).map(
             eventInstance => {
               const event = domainEventLookupTable[eventInstance.__typename]
+              metrics.putMetric(`Emit${eventInstance.__typename}`, 1, Unit.Count)
               if (event === undefined) {
                 throw new Error("FUCK")
               }
@@ -114,10 +112,11 @@ export class LambdaRuntime implements Runtime {
         })
       })
     } else if (component.kind === "EventHandler") {
+      // Todo
     } else if (component.kind === "ReadModel") {
       this.handler = memoize(context => {
         const projection = component.init(getConfiguration(component.config) as any, context)
-        return createHandler(async (event: SQSEvent, context: Context) => {
+        return createHandler(metrics => async (event: SQSEvent, context: Context) => {
           if (logLevel === LogLevel.Debug) {
             console.log(JSON.stringify({ event }, null, 2))
           }
@@ -126,22 +125,30 @@ export class LambdaRuntime implements Runtime {
       })
     } else if (component.kind === "Policy") {
       this.handler = memoize(context => {
-        const commands = initCommands(component.commands, names, this.lambda)
         const readModels = initReadModels(component.reads, context)
         const policy = component.init(context)
 
-        return createHandler(async (event: SQSEvent, context: Context) => {
+        return createHandler(metrics => async (event: SQSEvent, context: Context) => {
+          const commands = initCommands(component.commands, names, this.lambda, metrics)
           if (logLevel === LogLevel.Debug) {
             console.log(JSON.stringify({ event }, null, 2))
           }
-          await Promise.all(event.Records.map(record => policy(JSON.parse(record.body), commands, readModels, context)))
+          await Promise.all(
+            event.Records.map(record => {
+              const event: DomainEventEnvelope = JSON.parse(record.body)
+              return instrumentAction(() => policy(event, commands, readModels, context), {
+                metrics,
+                name: event.type,
+              })
+            }),
+          )
         })
       })
     } else if (component.kind === "Query") {
       this.handler = memoize(context => {
         const query = component.init(initReadModels(component.readModels, context), context)
 
-        return createHandler((event: any, context: any) => query(event /* TODO: deserialization */, context))
+        return createHandler(metrics => (event: any, context: any) => query(event /* TODO: deserialization */, context))
       })
     }
 
@@ -151,63 +158,86 @@ export class LambdaRuntime implements Runtime {
      * @param eventHandler the user-defined event handler
      * @returns a wrapped eventHandler that includes metrics
      */
-    function createHandler<F extends (...args: any[]) => Promise<any>>(eventHandler: F): F {
+    function createHandler<F extends (...args: any[]) => Promise<any>>(eventHandler: (metrics: MetricsLogger) => F): F {
       return metricScope(metrics => {
         metrics.putDimensions({
           ComponentKind: component.kind,
           ComponentName: componentName,
         })
 
-        return async args => {
-          const startTime = new Date()
-
-          try {
-            const result = await eventHandler(args)
-            metrics.putMetric("Failure", 0, Unit.Count)
-            metrics.putMetric("Success", 1, Unit.Count)
-            return result
-          } catch (err) {
-            console.error(err)
-            metrics.putMetric("Failure", 1, Unit.Count)
-            metrics.putMetric("Success", 0, Unit.Count)
-          } finally {
-            const endTime = new Date()
-            metrics.putMetric("Latency", endTime.getTime() - startTime.getTime(), Unit.Milliseconds)
-          }
-        }
+        return eventHandler(metrics)
       }) as F
-    }
-
-    function memoize<T>(f: (context: any) => T): (context: any) => T {
-      let t: T
-      let init: boolean = false
-
-      return context => {
-        if (init === false) {
-          t = f(context)
-          init = true
-        }
-        return t
-      }
     }
   }
 }
 
-function initCommands(commands: Record<string, Command>, names: Map<Component, string>, lambda: LambdaClient) {
+function memoize<T>(f: (context: any) => T): (context: any) => T {
+  let t: T
+  let init: boolean = false
+
+  return context => {
+    if (init === false) {
+      t = f(context)
+      init = true
+    }
+    return t
+  }
+}
+
+async function instrumentAction<T>(
+  f: () => Promise<T>,
+  props: {
+    metrics: MetricsLogger
+    name: string
+    prefix?: string
+    suffix?: string
+  },
+): Promise<T> {
+  const name = `${props.prefix ?? ""}${props.name}${props.suffix ?? ""}`
+  const startTime = new Date()
+
+  try {
+    const result = await f()
+    props.metrics.putMetric(`${name}Failure`, 0, Unit.Count)
+    props.metrics.putMetric(`${name}Success`, 1, Unit.Count)
+    return result
+  } catch (err) {
+    console.error(err)
+    props.metrics.putMetric(`${name}Failure`, 1, Unit.Count)
+    props.metrics.putMetric(`${name}Success`, 0, Unit.Count)
+    throw err
+  } finally {
+    const endTime = new Date()
+    props.metrics.putMetric(`${name}Latency`, endTime.getTime() - startTime.getTime(), Unit.Milliseconds)
+  }
+}
+
+function initCommands(
+  commands: Record<string, Command>,
+  names: Map<Component, string>,
+  lambda: LambdaClient,
+  metrics: MetricsLogger,
+) {
   return Object.entries(commands as Record<string, Command>)
     .map(([key, command]) => {
       const commandName = names.get(command)!
-      const lambdaArn = process.env[`${commandName}_LAMBDA_ARN`]
-      if (lambdaArn === undefined) {
-        throw new Error(`missing environment variable: '${commandName}_LAMBDA_ARN'`)
-      }
+      const lambdaArn = getEnv(`${commandName}_LAMBDA_ARN`)
+
       return {
         [key]: async (input: any) =>
-          lambda.send(
-            new InvokeCommand({
-              FunctionName: lambdaArn,
-              Payload: new TextEncoder().encode(JSON.stringify(input)),
-            }),
+          instrumentAction(
+            () =>
+              lambda.send(
+                new InvokeCommand({
+                  FunctionName: lambdaArn,
+                  Payload: new TextEncoder().encode(JSON.stringify(input)),
+                }),
+              ),
+            {
+              metrics,
+              name: commandName,
+              prefix: "Invoke",
+            },
           ),
       }
     })

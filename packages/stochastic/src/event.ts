@@ -10,7 +10,7 @@ export interface DomainEventEnvelopeProps<Payload> {
 }
 
 // TODO: Shouldn't Payload be narrowed to `extends DomainEvent`?
-export class DomainEventEnvelope<Payload extends { __typename: string }> {
+export class DomainEventEnvelope<Payload extends { __typename: string } = { __typename: string }> {
   readonly type: Payload["__typename"]
   readonly id: string
   readonly time: Date

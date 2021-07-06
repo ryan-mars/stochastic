@@ -35,7 +35,12 @@ export class OperationsStack extends cdk.Stack {
           eventBus,
         }),
       ],
-      emitEvents: [new EmitEventBridgeBinding({ events: [FlightCancelled], eventBus })],
+      emitEvents: [
+        new EmitEventBridgeBinding({
+          events: [FlightCancelled],
+          eventBus,
+        }),
+      ],
       config: {},
     })
     // Destroy this table when the stack is destroyed since this is just an example app.
@@ -44,4 +49,6 @@ export class OperationsStack extends cdk.Stack {
 }
 
 const app = new cdk.App()
-new OperationsStack(app, "Operations", { description: "Flight Operations service" })
+new OperationsStack(app, "Operations", {
+  description: "Flight Operations service",
+})

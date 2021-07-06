@@ -9,8 +9,9 @@ import { ComponentConstruct, ComponentConstructProps, ComponentProps } from "./c
  * Command Construct Props is just the Lambda Props with code omitted - we'll bundle the code from the BoundedContext
  * object which contains a reference to its path.
  */
-export interface CommandConstructProps<C extends Command = Command>
-  extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler"> {
+export interface CommandConstructProps<S extends BoundedContext = BoundedContext, C extends Command = Command>
+  extends Omit<lambda.FunctionProps, "code" | "runtime" | "handler">,
+    ComponentConstructProps<S, C> {
   runtime?: lambda.Runtime
 }
 
@@ -19,7 +20,7 @@ export class CommandConstruct<
   C extends Command = Command,
 > extends ComponentConstruct<S, C> {
   readonly handler: lambda.Function
-  constructor(scope: BoundedContextConstruct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
+  constructor(scope: BoundedContextConstruct, id: string, props: ComponentConstructProps<S, C>) {
     super(scope, id, props)
 
     this.handler = new nodeLambda.NodejsFunction(this, "Function", {

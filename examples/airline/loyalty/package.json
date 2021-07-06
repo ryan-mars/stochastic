@@ -13,8 +13,8 @@
   "keywords": [],
   "author": "Ryan Marsh",
   "dependencies": {
-    "@aws-cdk/core": "^1.105.0",
-    "aws-cdk": "^1.105.0",
+    "@aws-cdk/core": "^1.111.0",
+    "aws-cdk": "^1.111.0",
     "stochastic": "^0.1.0",
     "stochastic-aws-serverless": "^0.1.0",
     "superstruct": "0.14.2"

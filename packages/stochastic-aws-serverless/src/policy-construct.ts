@@ -13,24 +13,23 @@ import { ComponentConstruct, ComponentConstructProps, ComponentProps } from "./c
 import { ConfigBindings, ConfigBinding } from "./config-binding"
 import { ReadModelBindings } from "./read-model-binding"
 
-export interface PolicyConstructProps {
-  commands: Map<string, CommandConstruct>
-  dependencies: Record<string, ConfigBinding>
-}
-
 /**
  * Command Construct Props is just the Lambda Props with code omitted - we'll bundle the code from the BoundedContext
  * object which contains a reference to its path.
  */
-export interface PolicyConstructProps<P extends Policy = Policy>
-  extends Omit<nodeLambda.NodejsFunctionProps, "code" | "runtime" | "handler"> {}
+export interface PolicyConstructProps<B extends BoundedContext, P extends Policy = Policy>
+  extends Omit<nodeLambda.NodejsFunctionProps, "code" | "runtime" | "handler">,
+    ComponentConstructProps<B, P> {
+  commands: Map<string, CommandConstruct>
+  dependencies: Record<string, ConfigBinding>
+}
 
 export class PolicyConstruct<
-  S extends BoundedContext = BoundedContext,
-  C extends Policy = Policy,
-> extends ComponentConstruct<S, C> {
+  B extends BoundedContext = BoundedContext,
+  P extends Policy = Policy,
+> extends ComponentConstruct<B, P> {
   readonly handler: lambda.Function
-  constructor(scope: BoundedContextConstruct, id: string, props: ComponentProps<C> & ComponentConstructProps<S, C>) {
+  constructor(scope: BoundedContextConstruct, id: string, props: PolicyConstructProps<B, P>) {
     super(scope, id, props)
 
     this.handler = new nodeLambda.NodejsFunction(this, "Function", {
