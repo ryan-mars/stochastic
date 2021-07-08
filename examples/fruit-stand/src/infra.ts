@@ -11,7 +11,12 @@ async function main() {
       stallNo: "03",
     }),
   )
-  return result
+
+  console.log(result)
+
+  fruitStand.eventStore.forEach((value, key) => {
+    console.log("eventStore:", JSON.stringify({ [key]: value }, null, 2))
+  })
 }
 
 main().then(console.log).catch(console.log)
