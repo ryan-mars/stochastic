@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`runtime command returns the event 1`] = `
+Array [
+  Object {
+    "id": Any<String>,
+    "payload": CustomerArrived {
+      "__typename": "CustomerArrived",
+      "arrivalTime": "2016-12-21T23:36:07.071Z",
+      "orderNo": "1234",
+      "stallNo": "03",
+    },
+    "source": "Order",
+    "source_id": "1234",
+    "time": 2016-12-21T23:36:07.071Z,
+    "type": "CustomerArrived",
+  },
+]
+`;

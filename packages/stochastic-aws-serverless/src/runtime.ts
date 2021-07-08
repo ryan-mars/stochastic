@@ -12,6 +12,10 @@ import {
   Init,
   LogLevel,
   ReadModel,
+  Store,
+  Shape,
+  DomainEvent,
+  Policy,
 } from "stochastic"
 import { Context, SQSEvent } from "aws-lambda"
 import { Component } from "stochastic"
@@ -52,123 +56,160 @@ export class LambdaRuntime implements Runtime {
 
     if (component.kind === "Command") {
       // lookup table to map `__typename` to the static `DomainEvent` class.
-      const domainEventLookupTable = component.events
-        .map(eventType => ({
-          [eventType.__typename]: eventType,
-        }))
-        .reduce((a, b) => ({ ...a, ...b }), {})
-
-      const tableName = getEnv(EnvironmentVariables.EventStoreTableName)
-      const source = component.store.stateShape.name
-
-      this.handler = memoize(context => {
-        const command = component.init(context)
-
-        return createHandler(metrics => async event => {
-          if (logLevel === LogLevel.Debug) {
-            console.log(JSON.stringify({ event }, null, 2))
-          }
-
-          const commandResponse = await command(
-            event,
-            connectStoreInterface({
-              eventStore: tableName,
-              source,
-              initialState: component.store.initialState,
-              reducer: component.store.reducer,
-            }),
-          )
-
-          if (logLevel === LogLevel.Debug) {
-            console.log(JSON.stringify({ commandResponse }, null, 2))
-          }
-
-          const events = (Array.isArray(commandResponse) ? commandResponse : commandResponse.events).map(
-            eventInstance => {
-              const event = domainEventLookupTable[eventInstance.__typename]
-              metrics.putMetric(`Emit${eventInstance.__typename}`, 1, Unit.Count)
-              if (event === undefined) {
-                throw new Error("FUCK")
-              }
-              return new DomainEventEnvelope({
-                source,
-                source_id: eventInstance[event.__key],
-                payload: eventInstance,
-              })
-            },
-          )
-          const confirmation = Array.isArray(commandResponse) ? undefined : commandResponse.confirmation ?? events
-
-          await Promise.all(
-            events.map(async evt => {
-              await storeEvent(tableName, evt)
-            }),
-          )
-          if (logLevel === LogLevel.Debug) {
-            console.log(JSON.stringify({ events }, null, 2))
-            console.log(JSON.stringify({ confirmation }, null, 2))
-          }
-          return confirmation
-        })
-      })
+      this.handler = commandRuntime(component, componentName, logLevel)
     } else if (component.kind === "EventHandler") {
       // Todo
     } else if (component.kind === "ReadModel") {
-      this.handler = memoize(context => {
-        const projection = component.init(getConfiguration(component.config) as any, context)
-        return createHandler(metrics => async (event: SQSEvent, context: Context) => {
-          if (logLevel === LogLevel.Debug) {
-            console.log(JSON.stringify({ event }, null, 2))
-          }
-          await Promise.all(event.Records.map(record => projection(JSON.parse(record.body), context)))
-        })
-      })
+      this.handler = readModelRuntime(component, componentName, logLevel)
     } else if (component.kind === "Policy") {
-      this.handler = memoize(context => {
-        const readModels = initReadModels(component.reads, context)
-        const policy = component.init(context)
-
-        return createHandler(metrics => async (event: SQSEvent, context: Context) => {
-          const commands = initCommands(component.commands, names, this.lambda, metrics)
-          if (logLevel === LogLevel.Debug) {
-            console.log(JSON.stringify({ event }, null, 2))
-          }
-          await Promise.all(
-            event.Records.map(record => {
-              const event: DomainEventEnvelope = JSON.parse(record.body)
-              return instrumentAction(() => policy(event, commands, readModels, context), {
-                metrics,
-                name: event.type,
-              })
-            }),
-          )
-        })
-      })
+      this.handler = policyRuntime(component, componentName, this.lambda, names, logLevel)
     } else if (component.kind === "Query") {
       this.handler = memoize(context => {
         const query = component.init(initReadModels(component.readModels, context), context)
 
-        return createHandler(metrics => (event: any, context: any) => query(event /* TODO: deserialization */, context))
+        return createHandler(
+          componentName,
+          component,
+          metrics => (event: any, context: any) => query(event /* TODO: deserialization */, context),
+        )
       })
     }
-
-    /**
-     * Wraps a Handler Function, F, in a metricScope with default metrics behavior specific to event storming.
-     *
-     * @param eventHandler the user-defined event handler
-     * @returns a wrapped eventHandler that includes metrics
-     */
-    function createHandler<F extends (...args: any[]) => Promise<any>>(eventHandler: (metrics: MetricsLogger) => F): F {
-      return metricScope(metrics => {
-        metrics.putDimensions({
-          ComponentKind: component.kind,
-          ComponentName: componentName,
-        })
-
-        return eventHandler(metrics)
-      }) as F
-    }
   }
+}
+
+/**
+ * Wraps a Handler Function, F, in a metricScope with default metrics behavior specific to event storming.
+ *
+ * @param eventHandler the user-defined event handler
+ * @returns a wrapped eventHandler that includes metrics
+ */
+function createHandler<F extends (...args: any[]) => Promise<any>>(
+  componentName: string,
+  component: Component,
+  eventHandler: (metrics: MetricsLogger) => F,
+): F {
+  return metricScope(metrics => {
+    metrics.putDimensions({
+      ComponentKind: component.kind,
+      ComponentName: componentName,
+    })
+
+    return eventHandler(metrics)
+  }) as F
+}
+
+function policyRuntime(
+  component: Policy<string, readonly DomainEvent<string, any, string>[], any, any>,
+  componentName: string,
+  commandClient: LambdaClient,
+  names: Map<Component, string>,
+  logLevel: LogLevel,
+): Init<lambda.Handler<any, any>, any> {
+  return memoize(context => {
+    const readModels = initReadModels(component.reads, context)
+    const policy = component.init(context)
+
+    return createHandler(componentName, component, metrics => async (event: SQSEvent, context: Context) => {
+      const commands = initCommands(component.commands, names, commandClient, metrics)
+      if (logLevel === LogLevel.Debug) {
+        console.log(JSON.stringify({ event }, null, 2))
+      }
+      await Promise.all(
+        event.Records.map(record => {
+          const event: DomainEventEnvelope = JSON.parse(record.body)
+          return instrumentAction(() => policy(event, commands, readModels, context), {
+            metrics,
+            name: event.type,
+          })
+        }),
+      )
+    })
+  })
+}
+
+function readModelRuntime(
+  component: ReadModel<DomainEvent<string, any, string>[], Config<string, Shape<string, any>>[], any>,
+  componentName: string,
+  logLevel: LogLevel,
+) {
+  return memoize(context => {
+    const projection = component.init(getConfiguration(component.config) as any, context)
+    return createHandler(componentName, component, metrics => async (event: SQSEvent, context: Context) => {
+      if (logLevel === LogLevel.Debug) {
+        console.log(JSON.stringify({ event }, null, 2))
+      }
+      await Promise.all(event.Records.map(record => projection(JSON.parse(record.body), context)))
+    })
+  })
+}
+
+function commandRuntime(
+  component: Command<
+    Store<Shape<string, any>, any, readonly DomainEvent<string, any, string>[]>,
+    Shape<string, any>,
+    Shape<string, any> | undefined,
+    readonly DomainEvent<string, any, string>[]
+  >,
+  componentName: string,
+  logLevel: LogLevel,
+) {
+  const domainEventLookupTable = component.events
+    .map(eventType => ({
+      [eventType.__typename]: eventType,
+    }))
+    .reduce((a, b) => ({ ...a, ...b }), {})
+
+  const tableName = getEnv(EnvironmentVariables.EventStoreTableName)
+  const source = component.store.stateShape.name
+
+  return memoize(context => {
+    const command = component.init(context)
+
+    return createHandler(componentName, component, metrics => async event => {
+      if (logLevel === LogLevel.Debug) {
+        console.log(JSON.stringify({ event }, null, 2))
+      }
+
+      const commandResponse = await command(
+        event,
+        connectStoreInterface({
+          eventStore: tableName,
+          source,
+          initialState: component.store.initialState,
+          reducer: component.store.reducer,
+        }),
+      )
+
+      if (logLevel === LogLevel.Debug) {
+        console.log(JSON.stringify({ commandResponse }, null, 2))
+      }
+
+      const events = (Array.isArray(commandResponse) ? commandResponse : commandResponse.events).map(eventInstance => {
+        const event = domainEventLookupTable[eventInstance.__typename]
+        metrics.putMetric(`Emit${eventInstance.__typename}`, 1, Unit.Count)
+        if (event === undefined) {
+          throw new Error("FUCK")
+        }
+        return new DomainEventEnvelope({
+          source,
+          source_id: eventInstance[event.__key],
+          payload: eventInstance,
+        })
+      })
+      const confirmation = Array.isArray(commandResponse) ? undefined : commandResponse.confirmation ?? events
+
+      await Promise.all(
+        events.map(async evt => {
+          await storeEvent(tableName, evt)
+        }),
+      )
+      if (logLevel === LogLevel.Debug) {
+        console.log(JSON.stringify({ events }, null, 2))
+        console.log(JSON.stringify({ confirmation }, null, 2))
+      }
+      return confirmation
+    })
+  })
 }
 
 function memoize<T>(f: (context: any) => T): (context: any) => T {
