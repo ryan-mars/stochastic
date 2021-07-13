@@ -24,6 +24,7 @@ export interface BoundedContextMonitoringProps<Context extends BoundedContext = 
  */
 export class BoundedContextMonitoring<Context extends BoundedContext = BoundedContext> extends cdk.Stack {
   readonly dashboard: cw.Dashboard
+
   constructor(scope: cdk.Construct, id: string, props: BoundedContextMonitoringProps<Context>) {
     super(scope, id, props)
 

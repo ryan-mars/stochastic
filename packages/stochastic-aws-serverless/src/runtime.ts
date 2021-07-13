@@ -185,6 +185,8 @@ function memoize<T>(f: (context: any) => T): (context: any) => T {
   }
 }
 
+import { performance } from "perf_hooks"
+
 async function instrumentAction<T>(
   f: () => Promise<T>,
   props: {
@@ -195,7 +197,7 @@ async function instrumentAction<T>(
   },
 ): Promise<T> {
   const name = `${props.prefix ?? ""}${props.name}${props.suffix ?? ""}`
-  const startTime = new Date()
+  const startTime = performance.now()
 
   try {
     const result = await f()
@@ -208,8 +210,8 @@ async function instrumentAction<T>(
     props.metrics.putMetric(`${name}Success`, 0, Unit.Count)
     throw err
   } finally {
-    const endTime = new Date()
-    props.metrics.putMetric(`${name}Latency`, endTime.getTime() - startTime.getTime(), Unit.Milliseconds)
+    const endTime = performance.now()
+    props.metrics.putMetric(`${name}Latency`, endTime - startTime, Unit.Milliseconds)
   }
 }
 
