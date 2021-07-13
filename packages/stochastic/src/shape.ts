@@ -24,7 +24,7 @@ export function Shape<__typename extends string, S extends ObjectSchema>(
   const Class = object(schema)
   return class {
     static readonly Class = Class
-    readonly __typename: __typename
+    readonly __typename: __typename = __typename
 
     constructor(
       fields: {
@@ -34,7 +34,6 @@ export function Shape<__typename extends string, S extends ObjectSchema>(
       for (const [name, value] of Object.entries(fields)) {
         ;(this as any)[name] = value
       }
-      this.__typename = __typename
     }
   } as any
 }

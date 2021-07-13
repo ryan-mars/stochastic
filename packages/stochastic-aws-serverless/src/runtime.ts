@@ -138,6 +138,7 @@ export class LambdaRuntime implements Runtime {
               const event: DomainEventEnvelope = JSON.parse(record.body)
               return instrumentAction(() => policy(event, commands, readModels, context), {
                 metrics,
+                prefix: "On",
                 name: event.type,
               })
             }),
@@ -244,6 +245,7 @@ function initCommands(
     .reduce((a, b) => ({ ...a, ...b }), {})
 }
 
+// TODO: instrument with metrics
 function initReadModels(readModels: Record<string, ReadModel>, context: any) {
   return Object.entries(readModels)
     .map(([key, readModel]) => {

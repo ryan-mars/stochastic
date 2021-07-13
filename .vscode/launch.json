@@ -16,6 +16,20 @@
       "sourceMaps": true,
       "cwd": "${workspaceRoot}",
       "protocol": "inspector"
+    },
+    {
+      "type": "node",
+      "name": "vscode-jest-tests",
+      "request": "launch",
+      "stopOnEntry": true,
+      "runtimeExecutable": "node",
+      "program": "${workspaceRoot}/node_modules/.bin/jest",
+      "args": ["--runInBand"],
+      "cwd": "${workspaceRoot}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "disableOptimisticBPs": true,
+      "sourceMaps": true
     }
   ]
 }

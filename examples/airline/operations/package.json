@@ -6,6 +6,8 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "clean": "rm -rf lib cdk.out stochastic.out tsconfig.tsbuildinfo",
+    "build": "npm run synth",
+    "deploy": "cdk deploy --all --require-approval=never",
     "cdk": "cdk",
     "test": "jest --passWithNoTests",
     "synth": "cdk synth"
