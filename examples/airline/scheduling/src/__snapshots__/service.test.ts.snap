@@ -3,7 +3,7 @@
 exports[`Scheduling service adds a scheduled flight 1`] = `
 Array [
   ScheduledFlightsAdded {
-    "__typename": "AddFlights",
+    "__typename": "ScheduledFlightsAdded",
     "destination": "MIA",
     "flights": Array [
       Object {

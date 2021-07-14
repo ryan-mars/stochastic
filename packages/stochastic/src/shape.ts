@@ -32,6 +32,10 @@ export function Shape<__typename extends string, S extends ObjectSchema>(
       },
     ) {
       for (const [name, value] of Object.entries(fields)) {
+        // we don't want __typename passed in from the schema
+        if (name === "__typename") {
+          continue
+        }
         ;(this as any)[name] = value
       }
     }
