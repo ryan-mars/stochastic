@@ -17,7 +17,7 @@ module.exports = {
       title: "Stochastic",
       logo: {
         alt: "Stochastic logo",
-        src: "img/logo.svg",
+        src: "img/stochastic.jpeg",
       },
       items: [
         {
