@@ -1,0 +1,11 @@
+{
+  "name": "stochastic-flink",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "build": "sbt clean assembly",
+    "watch": "sbt ~compile"
+  },
+  "keywords": [],
+  "author": "Sam Goodwin"
+}

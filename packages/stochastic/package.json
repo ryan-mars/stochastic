@@ -6,7 +6,6 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "clean": "rm -rf lib tsconfig.tsbuildinfo",
-    "build": "tsc",
     "watch": "tsc -w",
     "cdk": "cdk",
     "test": "jest --passWithNoTests"

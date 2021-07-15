@@ -1,0 +1,8 @@
+*.sbt
+*.json
+*.md
+project
+src
+target/*
+target/scala-2.12/*
+!target/scala-2.12/stochastic-flink-assembly-*.jar
