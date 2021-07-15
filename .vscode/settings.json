@@ -1,5 +1,4 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
-  "jest.jestCommandLine": "jest"
+  "editor.formatOnSave": true
 }
