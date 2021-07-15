@@ -4,7 +4,7 @@ import * as nodeLambda from "@aws-cdk/aws-lambda-nodejs"
 import * as sns from "@aws-cdk/aws-sns"
 import * as snsSubscriptions from "@aws-cdk/aws-sns-subscriptions"
 import * as sqs from "@aws-cdk/aws-sqs"
-import { BoundedContext, EventHandler, ReadModel } from "stochastic"
+import { BoundedContext, EnvironmentVariables, EventHandler, ReadModel } from "stochastic"
 import { BoundedContextConstruct } from "./bounded-context-construct"
 import { generateHandler } from "./code-gen"
 import { ComponentConstruct, ComponentConstructProps } from "./component-construct"
@@ -43,7 +43,8 @@ export class EventHandlerConstruct<
       runtime: lambda.Runtime.NODEJS_14_X,
       ...props,
       environment: {
-        COMPONENT_NAME: this.name,
+        [EnvironmentVariables.BoundedContextName]: scope.boundedContext.name,
+        [EnvironmentVariables.ComponentName]: this.name,
         ...props.environment,
       },
       bundling: {

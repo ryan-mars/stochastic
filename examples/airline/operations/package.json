@@ -6,6 +6,8 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "clean": "rm -rf lib cdk.out stochastic.out tsconfig.tsbuildinfo",
+    "build": "npm run synth",
+    "deploy": "cdk deploy --all --require-approval=never",
     "cdk": "cdk",
     "test": "jest --passWithNoTests",
     "synth": "cdk synth"
@@ -13,9 +15,9 @@
   "keywords": [],
   "author": "Ryan Marsh",
   "dependencies": {
-    "@aws-cdk/aws-events": "^1.105.0",
-    "@aws-cdk/core": "^1.105.0",
-    "aws-cdk": "^1.105.0",
+    "@aws-cdk/aws-events": "^1.111.0",
+    "@aws-cdk/core": "^1.111.0",
+    "aws-cdk": "^1.111.0",
     "proposal-temporal": "^0.8.0",
     "scheduling": "^0.1.0",
     "stochastic": "^0.1.0",

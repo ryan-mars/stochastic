@@ -18,10 +18,10 @@ import { ConfigBinding } from "./config-binding"
 import { EventStore } from "./event-store-construct"
 import { StoreConstruct } from "./store-construct"
 import { CommandConstruct } from "./command-construct"
-import { ComponentProps } from "./component-construct"
 import { PolicyConstruct } from "./policy-construct"
 import { EventHandlerConstruct } from "./event-handler-construct"
 import { QueryConstruct } from "./query-construct"
+import { ComponentConstructs, ComponentProps } from "./component-construct"
 
 /**
  * Map each component in the Bounded Context to its corresponding CDK Construct.
@@ -64,7 +64,7 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
   /**
    * Associate the Component reference with the corresponding Construct.
    */
-  public readonly componentMap: Map<Component, cdk.Construct> = new Map()
+  public readonly componentMap: Map<Component, ComponentConstructs<Context>> = new Map()
   /**
    * Where events are stored (for now)
    */
@@ -88,7 +88,7 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
     props: {
       boundedContext: Context
       components?: {
-        [name in keyof Context["components"]]?: Partial<ComponentProps<Context["components"][name]>>
+        [name in keyof Context["components"]]?: Partial<ComponentProps<Context, Context["components"][name]>>
       }
       emitEvents?: EmitEventBinding<Context["emits"][number]>[]
       receiveEvents?: RecieveEventBinding<ConsumedEvents<Context["components"]>>[]
@@ -104,7 +104,9 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
     const boundedContext = (this.boundedContext = props.boundedContext)
     this.emitEvents = props.emitEvents ?? []
     this.receiveEvents = props.receiveEvents ?? []
-    const eventStore = (this.eventStore = new EventStore(scope, { boundedContext }))
+    this.eventStore = new EventStore(scope, {
+      boundedContext,
+    })
     this.eventBridgeArn = "???"
 
     this.emitScope = new cdk.Construct(this, "Emits")
@@ -120,29 +122,27 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
     for (const [componentName, component] of Object.entries(boundedContext.components).sort(
       ([nameA, componentA], [nameB, componentB]) => (componentA.kind === "Command" ? -1 : 1),
     )) {
-      const componentProps = (props.components as any)?.[componentName] as ComponentProps<Component>
+      const componentProps = (props.components as any)?.[componentName] as ComponentProps<Context, Component>
       let con: StoreConstruct | CommandConstruct | PolicyConstruct | EventHandlerConstruct | QueryConstruct | undefined
 
       if (component.kind === "Store") {
         con = new StoreConstruct(this as any, componentName, {
-          ...(componentProps as ComponentProps<Store>),
+          ...(componentProps as ComponentProps<Context, Store>),
           component,
           boundedContext,
           name: componentName,
         })
       } else if (component.kind === "Command") {
         con = new CommandConstruct(this as any, componentName, {
-          ...(componentProps as ComponentProps<Command>),
+          ...(componentProps as ComponentProps<Context, Command>),
           component,
           boundedContext,
           name: componentName,
         })
         commandConstructs.set(componentName, con)
-        // } else if (component.kind === "Event") {
-        // TODO
       } else if (component.kind === "Policy") {
         con = new PolicyConstruct(this as any, componentName, {
-          ...(componentProps as ComponentProps<Policy>),
+          ...(componentProps as ComponentProps<Context, Policy>),
           component,
           boundedContext,
           name: componentName,
@@ -150,14 +150,14 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
         })
       } else if (component.kind === "EventHandler") {
         con = new EventHandlerConstruct(this as any, componentName, {
-          ...(componentProps as ComponentProps<EventHandler>),
+          ...(componentProps as ComponentProps<Context, EventHandler>),
           component,
           boundedContext,
           name: componentName,
         })
       } else if (component.kind === "ReadModel") {
         con = new EventHandlerConstruct(this as any, componentName, {
-          ...(componentProps as ComponentProps<ReadModel>),
+          ...(componentProps as ComponentProps<Context, ReadModel>),
           component,
           boundedContext,
           name: componentName,
@@ -165,7 +165,7 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
         })
       } else if (component.kind === "Query") {
         con = new QueryConstruct(this as any, componentName, {
-          ...(componentProps as ComponentProps<Query>),
+          ...(componentProps as ComponentProps<Context, Query>),
           component,
           boundedContext,
           name: componentName,
@@ -174,7 +174,7 @@ export class BoundedContextConstruct<Context extends BoundedContext = BoundedCon
       }
       if (con) {
         ;(this.components as any)[componentName] = con
-        this.componentMap.set(component, con)
+        this.componentMap.set(component, con as ComponentConstructs<Context>)
       }
     }
   }
