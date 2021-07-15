@@ -18,13 +18,11 @@ export function getEnv(key: string): string {
 export enum LogLevel {
   Debug = 3,
   Info = 2,
-  Warn = 1,
   Error = 0,
 }
 export const LogLevels = {
   debug: LogLevel.Debug,
   info: LogLevel.Info,
-  warn: LogLevel.Warn,
   error: LogLevel.Error,
 }
 
