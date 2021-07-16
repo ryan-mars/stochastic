@@ -5,7 +5,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula")
 module.exports = {
   title: "Stochastic",
   tagline: "Cloud native, scalable, event-driven services made easy.",
-  url: "https://www.stochastic.dev",
+  url: "https://stochastic.dev",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -17,7 +17,7 @@ module.exports = {
       title: "Stochastic",
       logo: {
         alt: "Stochastic logo",
-        src: "img/logo.svg",
+        src: "img/stochastic.jpeg",
       },
       items: [
         {

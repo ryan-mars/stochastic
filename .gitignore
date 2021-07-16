@@ -9,3 +9,4 @@ stochastic.out
 *.tsbuildinfo
 log.txt
 scratch*.*s
+stochastic.out

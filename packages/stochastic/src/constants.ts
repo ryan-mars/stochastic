@@ -16,19 +16,22 @@ export function getEnv(key: string): string {
 }
 
 export enum LogLevel {
-  Debug = "debug",
-  Info = "info",
-  Error = "error",
-  Warn = "warn",
+  Debug = 3,
+  Info = 2,
+  Error = 0,
 }
-export const LogLevels: LogLevel[] = Object.values(LogLevel)
+export const LogLevels = {
+  debug: LogLevel.Debug,
+  info: LogLevel.Info,
+  error: LogLevel.Error,
+}
 
 export function getLogLevel(): LogLevel | undefined {
   const logLevel = process.env[EnvironmentVariables.LogLevel]?.toLocaleLowerCase()
   if (logLevel === undefined) {
     return undefined
-  } else if (LogLevels.includes(logLevel as LogLevel)) {
-    return logLevel as LogLevel
+  } else if (LogLevels[logLevel as keyof typeof LogLevels] !== undefined) {
+    return LogLevels[logLevel as keyof typeof LogLevels]
   } else {
     throw new Error(`invalid log level '${logLevel}'`)
   }

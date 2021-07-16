@@ -1,7 +1,7 @@
 import * as cdk from "@aws-cdk/core"
 
 import { Store, BoundedContext, Command, Component, EventHandler, Policy, Query, ReadModel } from "stochastic"
-import { StoreConstructProps } from "./store-construct"
+import { StoreConstruct, StoreConstructProps } from "./store-construct"
 import { CommandConstruct, CommandConstructProps } from "./command-construct"
 import { EventHandlerConstruct, EventHandlerConstructProps } from "./event-handler-construct"
 import { PolicyConstruct, PolicyConstructProps } from "./policy-construct"
@@ -27,6 +27,7 @@ export type ComponentConstructs<B extends BoundedContext = BoundedContext> =
   | PolicyConstruct<B>
   | QueryConstruct<B>
   | EventHandlerConstruct<B>
+  | StoreConstruct<B>
 
 export interface ComponentConstructProps<B extends BoundedContext = BoundedContext, C extends Component = Component> {
   boundedContext: B
@@ -45,9 +46,9 @@ export class ComponentConstruct<
 
   constructor(scope: cdk.Construct, id: string, props: ComponentConstructProps<B, C>) {
     super(scope, id)
+    this.component = props.component
     this.kind = this.component.kind
     this.boundedContext = props.boundedContext
-    this.component = props.component
     this.name = props.name
   }
 }

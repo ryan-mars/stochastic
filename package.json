@@ -6,15 +6,18 @@
   "scripts": {
     "postinstall": "lerna bootstrap",
     "clean": "lerna run clean --parallel && lerna clean -y",
-    "build": "tsc -b",
+    "build": "tsc -b && lerna run build",
+    "deploy": "lerna run deploy",
     "pre-synth": "npm run build",
     "synth": "lerna run synth --parallel",
-    "test": "lerna run test",
+    "test": "jest",
     "watch": "tsc -b -w"
   },
   "devDependencies": {
+    "jest": "^27.0.6",
     "lerna": "^3.22.1",
     "prettier": "^2.3.0",
+    "ts-jest": "^27.0.3",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
   }

@@ -1,5 +1,6 @@
 export * from "./store-construct"
 export * from "./bounded-context-construct"
+export * from "./bounded-context-monitoring"
 export * from "./command-construct"
 export * from "./component-construct"
 export * from "./config-binding"

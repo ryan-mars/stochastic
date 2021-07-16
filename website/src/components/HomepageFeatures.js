@@ -14,7 +14,7 @@ const FeatureList = [
     ),
   },
   {
-    title: "Design a Scalable, Cloud-Native Solution",
+    title: "Design a Scalable, Adaptable Solution",
     Svg: require("../../static/img/undraw_software_engineer.svg").default,
     description: (
       <>
@@ -26,7 +26,11 @@ const FeatureList = [
   {
     title: "Create Infrastructure and Code",
     Svg: require("../../static/img/undraw_dev_productivity.svg").default,
-    description: <>Stochastic creates the cloud infrastructure so developers can focus on application logic.</>,
+    description: (
+      <>
+        Stochastic creates the cloud infrastructure and application framework so developers can focus on the solution.
+      </>
+    ),
   },
 ]
 
