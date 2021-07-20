@@ -13,6 +13,11 @@ module.exports = {
   organizationName: "stochastic", // Usually your GitHub org/user name.
   projectName: "stochastic", // Usually your repo name.
   themeConfig: {
+    gtag: {
+      // Google Anal ytics
+      trackingID: "G-S7W7KQYLLX",
+      anonymizeIP: true,
+    },
     navbar: {
       title: "Stochastic",
       logo: {
@@ -101,4 +106,10 @@ module.exports = {
     ],
   ],
   plugins: ["@docusaurus-terminology/parser"],
+  scripts: [
+    {
+      src: "//js-na1.hs-scripts.com/20441412.js",
+      async: true,
+    },
+  ],
 }
