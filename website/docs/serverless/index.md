@@ -1,11 +1,11 @@
 ---
 sidebar_position: 1
-slug: /distributed-systems/
+slug: /serverless/
 ---
 
-# Overview
+# Designing for Serverless
 
-The Distributed Systems section is for architects and experienced developers who are considering the availability and performance benefits of distributed systems but are inexperienced in the implementation thereof. They may feel the subject intimidating or out of reach.
+The Serverless section is for architects and experienced developers who are considering the availability and performance benefits of distributed systems but are inexperienced in the implementation thereof. They may feel the subject intimidating or out of reach.
 
 This section should provide the reader with:
 

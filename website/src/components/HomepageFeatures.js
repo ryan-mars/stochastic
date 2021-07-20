@@ -4,7 +4,8 @@ import styles from "./HomepageFeatures.module.css"
 
 const FeatureList = [
   {
-    title: "Explore and Map the Business Domain",
+    title: "Learn Event Storming",
+    link: "/docs/event-storming/",
     Svg: require("../../static/img/undraw_development.svg").default,
     description: (
       <>
@@ -14,17 +15,16 @@ const FeatureList = [
     ),
   },
   {
-    title: "Design a Scalable, Adaptable Solution",
+    title: "Design a Scalable Solution",
+    link: "/docs/serverless/",
     Svg: require("../../static/img/undraw_software_engineer.svg").default,
     description: (
-      <>
-        Technical people dive deeper into design and desired behavior. Stochastic provides framework for a cloud-native,
-        scalable architecture.
-      </>
+      <>Dive deeper into design and behavior. Stochastic puts the limitless scale of serverless within reach.</>
     ),
   },
   {
     title: "Create Infrastructure and Code",
+    link: "/docs/stochastic/",
     Svg: require("../../static/img/undraw_dev_productivity.svg").default,
     description: (
       <>
@@ -34,16 +34,18 @@ const FeatureList = [
   },
 ]
 
-function Feature({ Svg, title, description }) {
+function Feature({ Svg, title, description, link }) {
   return (
     <div className={clsx("col col--4")}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} alt={title} />
-      </div>
-      <div className="text--center padding-horiz--md">
-        <h3>{title}</h3>
-        <p>{description}</p>
-      </div>
+      <a href={link}>
+        <div className="text--center">
+          <Svg className={styles.featureSvg} alt={title} />
+        </div>
+        <div className="text--center padding-horiz--md">
+          <h3>{title}</h3>
+          <p>{description}</p>
+        </div>
+      </a>
     </div>
   )
 }

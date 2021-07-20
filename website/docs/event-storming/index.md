@@ -3,7 +3,7 @@ sidebar_position: 1
 slug: /event-storming/
 ---
 
-# Overview
+# Event Storming
 
 The Event Storming section should provide the reader with:
 
