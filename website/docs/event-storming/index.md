@@ -3,7 +3,13 @@ sidebar_position: 1
 slug: /event-storming/
 ---
 
+import Link from "@docusaurus/Link"
+
 # Event Storming
+
+<Link className="button button--primary button--lg" to="https://meetings.hubspot.com/ryan1694">Free 30min Q&A with Event Storming Experts</Link>
+
+#
 
 The Event Storming section should provide the reader with:
 

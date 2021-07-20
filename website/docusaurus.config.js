@@ -33,6 +33,11 @@ module.exports = {
         },
         { to: "/blog", label: "Blog", position: "left" },
         {
+          href: "https://meetings.hubspot.com/ryan1694",
+          label: "Free Q&A with Event Storming Experts",
+          position: "right",
+        },
+        {
           href: "https://github.com/stochastic/stochastic",
           label: "GitHub",
           position: "right",
