@@ -1,5 +1,4 @@
 ---
-title: Introduction
 sidebar_position: 1
 slug: /event-storming/
 ---
@@ -41,9 +40,9 @@ After Event Storming you are ready to begin [building your backlog](building-you
 
 ## Day 1: Big Picture {#big-picture}
 
-NEED AN ILLUSTRATION
-
 First **Big Picture Event Storming** gives everyone a common high level understanding of the system. We invite business and technical people from across the domain in question.
+
+![Big Picture Event Storming](/img/event-storming-big-picture-1.png)
 
 Participants collaboratively assemble an end-to-end timeline of important events, policies, external systems and roles involved in the business process.
 
