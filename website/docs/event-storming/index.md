@@ -20,9 +20,9 @@ When we do Event Storming we include experts across business and technology. Not
 
 **After Event Storming your team will have:**
 
-1. 💭 A **common understanding** and language for the business across roles, silos and specialties.
-2. 🤝 **Political consensus** and will to solve the biggest, most pressing problem.
-3. 🗺️ A **detailed map** of the business processes for software design, creation and maintenance.
+1. A **common understanding** and language for the business across roles, silos and specialties.
+2. **Political consensus** and will to solve the biggest, most pressing problem.
+3. A **detailed map** of the business processes for software design, creation and maintenance.
 
 > 💡 Event Storming gives you a **road map**, **alignment** from deep understanding and the **political will** necessary for a successful software project. **No other discovery method systematically creates these three cornerstones.** Only Event Storming gets it done **on the first day**.
 
@@ -30,15 +30,15 @@ When we do Event Storming we include experts across business and technology. Not
 
 Event Storming happens over three sessions, ideally one day each. With each session we gather the right people have the important conversations that need to happen. You can think of these as phases of the learning and design process to create software. Conversations are prompted by thought provoking questions from a facilitator, and our shared understanding is captured on the wall (or online white-board) using a simple notation of different colored sticky notes.
 
-- Day One paints the [**"Big Picture"**](#big-picture). Everyone comes away with a shared understanding of the business need, existing systems, and consensus around the most pressing issues.
-- Day Two dives deeply into the area with the most will for action in [**"Process Modeling"**](#process-modeling)
-- Day Three focuses on [**"Software Modeling"**](#software-modeling) as developers and testers prepare to implement the process model in software. They are supported by business experts, who answer questions as they arise.
+- Part One paints the [**"Big Picture"**](#big-picture). Everyone comes away with a shared understanding of the business need, existing systems, and consensus around the most pressing issues.
+- Part Two dives deeply into the area with the most will for action in [**"Process Modeling"**](#process-modeling)
+- Part Three focuses on [**"Software Modeling"**](#software-modeling) as developers and testers prepare to implement the process model in software. They are supported by business experts, who answer questions as they arise.
 
 After Event Storming you are ready to begin [building your backlog](building-your-backlog) and planning your sprints.
 
 **You can easily facilitate these sessions yourself. We're here to help. [Schedule a free Q&A with us before doing it yourself, or have us facilitate it for you](/get-help).**
 
-## Day 1: Big Picture {#big-picture}
+## Part 1: Big Picture {#big-picture}
 
 First **Big Picture Event Storming** gives everyone a common high level understanding of the system. We invite business and technical people from across the domain in question.
 
@@ -50,11 +50,11 @@ Hot button issues and questions that cannot be answered by those present are not
 
 Opportunities are noted and finally an exercise of "arrow voting" reveals the areas with the most political consensus for action.
 
-[More info...](big-picture)
+[More about Big Picture...](big-picture)
 
 <!-- ![Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Artboard.png](Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Artboard.png) -->
 
-## Day 2: Process Modeling {#process-modeling}
+## Part 2: Process Modeling {#process-modeling}
 
 NEED AN ILLUSTRATION
 
@@ -64,12 +64,12 @@ Participants examine the flows of information, identify policies, and walk throu
 
 Process Modeling examines sources of value and motivation of the system. Participants make their hard choices visible.
 
-[More info...](process-modeling)
+[More about Process Modeling...](process-modeling)
 
 <!--
 ![Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Screen_Shot_2021-07-26_at_2.26.21_PM.png](Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Screen_Shot_2021-07-26_at_2.26.21_PM.png) -->
 
-## Day 3: Software Modeling {#software-modeling}
+## Part 3: Software Modeling {#software-modeling}
 
 NEED AN ILLUSTRATION
 
@@ -77,51 +77,52 @@ Finally, in **Software Modeling**, technical people focus on design as they prep
 
 <!-- ![Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Screen_Shot_2021-07-26_at_2.50.50_PM.png](Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Screen_Shot_2021-07-26_at_2.50.50_PM.png) -->
 
-[More info...](software-modeling)
+[More about Software Modeling...](software-modeling)
 
 ## Event Storming runs in cycles
 
-Software projects typically start with Big Picture Event Storming. This stage includes leaders from across the business and technology. From that comes the biggest problem to solve first.
+**Big Picture** Event Storming is a great way to kickoff a big software project. This part includes leaders from across business and technology. Big Picture Event Storming creates an end-to-end shared understanding of the business process. The first problem or bottleneck to solve first is 
+obvious by the end of Big Picture.
 
-Process Modeling is a deep dive into the specific area of the first problem to solve. Business experts and technology people work together to define and refine the process.
+**Process Modeling** is a deep dive into a specific area, starting with the first problem to solve. Business experts and technology people work together to evaluate alternatives, define and refine the process.
 
-Technical people do Software Modeling to design software to automate the agreed on business process.
+**Software Modeling** is when technical people design software to automate the agreed on business process.
 
-Once the first big problem is solved, the leaders from across business and technology reconvene to discuss the results and select the next problem to solve, which continues the cycle.
+Once the first big problem is solved, the leaders from across business and technology reconvene. In this session they might discuss the results, review the Big Picture visualization and select the next problem to solve.
+
+The cycle of Big Picture, Process Modeling, and Software Modeling continues. Long term it moves from solving huge problems to quickly adjusting to changes in the business environment.
 
 ## What's Event Storming like?
 
-From the beginning, people seem to realize Event Storming is a different kind of experience.
+From the beginning, people seem to realize Event Storming is a different kind of experience. Event Storming is fun, it's collaboration like most people have never seen before.
 
 People participating learn from one another about how the business process works. Real challenges are discussed and hard choices are surfaced.
 
-Participants gain a larger perspective of the organization and how their work fits in. Challenges faced across the organization become visible, which builds empathy. This empathy makes cross silo collaboration and decision making easier.
+> 💡 Participants gain a larger perspective of the organization and how their work fits in. Challenges faced across the organization become visible, which builds empathy between people that barely knew one another hours before. This empathy improves cross silo collaboration and decision making.
 
 New relationships are formed and old ones are strengthened. Teams are brought together by the people involved.
 
 The experience is of a group learning and problem solving exercise, where political divisions and turf wars melt away.
 
-A successful software project starts this way. People across the organization have the same understanding and goals. Everyone supports the hard decisions because they understand the trade-offs that led to those decisions.
+A successful software project starts this way. People across the organization have the same understanding and goals. Everyone supports the hard decisions because they participated and understand the trade-offs that led to those decisions.
 
 ## How do I talk to colleagues about Event Storming?
 
-When introducing change to an organization, one needs to explain **w**hat's **i**n **i**t **f**or **m**e (WIIFM) to a lot of people. While this is beyond the scope of this page, we wrote Why use Event Storming to give you the various benefits to share with key decision makers in your organization.
+When introducing change to an organization, one needs to explain **w**hat's **i**n **i**t **f**or **m**e (WIIFM) to a lot of people. While this is beyond the scope of this page, we wrote [Why use Event Storming](why-event-storming) to give you the various benefits to share with key decision makers in your organization.
 
-We recommend thinking through things from the perspective of the various decision makers and in some cases even creating an influence map to drive these conversations.
+> 💡 We recommend thinking through things from the perspective of the various decision makers and in some cases even creating an influence map to drive these conversations.
 
-If you'd like help with this conversation, we're here to help. You can schedule a call with us for free.
-
-_insert link to call us for help_
+If you'd like help with this conversation, we're here to help. You can [schedule a call with us for free](/get-help).
 
 ## How Do I Facilitate Event Storming for my Project?
 
 Your first solo Event Storming workshop might seem like climbing a mountain. The best approach to such problems is to learn about the climb and find people to help you along the way.
 
-We've put together some learning resources and checklists to help you out. Reach out to us with any questions you have as you work through these.
+We've put together some learning resources and checklists to help you out.
 
 1. Study the Event Storming Resources page
 2. Review the Tips for Event Storming page
-3. Set scope of your project
+3. Set scope of your workshop
 4. Identify key decision makers and influencers
 5. Identify key experts (business and technology)
 6. Decide face-to-face vs remote
@@ -133,4 +134,4 @@ We've put together some learning resources and checklists to help you out. Reach
    1. Get Miro (or similar) licenses for all participants
    2. Study Remote Event Storming article
 
-> Insert call to action
+[Reach out to us with any questions](/get-help) as you work through these.
