@@ -39,7 +39,7 @@ After Event Storming you are ready to begin [building your backlog](building-you
 
 **You can easily facilitate these sessions yourself. We're here to help. [Schedule a free Q&A with us before doing it yourself, or have us facilitate it for you](/get-help).**
 
-## Day 1: Big Picture 💬🗺️🤝 {#big-picture}
+## Day 1: Big Picture {#big-picture}
 
 NEED AN ILLUSTRATION
 
@@ -55,7 +55,7 @@ Opportunities are noted and finally an exercise of "arrow voting" reveals the ar
 
 <!-- ![Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Artboard.png](Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Artboard.png) -->
 
-## Day 2: Process Modeling 🟧🟪🟩 {#process-modeling}
+## Day 2: Process Modeling {#process-modeling}
 
 NEED AN ILLUSTRATION
 
@@ -70,7 +70,7 @@ Process Modeling examines sources of value and motivation of the system. Partici
 <!--
 ![Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Screen_Shot_2021-07-26_at_2.26.21_PM.png](Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Screen_Shot_2021-07-26_at_2.26.21_PM.png) -->
 
-## Day 3: Software Modeling 👨‍💻👩‍💻👨‍💻 {#software-modeling}
+## Day 3: Software Modeling {#software-modeling}
 
 NEED AN ILLUSTRATION
 
