@@ -58,7 +58,7 @@ This adds meaning, motivation and satisfaction to technical work.
 
 Business experts gain a strategic view of the entire process. This allows them to look beyond narrow self interests and find synergy with others. Decisions are better because everyone understands the tradeoffs and examines them together.
 
-> 💡 Creating this synergy and alignment was a haphazard process left to visionary leaders wiht magical social skills. Event Storming creates this through collaboration, clarity and a bit of social engineering.
+> 💡 Creating this synergy and alignment was a haphazard process left to visionary leaders with magical social skills. Event Storming creates this through collaboration, clarity and a bit of social engineering.
 
 ### Create consensus and political will for change
 
