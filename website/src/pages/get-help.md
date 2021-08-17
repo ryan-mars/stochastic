@@ -1,11 +1,20 @@
 # Get Help from Event Storming Experts
 
-We didn't [invent Event Storming](http://ziobrando.blogspot.com/2013/11/introducing-event-storming.html) but we've grown to love :heart: it. We hope you do too.
+We didn't [invent Event Storming](http://ziobrando.blogspot.com/2013/11/introducing-event-storming.html) but we've grown to love it. We hope you do too.
 
-Here's how we can help:
+Our vision is to make Event Storming as widely used as Agile/Scrum. 
 
-- offering
-- offering
-- offering
+Event Storming improves the lives of people involved in software projects. It also improves the outcomes of organizations. Widespread use of Event Storming will pave the way for [Stochastic](/docs/) adoption. Any consulting revenue we generate along the way supports our ongoing development of Stochastic.
 
-Why you should let us help you.. because it supports development of Stochastic our open source framework for building event driven serverless systems right from your event storm
+This is why we train, coach, and mentor Event Storming facilitators and stakeholders like you.
+
+Here are a few ways we can help you:
+
+- Answer questions about Event Storming that are specific to your envrionment
+- Determine if Event Storming is right for you
+- Identify participants needed for a successful Event Storm
+- Setting expectations, scope, and environment for success
+- Provide an experienced facilitator so your first Event Storm is a success
+- Train, coach, and mentor your people to facilitate Event Storming
+
+Click here to schedule your free consulting session.
