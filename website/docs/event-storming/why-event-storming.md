@@ -42,7 +42,7 @@ Those made available to Agile teams often have narrow business expertise and no 
 
 People chosen to represent the customer become the new learning bottleneck.
 
-This can be deadly for teams new to a business domain, as they must learn while implementing. They start out behind the curve and learn the business as the project ends.
+This can be deadly for teams new to a business domain, as they must learn while implementing. These teams start out behind the curve and learn the business as the project ends.
 
 > 💡 Event Storming with key business and technical people removes the learning bottleneck. It allows everyone to learn together and create a visual map of the business process.
 
@@ -70,7 +70,7 @@ All questions, alternatives, disagreements and areas of suspicious complexity ar
 
 The topics of value creation, value loss and opportunity have been examined in a structured manner.
 
-Everyone understands the business more deeply than they did a few hours earlier.
+Everyone understands the business more deeply than just a few hours earlier.
 
 Then the question: "What is the most important issue to attack first?"
 
@@ -88,11 +88,12 @@ Traditional software projects took months or years to show value. Agile methods 
 
 Event storming shows value within hours.
 
-Participants learn from a structured conversation about the key events in the business process. People learn about processes and motivations they missed for years within the first couple of hours.
-
-They learn reasons for policies that formerly seemed silly. They gain an appreciation for work in other parts of the organization and a deeper appreciation for their own. They understand the why behind so many instances of "because that's the way we do it around here."
-
-They also question long held assumptions. They see festering problems for the first time. They see new opportunities to deliver value.
+Participants learn from a structured conversation about the key events, actors, and policies in the business process. From an Event Storm people learn,
+- motivations behind policies and processes that formerly seemed silly;
+- to appreiate people and work done in other parts of the organization;
+- to question long-held assumptions;
+- to see festering problems more clearly;
+- to see new opportunities to deliver value.
 
 > 💡 This deeper understanding and reexamination of assumptions is of obvious value to everyone in the room.
 
@@ -108,18 +109,18 @@ This is a missed opportunity. Given typical system life spans, this commits the 
 
 > 💡 Event Storming reexamines existing processes in depth. Business and technical experts work together through various scenarios, exploring value and motivation. They examine multiple options and make a deliberate choice based on ROI.
 
-This deep examination of the process and trade-offs between various options builds a level of expertise and confidence that is rare in software development.
+This deep examination of the process and trade-offs between various options results in a better process and system. It also builds a level of understanding and confidence that is rare in software development teams.
 
 ### Event Storming changes people and how they think about work
 
-Most development teams never meet with the users of their software. They create a notion of what the customer wants and why they want it from second hand clues.
+Most development teams in large organizations never meet the users of their software. They create a notion of what the user wants and why from second hand clues.
 
-The users rarely get to deeply examine and reimagine how their work is done. They never even think of the possibility that software could change to better meet their needs. At least not outside of a passing fantasy.
+The users rarely get to deeply examine and reimagine how their work is done. They rarely even think of the possibility that software could change to better meet their needs. At least not outside of a passing fantasy.
 
-When users and developers attend Event Storming, the experience is novel and refreshing. They come to understand the challenges faced by peers in other parts of the organization. Together, they form an end-to-end understanding of the business and represent it visually. 
+When users and developers attend Event Storming, the experience is novel and refreshing. Developers and users come to understand the challenges faced by peers in other parts of the organization. Together, they create an end-to-end understanding of the business and represent it visually. 
 
-They experience a camaraderie built from learning together with peers across the organization.
+This experience of learning together buids a camaraderie with peers across the organization.
 
 > 💡 Many gain fresh perspectives and ideas about their work. For the first time, some see a path to solving entrenched, difficult problems. Many learn how their work contributes to something larger and more meaningful.
 
-People remember these experiences and appreciate those that make them happen. They believe in and support the work that follows.
+People remember these experiences and appreciate those that make them happen. Everyone involved believes in and supports the work that follows.
