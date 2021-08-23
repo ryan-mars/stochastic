@@ -1,12 +1,12 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 ---
 
-# Why Use Event Storming?
+# Why Event Storm?
 
 You may be skeptical about Event Storming, or perhaps you need to convince others in your organization to give it a try.
 
-This article dives deeper into the benefits of Event Storming. Each item's importance and weight will depend on your organization and the particular challenges you face. 
+This article dives deeper into the benefits of Event Storming. Each item's importance and weight will depend on your organization and the particular challenges you face.
 
 To enroll others in Event Storming, share the items most impactful to their needs.
 
@@ -26,9 +26,9 @@ While we believe that having "a single source of truth" will help us, there are 
 
 First, trying to understand a complex problem by piecewise analysis is difficult. It's often impossible. People working in this situation are heroic to complete any software projects.
 
-It takes time to meet with all the right people and synthesize their input. More time goes into finding conflicts and circling back to resolve them. 
+It takes time to meet with all the right people and synthesize their input. More time goes into finding conflicts and circling back to resolve them.
 
-Writing and reviewing the requirements document takes even more time. Everyone agrees that the document makes sense because each reads ***in*** their understanding.
+Writing and reviewing the requirements document takes even more time. Everyone agrees that the document makes sense because each reads **_in_** their understanding.
 
 > 💡 Developers are forced read their own unique understanding into documents, expecially when they have little or no business knowledge. This is why it's so effective to include developers in the learning and discovery process. This is how you minimize the learning bottleneck.
 
@@ -36,7 +36,7 @@ Writing and reviewing the requirements document takes even more time. Everyone a
 
 Building the wrong thing is the biggest risk in software projects. It's a significant source of waste on successful projects and the cause of failure for many.
 
-Agile attacks this risk with ongoing user involvement and regular feedback. Unfortunately, the users that understand the system are too busy to participate. 
+Agile attacks this risk with ongoing user involvement and regular feedback. Unfortunately, the users that understand the system are too busy to participate.
 
 Those made available to Agile teams often have narrow business expertise and no decision authority. Thus teams struggle to get time with overworked subject matter experts.
 
@@ -52,7 +52,7 @@ Everyone sees the same big picture view. Experts can dive into their area of spe
 
 Developers gain a clarity of understanding from these conversations that seemed impossible before. This reduces waste, frustration and time to value.
 
-Developers also meet the business experts, building relationships and empathy. Developer work transforms when writing software for a person instead of a requirements document or user story. 
+Developers also meet the business experts, building relationships and empathy. Developer work transforms when writing software for a person instead of a requirements document or user story.
 
 This adds meaning, motivation and satisfaction to technical work.
 
@@ -64,7 +64,7 @@ Business experts gain a strategic view of the entire process. This allows them t
 
 A key outcome of Event Storming is political consensus and the will to solve hard problems.
 
-Imagine the scene: all the key stakeholders and experts are in the same room. For the first time the end-to-end process is visible to them. 
+Imagine the scene: all the key stakeholders and experts are in the same room. For the first time the end-to-end process is visible to them.
 
 All questions, alternatives, disagreements and areas of suspicious complexity are visible "hot spots."
 
@@ -80,15 +80,16 @@ Those present have a shared understanding of the process, the value it creates a
 
 Once you solve that first, tough problem, everything gets easier.
 
-Best part is that this happens in a single day. Your project *starts* on the fast track to success.
+Best part is that this happens in a single day. Your project _starts_ on the fast track to success.
 
 ### Event Storming shows value and builds trust from the very start
 
-Traditional software projects took months or years to show value. Agile methods can begin to show value in weeks. 
+Traditional software projects took months or years to show value. Agile methods can begin to show value in weeks.
 
 Event storming shows value within hours.
 
 Participants learn from a structured conversation about the key events, actors, and policies in the business process. From an Event Storm people learn,
+
 - motivations behind policies and processes that formerly seemed silly;
 - to appreiate people and work done in other parts of the organization;
 - to question long-held assumptions;
@@ -101,7 +102,7 @@ This new understanding and perspective gets translated directly into improved pr
 
 ### Refine outdated processes before committing them to code
 
-New system designs often take existing processes as a given. The user experience improves, technology gets updated, and obvious process pain points get addressed. 
+New system designs often take existing processes as a given. The user experience improves, technology gets updated, and obvious process pain points get addressed.
 
 It's rare for all processes to get completely reexamined before a major rewrite. Even changed or new processes may not get a rigorous examination of multiple alternatives by the relevant experts.
 
@@ -117,7 +118,7 @@ Most development teams in large organizations never meet the users of their soft
 
 The users rarely get to deeply examine and reimagine how their work is done. They rarely even think of the possibility that software could change to better meet their needs. At least not outside of a passing fantasy.
 
-When users and developers attend Event Storming, the experience is novel and refreshing. Developers and users come to understand the challenges faced by peers in other parts of the organization. Together, they create an end-to-end understanding of the business and represent it visually. 
+When users and developers attend Event Storming, the experience is novel and refreshing. Developers and users come to understand the challenges faced by peers in other parts of the organization. Together, they create an end-to-end understanding of the business and represent it visually.
 
 This experience of learning together buids a camaraderie with peers across the organization.
 

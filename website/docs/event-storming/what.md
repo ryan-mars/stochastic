@@ -7,6 +7,8 @@ import Link from "@docusaurus/Link"
 
 # What is Event Storming?
 
+## Overview
+
 <!-- ![Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/IMG_1445_2.jpeg](Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/IMG_1445_2.jpeg) -->
 
 **Event Storming is a workshop where business + tech come together to understand requirements and design a system.** Event Storming reduces months of back-and-forth communication into three days or less. After decades of agile coaching we've found Event Storming to be the best way to get everyone on the same page. **Event Storming is great for "Sprint Zero"** and it works equally well for documenting new or existing systems.
@@ -81,8 +83,7 @@ Finally, in **Software Modeling**, technical people focus on design as they prep
 
 ## Event Storming runs in cycles
 
-**Big Picture** Event Storming is a great way to kickoff a big software project. This part includes leaders from across business and technology. Big Picture Event Storming creates an end-to-end shared understanding of the business process. The first problem or bottleneck to solve first is 
-obvious by the end of Big Picture.
+**Big Picture** Event Storming is a great way to kickoff a big software project. This part includes leaders from across business and technology. Big Picture Event Storming creates an end-to-end shared understanding of the business process. The first problem or bottleneck to solve first is obvious by the end of Big Picture.
 
 **Process Modeling** is a deep dive into a specific area, starting with the first problem to solve. Business experts and technology people work together to evaluate alternatives, define and refine the process.
 
