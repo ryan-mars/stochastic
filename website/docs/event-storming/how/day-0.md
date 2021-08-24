@@ -26,4 +26,6 @@ We've put together some learning resources and checklists to help you out.
    1. Get Miro (or similar) licenses for all participants
    2. Study Remote Event Storming article
 
+[Join our conversation on Slack](https://join.slack.com/t/stochasticdev/shared_invite/zt-ul9ub84l-_9xtOXjSZLHg36q1g7TFsQ)
+
 [Reach out to us with any questions](/get-help) as you work through these.
