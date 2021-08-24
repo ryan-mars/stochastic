@@ -106,9 +106,9 @@ New system designs often take existing processes as a given. The user experience
 
 It's rare for all processes to get completely reexamined before a major rewrite. Even changed or new processes may not get a rigorous examination of multiple alternatives by the relevant experts.
 
-This is a missed opportunity. Given typical system life spans, this commits the organization to outdated processes for years.
+This is a missed opportunity. Given typical system life spans, this commits the organization to outdated processes for years. 
 
-> 💡 Event Storming reexamines existing processes in depth. Business and technical experts work together through various scenarios, exploring value and motivation. They examine multiple process options and make a deliberate choice based on ROI.
+> 💡 Event Storming Process Modeling reexamines existing processes in depth. Business and technical experts work together through various scenarios, exploring value and motivation. They examine multiple process options and make a deliberate choice based on ROI.
 
 This deep examination of the process and trade-offs between various options results in a better process and system. It also builds a level of understanding and confidence that is rare for software development teams.
 
