@@ -32,13 +32,13 @@ When we do Event Storming we include experts across business and technology. Not
 
 Event Storming happens over three sessions, ideally one day each. With each session we gather the right people have the important conversations that need to happen. You can think of these as phases of the learning and design process to create software. Conversations are prompted by thought provoking questions from a facilitator, and our shared understanding is captured on the wall (or online white-board) using a simple notation of different colored sticky notes.
 
-- Day 1 paints the [**"Big Picture"**](#big-picture). Everyone comes away with a shared understanding of the business need, existing systems, and consensus around the most pressing issue.
-- Day 2 dives deeply into the area with the most will for action in [**"Process Modeling"**](#process-modeling)
-- Day 3 focuses on [**"Software Modeling"**](#software-modeling) as developers and testers prepare to implement the process model in software. They are supported by business experts, who answer questions as they arise.
+- Day 1 paints the [**Big Picture**](#big-picture). Everyone comes away with a shared understanding of the business need, existing systems, and consensus around the most pressing issue.
+- Day 2 dives deeply into the area with the most will for action in [**Process Modeling**](#process-modeling)
+- Day 3 focuses on [**Software Modeling**](#software-modeling) as developers and testers prepare to implement the process model in software. They are supported by business experts, who answer questions as they arise.
 
-[After Event Storming](after) you are ready to begin building your backlog and planning your sprints.
+[After Event Storming](after) you are ready to begin building your backlog, planning your first sprint, and writing code.
 
-**You can easily facilitate these sessions yourself. We're here to help. [Schedule a free Q&A with us before doing it yourself, or have us facilitate it for you](/get-help).**
+You can facilitate these sessions yourself or hire an experienced facilitator. Either way, we're here to help. **[Schedule a free Q&A session.](/get-help)**
 
 ## Day 1: Big Picture {#big-picture}
 
@@ -52,13 +52,13 @@ Hot button issues and questions that cannot be answered by those present are not
 
 Opportunities are noted and finally an exercise of "arrow voting" reveals the areas with the most political consensus for action.
 
-[More about Big Picture...](how/big-picture)
+[How to do Big Picture...](how/big-picture)
 
 <!-- ![Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Artboard.png](Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Artboard.png) -->
 
 ## Day 2: Process Modeling {#process-modeling}
 
-NEED AN ILLUSTRATION
+**ADD ILLUSTRATION**
 
 Next, **Process Modeling** dives deeply into the area with the most will for action. We examine this area of the business process in detail and collaborate to refine it as we go.
 
@@ -66,20 +66,20 @@ Participants examine the flows of information, identify policies, and walk throu
 
 Process Modeling examines sources of value and motivation of the system. Participants make their hard choices visible.
 
-[More about Process Modeling...](how/process-modeling)
+[How to do Process Modeling...](how/process-modeling)
 
 <!--
 ![Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Screen_Shot_2021-07-26_at_2.26.21_PM.png](Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Screen_Shot_2021-07-26_at_2.26.21_PM.png) -->
 
 ## Day 3: Software Modeling {#software-modeling}
 
-NEED AN ILLUSTRATION
+**ADD ILLUSTRATION**
 
 Finally, in **Software Modeling**, technical people focus on design as they prepare to implement the process in software.
 
 <!-- ![Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Screen_Shot_2021-07-26_at_2.50.50_PM.png](Event%20Storming%20Section%20Welcome%20Start%20Page%203216ca7d21744b3687d644df0820e3ba/Screen_Shot_2021-07-26_at_2.50.50_PM.png) -->
 
-[More about Software Modeling...](how/software-modeling)
+[How to do Software Modeling...](how/software-modeling)
 
 ## Event Storming runs in cycles
 
@@ -95,7 +95,7 @@ The cycle of Big Picture, Process Modeling, and Software Modeling continues. Lon
 
 ## What is Event Storming like?
 
-From the beginning, people realize Event Storming is a different kind of experience. Event Storming is fun, it's collaboration like most people have never seen before.
+From the beginning, people realize Event Storming is a different kind of experience. Event Storming is fun, it's collaboration like most people have never experienced.
 
 People participating learn from one another about the business process. Real challenges are discussed and hard choices are made.
 
@@ -111,6 +111,6 @@ A successful software project starts this way. People across the organization ha
 
 When introducing change to an organization, one needs to explain **w**hat's **i**n **i**t **f**or **m**e (WIIFM) to a lot of people. While this is beyond the scope of this page, we wrote [Why Event Storm](why) to give you the various benefits to share with key decision makers in your organization.
 
-> 💡 We recommend thinking through things from the perspective of the various decision makers and in some cases even creating an influence map to drive these conversations.
+> 💡 We recommend thinking through things from the perspective of the various decision makers and in some cases even creating an influence map to drive these conversations and get the right participants.
 
 If you'd like help with this conversation, we're here to help. You can [schedule a call with us for free](/get-help).
