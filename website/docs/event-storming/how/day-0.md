@@ -1,10 +1,12 @@
 ---
 slug: /event-storming/how
-title: Day 0 - Setup
-sidebar_position: 2
+title: Day 0 - Get Ready
+sidebar_position: 1
 ---
 
-# Setup
+# How to get ready for Event Storming
+
+## More content in progress...
 
 ## How Do I Facilitate Event Storming for my Project?
 
