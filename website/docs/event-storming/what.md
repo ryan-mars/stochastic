@@ -37,7 +37,7 @@ Event Storming happens over three sessions, ideally one day each. With each sess
 - Day 2 dives deeply into the area with the most will for action in [**Process Modeling**](#process-modeling)
 - Day 3 focuses on [**Software Modeling**](#software-modeling) as developers and testers prepare to implement the process model in software. They are supported by business experts, who answer questions as they arise.
 
-[After Event Storming](after) you are ready to begin building your backlog, planning your first sprint, and writing code.
+[After Event Storming](/docs/event-storming/how/after) you are ready to begin building your backlog, planning your first sprint, and writing code.
 
 You can facilitate these sessions yourself or hire an experienced facilitator. Either way, we're here to help. **[Schedule a free Q&A session.](/get-help)**
 
