@@ -1,4 +1,5 @@
 ---
+title: What is Event Storming
 sidebar_position: 1
 slug: /event-storming/
 ---

@@ -1,5 +1,6 @@
 ---
-sidebar_position: 3
+title: Why use Event Storming
+sidebar_position: 2
 ---
 
 # Why Event Storm?

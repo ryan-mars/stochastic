@@ -1,4 +1,5 @@
 ---
+title: When to use Event Storming
 sidebar_position: 4
 ---
 
