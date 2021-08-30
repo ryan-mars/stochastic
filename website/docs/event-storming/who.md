@@ -1,6 +1,6 @@
 ---
-title: Who to invite to Event Storming
+title: Who attends Event Storming
 sidebar_position: 3
 ---
 
-# Who Event Storms
+# Who attends Event Storming

@@ -1,5 +1,5 @@
 ---
-title: When to use Event Storming
+title: When to Event Storm
 sidebar_position: 4
 ---
 
