@@ -1,6 +1,6 @@
 ---
 title: Day 1 - Big Picture
-sidebar_position: 3
+sidebar_position: 2
 ---
 
-# Big Picture Event Storming
+# How to do Big Picture Event Storming
