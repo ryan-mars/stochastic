@@ -1,6 +1,6 @@
 ---
 title: Day 2 - Process Modeling
-sidebar_position: 4
+sidebar_position: 3
 ---
 
-# Process Modeling
+# How to do Process Modeling
