@@ -1,6 +1,6 @@
 ---
 title: Day 3 - Software Modeling
-sidebar_position: 5
+sidebar_position: 4
 ---
 
-# Software Modeling
+# How to do Software Modeling
