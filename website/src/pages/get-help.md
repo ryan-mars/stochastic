@@ -4,7 +4,9 @@ We didn't [invent Event Storming](http://ziobrando.blogspot.com/2013/11/introduc
 
 Our vision is to make Event Storming as widely used as Agile/Scrum. 
 
-Event Storming improves the lives of people involved in software projects. It also improves the outcomes of organizations. Widespread use of Event Storming will pave the way for [Stochastic](/docs/) adoption. Any consulting revenue we generate along the way supports our ongoing development of Stochastic.
+Event Storming improves the lives of people involved in software projects. Event Storming also improves outcomes for organizations that use it. 
+
+Widespread use of Event Storming will pave the way for [Stochastic](/docs/) adoption. Giving away some consulting to get Stochastic mainstreamed seems worthwhile to us.
 
 This is why we train, coach, and mentor Event Storming facilitators and stakeholders like you.
 
