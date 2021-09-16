@@ -21,13 +21,13 @@ The digital revolution is accelerating, impacting more businesses than ever. Man
 - Artifacts that enable **test automation** and insure **shared understanding**
 - **Developer and stakeholder wellbeing** is considered from start to finish
 
-The first challenge of enterprise software development is understanding the problem that needs solving: What is the software supposed to do? We start with **Event Storming. Collaborative learning is the best way for everyone involved to understand** and agree on the problem to be solved. Event Storming aligns everyone with a visual of the business need before software work starts.
+The first challenge of enterprise software development is understanding the problem that needs solving: What is the software supposed to do? We start with [Event Storming](event-storming). **Collaborative learning is the best way for everyone involved to understand** and agree on the problem to be solved. Event Storming aligns everyone with a visual of the business need before software work starts.
 
-Event Storming includes **Process Modeling** for a thorough review of processes. This **process examination before committing to code** results in better understanding and better software. 
+Event Storming includes [Process Modeling](event-storming#process-modeling) for a thorough review of processes. This **process examination before committing to code** results in better understanding and better software. 
 
 We add **Example Mapping and other practices** to enhance understanding and enable Behavior Driven Development.
 
-Event Storming includes **Software Modeling**, an intuitive design by color approach to software. This makes **Domain Driven Design** available to a wider audience.
+Event Storming includes [Software Modeling](event-storming#software-modeling), an intuitive design by color approach to software. This makes **Domain Driven Design** available to a wider audience.
 
 Modern architecture and design lead to **scalable, easy to change systems**. Stochastic adopts **Event Sourcing** and several other architecture patterns to provide a solid foundation.
 
