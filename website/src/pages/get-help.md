@@ -19,4 +19,4 @@ Here are a few ways we can help you:
 - Provide an experienced facilitator so your first Event Storm is a success
 - Train, coach, and mentor your people to facilitate Event Storming
 
-Click here to schedule your free consulting session.
+[Click here to schedule your free consulting session](https://meetings.hubspot.com/ryan1694).
