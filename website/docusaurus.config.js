@@ -13,6 +13,11 @@ module.exports = {
   organizationName: "stochastic", // Usually your GitHub org/user name.
   projectName: "stochastic", // Usually your repo name.
   themeConfig: {
+    gtag: {
+      // Google Anal ytics
+      trackingID: "G-S7W7KQYLLX",
+      anonymizeIP: true,
+    },
     navbar: {
       title: "Stochastic",
       logo: {
@@ -27,6 +32,11 @@ module.exports = {
           label: "Docs",
         },
         { to: "/blog", label: "Blog", position: "left" },
+        {
+          href: "https://meetings.hubspot.com/ryan1694",
+          label: "Free Q&A with Event Storming Experts",
+          position: "right",
+        },
         {
           href: "https://github.com/stochastic/stochastic",
           label: "GitHub",
@@ -44,6 +54,10 @@ module.exports = {
               label: "Event Storming",
               to: "/docs/event-storming",
             },
+            {
+              label: "Blog",
+              to: "/blog",
+            },
           ],
         },
         {
@@ -54,22 +68,13 @@ module.exports = {
               href: "https://stackoverflow.com/questions/tagged/stochastic",
             },
             {
-              label: "Twitter",
-              href: "https://twitter.com/docusaurus",
-            },
-          ],
-        },
-        {
-          title: "More",
-          items: [
-            {
-              label: "Blog",
-              to: "/blog",
-            },
-            {
               label: "GitHub",
               href: "https://github.com/stochastic/stochastic",
             },
+            // {
+            //   label: "Twitter",
+            //   href: "https://twitter.com/docusaurus",
+            // },
           ],
         },
       ],
@@ -100,5 +105,10 @@ module.exports = {
       },
     ],
   ],
-  plugins: ["@docusaurus-terminology/parser"],
+  scripts: [
+    {
+      src: "//js-na1.hs-scripts.com/20441412.js",
+      async: true,
+    },
+  ],
 }

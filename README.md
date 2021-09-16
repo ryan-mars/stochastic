@@ -36,4 +36,5 @@ Alternatively...
 # Contributors
 
 - [Sam Goodwin](https://github.com/sam-goodwin)
+- [Richard Mouser](https://github.com/rmouser)
 - [Ryan Marsh](https://github.com/ryan-mars)
