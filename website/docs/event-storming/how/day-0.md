@@ -6,7 +6,7 @@ sidebar_position: 1
 
 # How to get ready for Event Storming
 
-## More content in progress...
+![This page is under construction](/img/under_construction.webp)
 
 ## How Do I Facilitate Event Storming for my Project?
 

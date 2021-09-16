@@ -110,7 +110,6 @@ module.exports = {
       },
     ],
   ],
-  plugins: ["@docusaurus-terminology/parser"],
   scripts: [
     {
       src: "//js-na1.hs-scripts.com/20441412.js",

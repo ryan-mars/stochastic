@@ -6,6 +6,8 @@ slug: /stochastic/
 
 # Stochastic
 
+![This page is under construction](/img/under_construction.webp)
+
 This section should help developers learn how to be productive with Stochastic by translating event storm models to working software.
 
 It should include:
