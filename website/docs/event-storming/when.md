@@ -60,3 +60,6 @@ Here are a few things they get by attending:
 - an opportunity to expose and resolve persistent issues anywhere in the process.
 
 These are strong motivations for subject matter experts to make time for an Event Storm.
+
+If you're still not sure Event Storming is right for your situation, [setup a call with us](/get-help). 
+We love Event Storming, but we also know that one tool is not right for all jobs.

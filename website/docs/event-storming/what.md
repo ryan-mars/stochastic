@@ -114,4 +114,4 @@ When introducing change to an organization, one needs to explain **w**hat's **i*
 
 > 💡 We recommend thinking through things from the perspective of the various decision makers and in some cases even creating an influence map to drive these conversations and get the right participants.
 
-If you'd like help with this conversation, we're here to help. You can [schedule a call with us for free](/get-help).
+If you'd like help with this conversation, we're here to help. You can [schedule a free call with us](/get-help).

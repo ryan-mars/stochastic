@@ -126,3 +126,5 @@ This experience of learning together buids a camaraderie with peers across the o
 > 💡 Many gain fresh perspectives and ideas about their work. For the first time, some see a path to solving entrenched, difficult problems. Many learn how their work contributes to something larger and more meaningful.
 
 People remember these experiences and appreciate those that make them happen. Everyone involved believes in and supports the work that follows.
+
+If you're still not sure Event Storming is right for your situation, [setup a call with us](/get-help). We love Event Storming, but we also know that one tool is not right for all jobs.

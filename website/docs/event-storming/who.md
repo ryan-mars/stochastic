@@ -41,4 +41,4 @@ Event Storming harnesses disagreement, different perspectives and ideas. This op
 
 **Software Modeling** uses the same group as process modeling.
 
-To have a successful Event Storm, take your time and get the right people involved. This can be one of the more difficult preparation items for Event Storming. If you'd like help with your situation, schedule some time with one of our event storming experts.
+To have a successful Event Storm, take your time and get the right people involved. This can be one of the more difficult preparation items for Event Storming. If you'd like help with your situation, [schedule some time with one of our event storming experts](/get-help).
