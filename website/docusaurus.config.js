@@ -54,6 +54,10 @@ module.exports = {
               label: "Event Storming",
               to: "/docs/event-storming",
             },
+            {
+              label: "Blog",
+              to: "/blog",
+            },
           ],
         },
         {
@@ -64,22 +68,13 @@ module.exports = {
               href: "https://stackoverflow.com/questions/tagged/stochastic",
             },
             {
-              label: "Twitter",
-              href: "https://twitter.com/docusaurus",
-            },
-          ],
-        },
-        {
-          title: "More",
-          items: [
-            {
-              label: "Blog",
-              to: "/blog",
-            },
-            {
               label: "GitHub",
               href: "https://github.com/stochastic/stochastic",
             },
+            // {
+            //   label: "Twitter",
+            //   href: "https://twitter.com/docusaurus",
+            // },
           ],
         },
       ],
