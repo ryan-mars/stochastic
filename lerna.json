@@ -1,4 +1,4 @@
 {
-  "packages": ["packages/*", "examples/airline/*"],
+  "packages": ["packages/*", "examples/airline/*", "examples/fruit-stand"],
   "version": "0.0.0"
 }

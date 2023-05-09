@@ -3,11 +3,13 @@
   "references": [
     { "path": "packages/stochastic/tsconfig.json" },
     { "path": "packages/stochastic-aws-serverless/tsconfig.json" },
+    { "path": "packages/stochastic-local/tsconfig.json" },
     { "path": "examples/airline/integration-tests/tsconfig.json" },
     { "path": "examples/airline/loyalty/tsconfig.json" },
     { "path": "examples/airline/operations/tsconfig.json" },
     { "path": "examples/airline/reservations/tsconfig.json" },
-    { "path": "examples/airline/scheduling/tsconfig.json" }
+    { "path": "examples/airline/scheduling/tsconfig.json" },
+    { "path": "examples/fruit-stand/tsconfig.json" }
   ],
   "ts-node": {
     "compilerOptions": {
